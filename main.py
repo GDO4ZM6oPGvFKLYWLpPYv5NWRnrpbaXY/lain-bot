@@ -15,13 +15,13 @@ class Main:
 	token = "None"
 	tokenHeroku = "None"
 	
-	if path.exists("token.txt"):
+	if path.exists("token.txt"): #retrives the token from the root directory (for testing)
 		tokenTXT = open("token.txt", "r")
 		token = str(tokenTXT.read())
 	
-	tokenHeroku = str(os.environ.get('BOT_TOKEN'))
+	tokenHeroku = str(os.environ.get('BOT_TOKEN')) #retrives BOT_TOKEN from Heroku
 
-	if not tokenHeroku == "None": #retrives BOT_TOKEN from Heroku
+	if not tokenHeroku == "None": 
 		token = tokenHeroku
 		
-	bot.run(token) #runs the Discord bot
+	bot.run(token) #runs the Discord bot using one of the above tokens
