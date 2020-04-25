@@ -1,20 +1,20 @@
+import os
+
 import discord
 from discord.ext import commands
 
 from modules.client import Client
 from modules.events import Events
 
-
 bot = Client.bot
-tokenTXT = open("token.txt", "r")
-token = none
+	
+class Main:
 
-if os.environ.get('TOKEN') != 'None': #retrives TOKEN from Heroku
-	token = os.environ.get('TOKEN')
-else:
+	tokenTXT = open("token.txt", "r")
+	tokenHeroku = os.environ.get('HOME')
 	token = tokenTXT.read()
 
-class Main:
+	if tokenHeroku: #retrives TOKEN from Heroku
+		token = tokenHeroku
 		
-	#bot.run(token.read()) #runs the Discord bot
-	
+	bot.run(token) #runs the Discord bot
