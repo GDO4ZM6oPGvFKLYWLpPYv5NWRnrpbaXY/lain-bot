@@ -13,14 +13,15 @@ class Main:
 	
 	tokenTXT = "None"
 	token = "None"
+	tokenHeroku = "None"
 	
 	if path.exists("token.txt"):
 		tokenTXT = open("token.txt", "r")
-		token = tokenTXT.read()
+		token = str(tokenTXT.read())
 	
-	tokenHeroku = os.environ.get('TOKEN')
+	tokenHeroku = str(os.environ.get('BOT_TOKEN'))
 
-	if tokenHeroku: #retrives TOKEN from Heroku
+	if not tokenHeroku == "None": #retrives BOT_TOKEN from Heroku
 		token = tokenHeroku
 		
 	bot.run(token) #runs the Discord bot
