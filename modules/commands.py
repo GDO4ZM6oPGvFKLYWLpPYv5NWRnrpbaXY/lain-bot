@@ -4,6 +4,8 @@ import ffmpeg
 import discord
 from discord.ext import commands
 
+import random
+
 from .client import Client
 from .config import Config
 from .safebooru import Safebooru
@@ -37,17 +39,19 @@ class Commands:
 	async def safebooru(ctx, tags):
 	
 		channel = bot.get_channel(Config._botChannel)
-		picture = Safebooru.booruSearch(tags)
 		
-		safebooruImageURL = Safebooru.booruSearch(tags)
+		safebooruImageURL = Safebooru.booruSearch(tags)[0]
+		safebooruPageURL = Safebooru.booruSearch(tags)[1]
+		safebooruTagsTogether = Safebooru.booruSearch(tags)[2]
 		
 		embed = discord.Embed(
 			title = tags,
 			color = discord.Color.green(),
-			url = safebooruImageURL
+			url = safebooruPageURL
 		)
 		
 		embed.set_image(url=safebooruImageURL)
 		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/avatar.png')
+		embed.set_footer(text=safebooruTagsTogether)
 		
 		await channel.send(embed=embed)
