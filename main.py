@@ -18,7 +18,7 @@ class Main:
 		tokenTXT = open("token.txt", "r")
 		token = tokenTXT.read()
 	
-	tokenHeroku = os.environ.get('HOME')
+	tokenHeroku = os.environ.get('TOKEN')
 
 	if tokenHeroku: #retrives TOKEN from Heroku
 		token = tokenHeroku
