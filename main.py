@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands
 
 from modules.client import Client
+from modules.config import Config
+from modules.commands import Commands
 from modules.events import Events
 
 bot = Client.bot
