@@ -38,7 +38,7 @@ class Commands:
 	@bot.command(pass_context=True)
 	async def safebooru(ctx, tags):
 	
-		channel = bot.get_channel(Config._botChannel)
+		channel = ctx.message.channel
 		
 		safebooruSearch = Safebooru.booruSearch('otonashi_kotori 1girl')
 		
