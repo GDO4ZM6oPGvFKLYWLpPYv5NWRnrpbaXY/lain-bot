@@ -40,9 +40,11 @@ class Commands:
 	
 		channel = bot.get_channel(Config._botChannel)
 		
-		safebooruImageURL = Safebooru.booruSearch(tags)[0]
-		safebooruPageURL = Safebooru.booruSearch(tags)[1]
-		safebooruTagsTogether = Safebooru.booruSearch(tags)[2]
+		safebooruSearch = Safebooru.booruSearch('otonashi_kotori 1girl')
+		
+		safebooruImageURL = safebooruSearch[0]
+		safebooruPageURL = safebooruSearch[1]
+		safebooruTagsTogether = safebooruSearch[2]
 		
 		embed = discord.Embed(
 			title = tags,

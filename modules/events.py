@@ -17,9 +17,11 @@ class Events:
 		
 		channel = bot.get_channel(Config._botChannel)
 		
-		safebooruImageURL = Safebooru.booruSearch('otonashi_kotori 1girl')[0]
-		safebooruPageURL = Safebooru.booruSearch('otonashi_kotori 1girl')[1]
-		safebooruTagsTogether = Safebooru.booruSearch('otonashi_kotori 1girl')[2]
+		safebooruSearch = Safebooru.booruSearch('otonashi_kotori 1girl')
+		
+		safebooruImageURL = safebooruSearch[0]
+		safebooruPageURL = safebooruSearch[1]
+		safebooruTagsTogether = safebooruSearch[2]
 		
 		embed = discord.Embed(
 			title = 'こんにちは、プロデューサーさん！',
