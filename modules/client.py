@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from boto.s3.connection import S3Connection
 
 description = '''Test'''
 
