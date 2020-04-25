@@ -12,12 +12,13 @@ bot = Client.bot
 class Main:
 	
 	tokenTXT = "None"
+	token = "None"
 	
 	if path.exists("token.txt"):
 		tokenTXT = open("token.txt", "r")
+		token = tokenTXT.read()
 	
 	tokenHeroku = os.environ.get('HOME')
-	token = tokenTXT.read()
 
 	if tokenHeroku: #retrives TOKEN from Heroku
 		token = tokenHeroku
