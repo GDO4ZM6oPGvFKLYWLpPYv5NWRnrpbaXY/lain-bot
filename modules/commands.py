@@ -46,6 +46,7 @@ class Commands:
 		
 		embed = discord.Embed(
 			title = tags,
+			description = 'Is this what you were looking for?',
 			color = discord.Color.green(),
 			url = safebooruPageURL
 		)
