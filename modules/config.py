@@ -11,13 +11,13 @@ class Config:
 	
 	# serverName = "Madison 春香 ファンClub"
 	# serverID = Client.serverID
-	# botChannel = 554774183855521792
+	botChannel = 554774183855521792
 	
 	conn = sqlite3.connect('db/config.db') #connects to the config database
 	c = conn.cursor()
 	
 	if not path.exists('db/config.db'):
-		cConfig.execute("""CREATE TABLE servers (
+		c.execute("""CREATE TABLE servers (
 			serverID bigint, 
 			serverName text,
 			botChannel bigint,
@@ -25,7 +25,7 @@ class Config:
 			welcomeText text,
 			byeChannel bigint,
 			byeText text)""")
-		cConfig.execute("""INSERT INTO servers VALUES (
+		c.execute("""INSERT INTO servers VALUES (
 			400,
 			'TEST',
 			401,
@@ -35,4 +35,4 @@ class Config:
 			'BYE')""")
 	
 	conn.commit()
-	conn.close() #closes connection to the config database
+	conn.close() 
