@@ -8,6 +8,7 @@ import random
 
 from .client import Client
 from .config import Config
+from .events import Events
 from .safebooru import Safebooru
 
 bot = Client.bot
@@ -36,7 +37,7 @@ class Commands:
 		player.start()
 		
 	@bot.command(pass_context=True)
-	async def safebooru(ctx, tags):
+	async def safebooru(ctx, tags): #looks up images on safebooru
 	
 		channel = ctx.message.channel
 		
@@ -58,3 +59,7 @@ class Commands:
 		embed.set_footer(text=safebooruTagsTogether)
 		
 		await channel.send(embed=embed)
+	
+	@bot.command(pass_context=True)
+	async def serverID(ctx): #returns the serverID, mainly for debug purposes
+		await ctx.send('Server ID: '+str(Client.serverID))

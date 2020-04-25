@@ -13,9 +13,7 @@ class Safebooru:
 			# file.write(str(listitem))
 			# file.write(os.linesep)
 		# file.close()
-		
-		
-		
+
 		randImage = random.randint(0, len(r_dict)-1)
 		
 		
