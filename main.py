@@ -1,16 +1,14 @@
 import discord
 from discord.ext import commands
 
-#from modules.events import Events
-from modules.client import Client
+from modules.events import Events
 
 description = '''Test'''
 
-bot = Client.bot
+bot = commands.Bot(command_prefix='k!', description=description)
 
 game = discord.Game("with her phone")
-token = Client.token
 
 class Main:
-	
-	bot.run(token.read())
+		
+	bot.run('NzAzMDYxNDg1NzgxMzg1MzU4.XqJJYw.df4dW8LQEKlS0D-wYrt0uSqFtrs') #runs the Discord bot

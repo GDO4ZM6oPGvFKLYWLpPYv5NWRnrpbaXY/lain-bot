@@ -1,8 +1,6 @@
 import discord
 
-from .client import Client
-
-bot = Client.bot
+client = discord.Client()
 
 class Events:
 	
