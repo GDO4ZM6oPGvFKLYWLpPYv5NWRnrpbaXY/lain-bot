@@ -40,7 +40,7 @@ class Commands:
 	
 		channel = ctx.message.channel
 		
-		safebooruSearch = Safebooru.booruSearch('otonashi_kotori 1girl')
+		safebooruSearch = Safebooru.booruSearch('tags')
 		
 		safebooruImageURL = safebooruSearch[0]
 		safebooruPageURL = safebooruSearch[1]
