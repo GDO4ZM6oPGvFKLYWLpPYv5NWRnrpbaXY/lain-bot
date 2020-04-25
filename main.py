@@ -8,6 +8,7 @@ from modules.client import Client
 from modules.config import Config
 from modules.commands import Commands
 from modules.events import Events
+from modules.safebooru import Safebooru
 
 bot = Client.bot
 	

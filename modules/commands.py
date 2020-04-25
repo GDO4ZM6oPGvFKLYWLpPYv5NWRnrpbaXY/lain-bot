@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands
 
 from .client import Client
+from .config import Config
+from .safebooru import Safebooru
 
 bot = Client.bot
 
@@ -30,3 +32,22 @@ class Commands:
 		player = await voice_client.create_ytdl_player(url)
 		players[server.id] = player
 		player.start()
+		
+	@bot.command(pass_context=True)
+	async def safebooru(ctx, tags):
+	
+		channel = bot.get_channel(Config._botChannel)
+		picture = Safebooru.booruSearch(tags)
+		
+		safebooruImageURL = Safebooru.booruSearch(tags)
+		
+		embed = discord.Embed(
+			title = tags,
+			color = discord.Color.green(),
+			url = safebooruImageURL
+		)
+		
+		embed.set_image(url=safebooruImageURL)
+		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/avatar.png')
+		
+		await channel.send(embed=embed)
