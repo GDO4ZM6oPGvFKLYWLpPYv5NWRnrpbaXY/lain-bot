@@ -1,5 +1,6 @@
 import discord
 import sqlite3
+import os
 
 from .client import Client
 
