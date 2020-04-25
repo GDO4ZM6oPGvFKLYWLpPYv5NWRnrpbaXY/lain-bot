@@ -1,9 +1,7 @@
 import youtube_dl
 import ffmpeg
-
 import discord
 from discord.ext import commands
-
 import random
 
 from .client import Client

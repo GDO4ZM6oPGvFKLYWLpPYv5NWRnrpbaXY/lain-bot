@@ -1,6 +1,5 @@
 import os
 from os import path
-
 import discord
 from discord.ext import commands
 

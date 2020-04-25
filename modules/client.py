@@ -13,5 +13,5 @@ class Client:
 	async def check_serverID(ctx):
 		# global serverID
 		Client.serverID = ctx.guild.id
-		print('Server ID: '+str(Client.serverID))
+		print('Global check complete! Server ID: '+str(Client.serverID))
 		return Client.serverID
