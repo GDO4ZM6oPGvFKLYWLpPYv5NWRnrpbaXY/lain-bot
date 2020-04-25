@@ -64,7 +64,8 @@ class Commands:
 		await ctx.send('Server ID: '+str(Client.serverID))
 		
 	@bot.command(pass_context=True)
-	async def databaseTest(ctx, id):
+	async def checkConfig(ctx, id): #takes the server id number to check the config databases
+	
 		t = (id,)
 		
 		conn = sqlite3.connect('db/config.db') #connects to the config database
@@ -75,3 +76,25 @@ class Commands:
 		
 		conn.commit()
 		conn.close() #closes connection to the config database
+		
+	# @bot.command(pass_context=True)
+	# async def updateConfig(ctx, setting, value): #modifies the server information
+		
+		# s = (setting)
+		# v = (value)
+		# t = (Client.serverID,)
+		# # guildName = get_guild(Client.serverID)
+		# guildName = 'Test'
+		# guildID = Client.serverID
+		
+		# conn = sqlite3.connect('db/config.db') #connects to the config database
+		# c = conn.cursor()
+		
+		# c.execute('SELECT * FROM servers WHERE serverID=?', t)
+		# if not c.fetchone():
+			# c.execute('INSERT INTO servers VALUES (guildID, guildName, 0, 0, "Welcome!", 0, "Bye!")')
+		
+		# c.execute('UPDATE servers SET s = v WHERE serverID=?', t)
+		
+		# conn.commit()
+		# conn.close() #closes connection to the config database
