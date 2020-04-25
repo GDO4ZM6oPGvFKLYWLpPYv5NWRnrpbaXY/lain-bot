@@ -31,7 +31,7 @@ class Events:
 		)
 		
 		embed.set_image(url=safebooruImageURL)
-		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/search.png')
+		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/assets/search.png')
 		embed.set_footer(text=safebooruTagsTogether)
 			
 		#await channel.send(embed=embed)
