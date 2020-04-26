@@ -38,32 +38,3 @@ class Events:
 		embed.set_footer(text=safebooruTagsTogether)
 			
 		#await channel.send(embed=embed)
-			
-	# def updateDB():
-		# #t = Client.serverID
-		# t = 400
-		
-		# conn = sqlite3.connect('db/config.db') #connects to the config database
-		# c = conn.cursor()
-		
-		# print('Test3')
-	
-		# c.execute('Select * FROM servers WHERE serverID=?', t)
-		# print(c.fetchone())
-	
-		# print('Test4')
-		
-		# conn.commit()
-		# conn.close() #closes connection to the config database
-		
-	# @tasks.loop(seconds=5.0)
-	# async def updateDBLoop(): #main DB Update loop
-		# print('Test')
-		# if not Client.serverID==0:
-			# print('Test2')
-			
-			# updateDB()
-			
-			# print('DB Updated for Server ID: '+str(Client.serverID)+'!')
-		
-	# updateDBLoop.start()
