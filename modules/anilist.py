@@ -1,6 +1,6 @@
 import graphene
 import requests
-import os
+import json
 
 class Anilist(graphene.ObjectType):
 
@@ -17,19 +17,14 @@ class Anilist(graphene.ObjectType):
 			}
 		}
 		'''
-		
+
 		variables = {
 			'id': searchID
 		}
-		
+
 		url = 'https://graphql.anilist.co'
-		
+
 		response = requests.post(url, json={'query': query, 'variables': variables})
-		
-		file = open('test.json', 'w')
-		for listitem in response:
-			file.write(str(listitem))
-			file.write(os.linesep)
-		file.close()
-		
+
 		return response
+b
