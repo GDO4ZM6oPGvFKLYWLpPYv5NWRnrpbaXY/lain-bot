@@ -14,5 +14,5 @@ class Client:
 		# global serverID
 		Client.serverID = ctx.guild.id
 		print('Global check complete! Server ID: '+str(Client.serverID))
-		serverID = client.serverID
+		Main.serverID = client.serverID
 		return Client.serverID
