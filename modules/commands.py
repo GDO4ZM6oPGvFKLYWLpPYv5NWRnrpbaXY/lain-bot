@@ -44,7 +44,8 @@ class Commands:
 		await ctx.send('Server ID: '+str(Client.serverID))
 
 	@bot.command(pass_context=True)
-	async def anilist(ctx, show):
+	async def anilist(ctx):
+		show = str(ctx.message.content)[(len(ctx.prefix) + len('anilist ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
 
