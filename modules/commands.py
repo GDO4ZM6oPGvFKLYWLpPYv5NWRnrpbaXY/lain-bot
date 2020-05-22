@@ -57,15 +57,23 @@ class Commands:
 			# remove br
 			desc = desc.replace('<br>', '')
 
+			# make genre list look nice
+			gees = str(show['data']['Media']['genres'])
+			gees = gees.replace('\'', '')
+			gees = gees.replace('[', '')
+			gees = gees.replace(']', '')
+
 			# embed text to output
 			embed = discord.Embed(
 				title = str(anilistResults['data']['Media']['title']['romaji']),
 				description = desc,
-				color = discord.Color.blue()
+				color = discord.Color.blue(),
+				url = str(anilistResults['data']['Media']['siteUrl'])
 			)
 
-			embed.set_footer(text=str(anilistResults['data']['Media']['siteUrl']))
+			embed.set_footer(text=gees)
 			embed.set_image(url=str(anilistResults['data']['Media']['coverImage']['large']))
 			#embed.set_thumbnail(url='')
 			#embed.set_author(name='Author Name', icon_url='')
 			await ctx.send(embed=embed)
+
