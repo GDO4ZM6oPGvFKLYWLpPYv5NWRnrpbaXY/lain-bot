@@ -13,14 +13,26 @@ class Anilist(graphene.ObjectType):
 	            title {
 	                romaji
 	            }
+	            status
 	            description(asHtml: $asHtml)
+	            startDate {
+	            	year
+	            	month
+	            	day
+	            }
+	            endDate {
+	            	year
+	            	month
+	            	day
+	            }
+	            season
+	            seasonYear
+	            episodes
 	            coverImage {
-	            	extraLarge
 	            	large
-	            	medium
-	            	color
 	            }
 	            genres
+	            meanScore
 	            siteUrl
 	        }
 		}
