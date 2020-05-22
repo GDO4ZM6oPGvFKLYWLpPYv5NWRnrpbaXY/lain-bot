@@ -89,9 +89,8 @@ class Commands:
 
 			if 'NOT_YET_RELEASED' not in status:
 				embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
+				embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
 				if 'RELEASING' not in status:
-					embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
-					 
 					embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
 					
 					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
