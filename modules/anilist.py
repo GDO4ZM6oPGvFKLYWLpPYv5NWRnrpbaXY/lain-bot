@@ -31,6 +31,7 @@ class Anilist(graphene.ObjectType):
 	            coverImage {
 	            	large
 	            }
+	            bannerImage
 	            genres
 	            meanScore
 	            siteUrl
