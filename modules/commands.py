@@ -58,7 +58,7 @@ class Commands:
 			desc = desc.replace('<br>', '')
 
 			# make genre list look nice
-			gees = str(show['data']['Media']['genres'])
+			gees = str(anilistResults['data']['Media']['genres'])
 			gees = gees.replace('\'', '')
 			gees = gees.replace('[', '')
 			gees = gees.replace(']', '')
