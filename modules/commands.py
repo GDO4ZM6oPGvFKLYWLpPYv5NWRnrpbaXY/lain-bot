@@ -107,7 +107,7 @@ class Commands:
 					if years != 0:
 						tyme += ', ' + str(years) + ' years' 
 					
-					embed.add_field(name='Run Time', value=tyme, inline=True)
+					embed.add_field(name='Aired', value=tyme, inline=True)
 
 			await ctx.send(embed=embed)
 
