@@ -15,7 +15,7 @@ Run main.py, and provide a Discord Bot token either through a text file named "t
 * youtube_dl : 2020.3.24
 
 ## Contributing
-For now, please get in touch with me through Github or through my Discord, Sigurd#6070.
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426), and the process for submitting pull requests to us.
 
 ## Authors
 * **Tatsu Eliason** - *Initial work* - [SigSigSigurd](https://github.com/SigSigSigurd)
