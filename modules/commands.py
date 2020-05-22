@@ -44,72 +44,139 @@ class Commands:
 		await ctx.send('Server ID: '+str(Client.serverID))
 
 	@bot.command(pass_context=True)
+<<<<<<< HEAD
+	async def anilist(ctx, show):
+		# retrieve json file
+		anilistResults = Anilist.aniSearch(show)
+
+		# parse out website styling
+		desc = str(anilistResults['data']['Media']['description'])
+		# make italic
+		desc = desc.replace('<i>', '*')
+		desc = desc.replace('</i>', '*')
+		# make bold
+		desc = desc.replace('<b>', '**')
+		desc = desc.replace('</b>', '**')
+		# remove br
+		desc = desc.replace('<br>', '')
+
+		# limit description to three sentences
+		sentences = findSentences(desc)
+		if len(sentences) > 3:
+			desc = desc[:sentences[2] + 1]
+
+		# make genre list look nice
+		gees = str(anilistResults['data']['Media']['genres'])
+		gees = gees.replace('\'', '')
+		gees = gees.replace('[', '')
+		gees = gees.replace(']', '')
+
+		# embed text to output
+		embed = discord.Embed(
+			title = str(anilistResults['data']['Media']['title']['romaji']),
+			description = desc,
+			color = discord.Color.blue(),
+			url = str(anilistResults['data']['Media']['siteUrl'])
+		)
+
+		embed.set_footer(text=gees)
+		embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
+		embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
+		#embed.set_author(name='Author Name', icon_url='')
+		
+		# if show is airing, cancelled, finished, or not released
+		status = anilistResults['data']['Media']['status']
+
+		if 'NOT_YET_RELEASED' not in status:
+			embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
+			embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
+			if 'RELEASING' not in status:
+				embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
+				
+				embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
+
+				# find difference in year month and days of show's air time 
+				years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
+				months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
+				days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+				
+				# get rid of anything with zero
+				tyme = str(days) + ' days'
+				if months != 0:
+					tyme += ', ' + str(months) + ' months'
+				if years != 0:
+					tyme += ', ' + str(years) + ' years' 
+				
+				embed.add_field(name='Aired', value=tyme, inline=True)
+
+		await ctx.send(embed=embed)
+=======
 	async def anilist(ctx, param, show):
-		if 'search' in param:
-			# retrieve json file
-			anilistResults = Anilist.aniSearch(show)
+		# retrieve json file
+		anilistResults = Anilist.aniSearch(show)
 
-			# parse out website styling
-			desc = str(anilistResults['data']['Media']['description'])
-			# make italic
-			desc = desc.replace('<i>', '*')
-			desc = desc.replace('</i>', '*')
-			# make bold
-			desc = desc.replace('<b>', '**')
-			desc = desc.replace('</b>', '**')
-			# remove br
-			desc = desc.replace('<br>', '')
+		# parse out website styling
+		desc = str(anilistResults['data']['Media']['description'])
+		# make italic
+		desc = desc.replace('<i>', '*')
+		desc = desc.replace('</i>', '*')
+		# make bold
+		desc = desc.replace('<b>', '**')
+		desc = desc.replace('</b>', '**')
+		# remove br
+		desc = desc.replace('<br>', '')
 
-			# limit description to three sentences
-			sentences = findSentences(desc)
-			if len(sentences) > 3:
-				desc = desc[:sentences[2] + 1]
+		# limit description to three sentences
+		sentences = findSentences(desc)
+		if len(sentences) > 3:
+			desc = desc[:sentences[2] + 1]
 
-			# make genre list look nice
-			gees = str(anilistResults['data']['Media']['genres'])
-			gees = gees.replace('\'', '')
-			gees = gees.replace('[', '')
-			gees = gees.replace(']', '')
+		# make genre list look nice
+		gees = str(anilistResults['data']['Media']['genres'])
+		gees = gees.replace('\'', '')
+		gees = gees.replace('[', '')
+		gees = gees.replace(']', '')
 
-			# embed text to output
-			embed = discord.Embed(
-				title = str(anilistResults['data']['Media']['title']['romaji']),
-				description = desc,
-				color = discord.Color.blue(),
-				url = str(anilistResults['data']['Media']['siteUrl'])
-			)
+		# embed text to output
+		embed = discord.Embed(
+			title = str(anilistResults['data']['Media']['title']['romaji']),
+			description = desc,
+			color = discord.Color.blue(),
+			url = str(anilistResults['data']['Media']['siteUrl'])
+		)
 
-			embed.set_footer(text=gees)
-			embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
-			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
-			#embed.set_author(name='Author Name', icon_url='')
+		embed.set_footer(text=gees)
+		embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
+		embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
+		#embed.set_author(name='Author Name', icon_url='')
 
-			# if show is airing, cancelled, finished, or not released
-			status = anilistResults['data']['Media']['status']
+		# if show is airing, cancelled, finished, or not released
+		status = anilistResults['data']['Media']['status']
 
-			if 'NOT_YET_RELEASED' not in status:
-				embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
-				embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
-				if 'RELEASING' not in status:
-					embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
+		if 'NOT_YET_RELEASED' not in status:
+			embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
+			embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
+			if 'RELEASING' not in status:
+				embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
 
-					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
+				embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
 
-					# find difference in year month and days of show's air time
-					years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
-					months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
-					days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+				# find difference in year month and days of show's air time
+				years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
+				months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
+				days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
 
-					# get rid of anything with zero
-					tyme = str(days) + ' days'
-					if months != 0:
-						tyme += ', ' + str(months) + ' months'
-					if years != 0:
-						tyme += ', ' + str(years) + ' years'
+				# get rid of anything with zero
+				tyme = str(days) + ' days'
+				if months != 0:
+					tyme += ', ' + str(months) + ' months'
+				if years != 0:
+					tyme += ', ' + str(years) + ' years'
 
-					embed.add_field(name='Aired', value=tyme, inline=True)
+				embed.add_field(name='Aired', value=tyme, inline=True)
 
-			await ctx.send(embed=embed)
+		await ctx.send(embed=embed)
+>>>>>>> a8aa675c280c932250d78071cb4db4d5763a6abb
 
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
