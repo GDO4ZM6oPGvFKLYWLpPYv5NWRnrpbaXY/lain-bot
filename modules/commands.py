@@ -111,6 +111,13 @@ class Commands:
 
 			await ctx.send(embed=embed)
 
+	@bot.command(pass_context=True)
+	async def botChannel(ctx):
+		serverID = str(ctx.guild.id)
+		channelID = str(ctx.channel.id)
+		Config.cfgUpdate(serverID, "Bot Channel", channelID)
+		await ctx.send("Bot channel successfully updated to here!")
+
 # helper function for anilist search
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']
