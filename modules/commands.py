@@ -47,3 +47,10 @@ class Commands:
 	async def anilistTest(ctx, searchID):
 		anilistResults = Anilist.aniSearch(searchID)
 		await ctx.send(str(anilistResults))
+
+	@bot.command(pass_context=True)
+	async def botChannel(ctx):
+		serverID = str(ctx.guild.id)
+		channelID = str(ctx.channel.id)
+		Config.cfgUpdate(serverID, "Bot Channel", channelID)
+		await ctx.send("Bot channel successfully updated to here!")
