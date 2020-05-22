@@ -48,5 +48,10 @@ class Events:
 		# writes initial config files for each server the bot is in, and updates the dictionary with the current server name
 		for guild in bot.guilds:
 			serverID = str(guild.id)
-			serverName = guild.name
-			Config.cfgUpdate(serverID, "Name", serverName)
+			serverName = str(guild.name)
+			if path.exists("./config/"+serverID+".json"):
+				Config.cfgUpdate(serverID, "Name", serverName)
+			else:
+				with open("./config/"+serverID+".json", 'x') as server_json:
+					json_data = {"Name": serverName}
+					json.dump(json_data, server_json)
