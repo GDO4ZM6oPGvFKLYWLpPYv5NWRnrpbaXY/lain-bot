@@ -34,6 +34,7 @@ class Anilist(graphene.ObjectType):
 	            bannerImage
 	            genres
 	            meanScore
+	            popularity
 	            siteUrl
 	        }
 		}

@@ -90,10 +90,9 @@ class Commands:
 			if 'NOT_YET_RELEASED' not in status:
 				embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
 				if 'RELEASING' not in status:
-					embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=True)
-					
-					# seperate score / episodes from season / run time 
-					embed.add_field(name='.', value='.', inline=False)
+					embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
+					 
+					embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
 					
 					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
 
@@ -110,6 +109,7 @@ class Commands:
 						tyme += ', ' + str(years) + ' years' 
 					
 					embed.add_field(name='Run Time', value=tyme, inline=True)
+
 			await ctx.send(embed=embed)
 
 # helper function for anilist search
