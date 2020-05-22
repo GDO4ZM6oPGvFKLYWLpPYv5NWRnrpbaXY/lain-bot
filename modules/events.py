@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 import sqlite3
+import json
+from os import path
 
 from .client import Client
 from .config import Config
@@ -14,6 +16,7 @@ class Events:
 
 	@bot.event
 	async def on_ready(): #bot startup event
+
 		print('Kotori-san is ready to go!')
 		await bot.change_presence(status=discord.Status.online, activity=game)
 

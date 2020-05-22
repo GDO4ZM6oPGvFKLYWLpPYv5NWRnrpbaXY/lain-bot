@@ -1,7 +1,6 @@
 import discord
 import sqlite3
-import os
-from os import path
+import json
 
 from .client import Client
 
