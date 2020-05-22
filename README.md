@@ -1,10 +1,10 @@
 # Kotori Bot
 [![Discord invite](https://discordapp.com/api/guilds/554770485079179264/embed.png)](https://discord.gg/byDqmcX)
 
-A Discord bot designed for integration with websites such as AniList and Steam, to allow for personal features to be used on Discord chat servers. 
+A Discord bot designed for integration with websites such as AniList and Steam, to allow for personal features to be used on Discord chat servers. Invite the bot using this [link](https://discord.com/oauth2/authorize?client_id=703061485781385358&scope=bot)
 
 ## Getting Started
-Run main.py, and provide a Discord Bot token either through a text file named "token.txt" or through the environment variable %BOT_TOKEN%. For more details [read the following](https://discord.com/developers/)
+Run main.py, and provide a Discord Bot token either through a text file named "token.txt" or through the environment variable %BOT_TOKEN%. For more details [read the following](https://discord.com/developers/).
 
 ### Prerequisites
 * **discord.py**
