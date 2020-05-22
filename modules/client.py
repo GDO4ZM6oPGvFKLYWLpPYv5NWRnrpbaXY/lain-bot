@@ -11,8 +11,7 @@ class Client:
 
 	@bot.check
 	async def check_serverID(ctx):
-		# global serverID
+		global serverID
 		Client.serverID = ctx.guild.id
 		print('Global check complete! Server ID: '+str(Client.serverID))
-		Main.serverID = client.serverID
 		return Client.serverID

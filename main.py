@@ -13,8 +13,6 @@ bot = Client.bot
 
 class Main:
 
-	public serverID = 0
-
 	tokenTXT = "None"
 	token = "None"
 	tokenHeroku = "None"
