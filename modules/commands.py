@@ -83,7 +83,7 @@ class Commands:
 			embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
 			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
 			#embed.set_author(name='Author Name', icon_url='')
-			
+
 			# if show is airing, cancelled, finished, or not released
 			status = anilistResults['data']['Media']['status']
 
@@ -92,21 +92,21 @@ class Commands:
 				embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
 				if 'RELEASING' not in status:
 					embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
-					
+
 					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
 
-					# find difference in year month and days of show's air time 
+					# find difference in year month and days of show's air time
 					years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
 					months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
 					days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
-					
+
 					# get rid of anything with zero
 					tyme = str(days) + ' days'
 					if months != 0:
 						tyme += ', ' + str(months) + ' months'
 					if years != 0:
-						tyme += ', ' + str(years) + ' years' 
-					
+						tyme += ', ' + str(years) + ' years'
+
 					embed.add_field(name='Aired', value=tyme, inline=True)
 
 			await ctx.send(embed=embed)
@@ -114,4 +114,3 @@ class Commands:
 # helper function for anilist search
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']
-
