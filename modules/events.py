@@ -49,7 +49,4 @@ class Events:
 		for guild in bot.guilds:
 			serverID = str(guild.id)
 			serverName = guild.name
-			server_dict = {'Name': serverName}
-			if not path.exists(".config/"+serverID+".json"):
-				with open("./config/"+serverID+".json", 'w') as server_json:
-					json.dump(server_dict, server_json)
+			Config.cfgUpdate(serverID, "Name", serverName)

@@ -118,6 +118,12 @@ class Commands:
 		Config.cfgUpdate(serverID, "Bot Channel", channelID)
 		await ctx.send("Bot channel successfully updated to here!")
 
+	@bot.command(pass_context=True)
+	async def botWhere(ctx):
+		serverID = str(ctx.guild.id)
+		# result = Config.cfgRead(serverID, "Bot Channel")
+		await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
+
 # helper function for anilist search
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']

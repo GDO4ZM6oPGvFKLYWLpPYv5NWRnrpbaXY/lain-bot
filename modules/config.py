@@ -22,3 +22,12 @@ class Config:
 		# writes the changes to the json file
 		with open("./config/"+serverID+".json", 'w') as server_json:
 			server_json.write(json.dumps(json_data))
+
+	def cfgRead(serverID, dict):
+		try:
+			with open("./config/"+serverID+".json", 'r') as server_json:
+				json_data = json.load(server_json)
+				entry = json_data[dict]
+				return entry
+		except:
+			return 0
