@@ -44,6 +44,28 @@ class Commands:
 		await ctx.send('Server ID: '+str(Client.serverID))
 
 	@bot.command(pass_context=True)
-	async def anilistTest(ctx, searchID):
-		anilistResults = Anilist.aniSearch(searchID)
-		await ctx.send(str(anilistResults))
+	async def anilist(ctx, param, show):
+		if 'search' in param
+			# retrieve json file
+			anilistResults = Anilist.aniSearch(show)
+
+			# parse out website styling
+			desc = str(anilistResults['data']['Media']['description'])
+			# make italic
+			desc = desc.replace('<i>', '*')
+			desc = desc.replace('</i>', '*')
+			# remove br
+			desc = desc.replace('<br>', '')
+
+			# embed text to output
+			embed = discord.Embed(
+				title = str(anilistResults['data']['Media']['title']['romaji']),
+				description = desc,
+				color = discord.Color.blue()
+			)
+
+			embed.set_footer(text=str(anilistResults['data']['Media']['siteUrl']))
+			embed.set_image(url=str(anilistResults['data']['Media']['coverImage']['large']))
+			#embed.set_thumbnail(url='')
+			#embed.set_author(name='Author Name', icon_url='')
+			await ctx.send(embed=embed)
