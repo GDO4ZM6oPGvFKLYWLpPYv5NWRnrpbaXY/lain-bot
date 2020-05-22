@@ -27,4 +27,3 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 
 		return response
-b
