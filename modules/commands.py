@@ -45,7 +45,7 @@ class Commands:
 
 	@bot.command(pass_context=True)
 	async def anilist(ctx, param, show):
-		if 'search' in param
+		if 'search' in param:
 			# retrieve json file
 			anilistResults = Anilist.aniSearch(show)
 
