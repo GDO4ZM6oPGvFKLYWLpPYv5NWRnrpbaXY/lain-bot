@@ -4,26 +4,40 @@ import json
 
 class Anilist(graphene.ObjectType):
 
-	def aniSearch(searchID):
+	def aniSearch(show):
+		# query of info we want from AniList
 		query = '''
-		query ($id: Int) { # Define which variables will be used in the query (id)
-			Media (id: $id, type: ANIME) {
-				id
-				title {
-					romaji
-					english
-					native
-				}
-			}
+		query ($id: Int, $search: String, $asHtml: Boolean) {
+	        Media (id: $id, search: $search) {
+	            id
+	            title {
+	                romaji
+	            }
+	            description(asHtml: $asHtml)
+	            coverImage {
+	            	extraLarge
+	            	large
+	            	medium
+	            	color
+	            }
+	            siteUrl
+	        }
 		}
 		'''
-
+		
 		variables = {
-			'id': searchID
+		    'search': show,
+		    'asHtml': False
 		}
+			
+		source = 'https://graphql.anilist.co'
+		
+		response = requests.post(source, json={'query': query, 'variables': variables})
+		result = response.json();
+		
+		if response.status_code == 200:
+			return result
+		else:
+			print('Response code: ' + str(response.status_code) + '\n\n' + str(result))
+			return None
 
-		url = 'https://graphql.anilist.co'
-
-		response = requests.post(url, json={'query': query, 'variables': variables})
-
-		return response
