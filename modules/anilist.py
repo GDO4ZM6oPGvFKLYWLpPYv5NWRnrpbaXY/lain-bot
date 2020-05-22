@@ -20,6 +20,7 @@ class Anilist(graphene.ObjectType):
 	            	medium
 	            	color
 	            }
+	            genres
 	            siteUrl
 	        }
 		}
