@@ -1,4 +1,6 @@
 # Kotori Bot
+<img src="https://discordapp.com/api/guilds/554770485079179264/embed.png">](https://discord.gg/byDqmcX)
+
 A Discord bot designed for integration with websites such as AniList and Steam, to allow for personal features to be used on Discord chat servers. 
 
 ## Getting Started
