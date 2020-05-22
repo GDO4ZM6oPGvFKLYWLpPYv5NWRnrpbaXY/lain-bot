@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import asyncio
 import sqlite3
+import json
 
 from .client import Client
 from .config import Config
@@ -44,9 +45,8 @@ class Events:
 #
 
 		for guild in bot.guilds:
-			print('Guild ID: '+str(guild.id))
-			print(' ')
-			channel = guild.text_channels[0]
-			print('First Channel: '+str(channel.id))
-			print(' ')
-			await ctx.send('')
+			serverID = str(guild.id)
+			serverName = guild.name
+			server_dict = {'Name': serverName}
+			with open("./config/"+serverID+".json", 'w') as server_json:
+				json.dump(server_dict, server_json)
