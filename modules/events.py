@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import asyncio
 import sqlite3
 import json
+from os import path
 
 from .client import Client
 from .config import Config
@@ -44,9 +45,11 @@ class Events:
 
 #
 
+		# writes initial config files for each server the bot is in, and updates the dictionary with the current server name
 		for guild in bot.guilds:
 			serverID = str(guild.id)
 			serverName = guild.name
 			server_dict = {'Name': serverName}
-			with open("./config/"+serverID+".json", 'w') as server_json:
-				json.dump(server_dict, server_json)
+			if not path.exists(".config/"+serverID+".json"):
+				with open("./config/"+serverID+".json", 'w') as server_json:
+					json.dump(server_dict, server_json)
