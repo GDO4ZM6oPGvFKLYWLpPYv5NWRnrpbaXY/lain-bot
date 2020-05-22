@@ -80,8 +80,13 @@ class Commands:
 		)
 
 		embed.set_footer(text=gees)
-		embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
-		embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
+
+		# images, check if valid before displaying
+		if 'None' != str(anilistResults['data']['Media']['bannerImage']):
+			embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
+
+		if 'None' != str(anilistResults['data']['Media']['coverImage']['large']):
+			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
 		#embed.set_author(name='Author Name', icon_url='')
 
 		# if show is airing, cancelled, finished, or not released
