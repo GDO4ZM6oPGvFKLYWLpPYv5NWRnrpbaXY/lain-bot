@@ -115,3 +115,4 @@ class Commands:
 # helper function for anilist search
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']
+
