@@ -8,13 +8,13 @@ Run main.py, and provide a Discord Bot token either through a text file named "t
 
 ### Prerequisites
 * **discord.py**
-* **dnspython** : 1.16.0
-* **PyNaCl** : 1.3.0
-* **aync-timeout** : 3.0.1
-* **requests** : 2.23.0
-* **graphene** : 2.1.8
-* **fmmpeg-python** : 0.2.0
-* **youtube_dl** : 2020.3.24
+* **dnspython** - *1.16.0*
+* **PyNaCl** - *1.3.0*
+* **aync-timeout** - *3.0.1*
+* **requests** - *2.23.0*
+* **graphene** - *2.1.8*
+* **fmmpeg-python** - *0.2.0*
+* **youtube_dl** - *2020.3.24*
 
 ## Contributing
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
