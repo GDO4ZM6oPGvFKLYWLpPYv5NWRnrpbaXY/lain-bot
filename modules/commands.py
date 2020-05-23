@@ -44,12 +44,12 @@ class Commands:
 		await ctx.send('Server ID: '+str(Client.serverID))
 
 	@bot.group()
-	async def anilist(ctx):
+	async def al(ctx):
 		# anilist command group
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid anilist command passed...')
 
-	@anilist.command(pass_context=True)
+	@al.command(pass_context=True)
 	async def search(ctx):
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('anilist search ')):]
 		# retrieve json file
