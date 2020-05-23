@@ -51,7 +51,7 @@ class Commands:
 
 	@al.command(pass_context=True)
 	async def search(ctx):
-		show = str(ctx.message.content)[(len(ctx.prefix) + len('anilist search ')):]
+		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
 
