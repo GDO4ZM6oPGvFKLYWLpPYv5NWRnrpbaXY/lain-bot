@@ -66,10 +66,16 @@ class Commands:
 		# remove br
 		desc = desc.replace('<br>', '')
 
+		# keep '...' in
+		desc = desc.replace('...', '><.')
+
 		# limit description to three sentences
 		sentences = findSentences(desc)
 		if len(sentences) > 3:
 			desc = desc[:sentences[2] + 1]
+
+		# re-insert '...'
+		desc = desc.replace('><', '..')
 
 		# make genre list look nice
 		gees = str(anilistResults['data']['Media']['genres'])
