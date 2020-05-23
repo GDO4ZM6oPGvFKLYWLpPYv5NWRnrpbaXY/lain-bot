@@ -43,8 +43,14 @@ class Commands:
 	async def serverID(ctx): #returns the serverID, mainly for debug purposes
 		await ctx.send('Server ID: '+str(Client.serverID))
 
-	@bot.command(pass_context=True)
+	@bot.group()
 	async def anilist(ctx):
+		# anilist command group
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid anilist command passed...')
+
+	@anilist.command(pass_context=True)
+	async def search(ctx):
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('anilist ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
