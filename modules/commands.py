@@ -99,7 +99,9 @@ class Commands:
 
 		if 'None' != str(anilistResults['data']['Media']['coverImage']['large']):
 			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
-		#embed.set_author(name='Author Name', icon_url='')
+		
+		# studio name and link to their AniList page
+		embed.set_author(name=str(anilistResults['data']['Media']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['Media']['studios']['nodes'][0]['siteUrl']))
 
 		# if show is airing, cancelled, finished, or not released
 		status = anilistResults['data']['Media']['status']
