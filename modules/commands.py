@@ -119,18 +119,24 @@ class Commands:
 				embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
 
 				# find difference in year month and days of show's air time
-				years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
-				months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
-				days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+				try:
+					air = True
+					years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
+					months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
+					days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+				except TypeError:
+					print('Error calculating air time')
+					air = False
 
 				# get rid of anything with zero
-				tyme = str(days) + ' days'
-				if months != 0:
-					tyme += ', ' + str(months) + ' months'
-				if years != 0:
-					tyme += ', ' + str(years) + ' years'
+				if air:
+					tyme = str(days) + ' days'
+					if months != 0:
+						tyme += ', ' + str(months) + ' months'
+					if years != 0:
+						tyme += ', ' + str(years) + ' years'
 
-				embed.add_field(name='Aired', value=tyme, inline=True)
+					embed.add_field(name='Aired', value=tyme, inline=True)
 
 		await ctx.send(embed=embed)
 
