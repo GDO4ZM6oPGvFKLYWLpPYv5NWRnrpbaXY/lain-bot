@@ -76,6 +76,17 @@ class Anilist(graphene.ObjectType):
 						large
 					}
 					description
+					media {
+						nodes {
+							title {
+								romaji
+							}
+							coverImage {
+								large
+							}
+							siteUrl
+						}
+					}
 				}
 			}
 		'''
