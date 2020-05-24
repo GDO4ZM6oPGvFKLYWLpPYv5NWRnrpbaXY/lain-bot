@@ -60,6 +60,37 @@ class Anilist(graphene.ObjectType):
 		if response.status_code == 200:
 			return result
 		else:
-			print('Response code: ' + str(response.status_code) + '\n\n' + str(result))
+			print('Anime response code: ' + str(response.status_code) + '\n\n' + str(result))
 			return None
 
+	def charSearch(searchID):
+		query = '''
+			query ($id: Int, $search: String) {
+				Character (id: $id, search: $search) {
+					id
+					name {
+						full
+						alternative
+					}
+					image {
+						large
+					}
+					description
+				}
+			}
+		'''
+
+		variables = {
+			'search': searchID
+		}
+
+		url = 'https://graphql.anilist.co'
+		
+		response = requests.post(url, json={'query': query, 'variables': variables})
+		result = response.json();
+
+		if response.status_code == 200:
+			return result
+		else:
+			print('Character response code: ' + str(response.status_code) + '\n\n' + str(result))
+			return None
