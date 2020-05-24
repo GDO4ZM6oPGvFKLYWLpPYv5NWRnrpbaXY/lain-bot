@@ -87,6 +87,7 @@ class Anilist(graphene.ObjectType):
 							siteUrl
 						}
 					}
+					siteUrl
 				}
 			}
 		'''
