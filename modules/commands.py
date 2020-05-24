@@ -101,7 +101,11 @@ class Commands:
 			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
 		
 		# studio name and link to their AniList page
-		embed.set_author(name=str(anilistResults['data']['Media']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['Media']['studios']['nodes'][0]['siteUrl']))
+		try:
+			embed.set_author(name=str(anilistResults['data']['Media']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['Media']['studios']['nodes'][0]['siteUrl']))
+		except IndexError:
+			print('empty studio name or URL\n')
+
 
 		# if show is airing, cancelled, finished, or not released
 		status = anilistResults['data']['Media']['status']
