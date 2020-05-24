@@ -158,7 +158,7 @@ class Commands:
 		alts = alts.replace(']', '')
 
 		image = str(anilistResults['data']['Character']['image']['large'])
-		if (image != 'None')
+		if (image != 'None'):
 			embed.set_image(url=image)
 
 		try:
