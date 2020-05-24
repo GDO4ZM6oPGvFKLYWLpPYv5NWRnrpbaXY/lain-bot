@@ -140,6 +140,36 @@ class Commands:
 
 		await ctx.send(embed=embed)
 
+	@al.command(pass_context=True)
+	async def char(ctx):
+		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
+		anilistResults = Anilist.charSearch(c)
+
+		embed = discord.Embed(
+				title = str(anilistResults['data']['Character']['name']['full']),
+				color = discord.Color.blue(),
+				url = str(anilistResults['data']['Character']['siteUrl'])
+			)
+
+		# make alternative names look nice 
+		alts = str(anilistResults['data']['Character']['name']['alternative'])
+		alts = alts.replace('\'', '')
+		alts = alts.replace('[', '')
+		alts = alts.replace(']', '')
+
+		image = str(anilistResults['data']['Character']['image']['large'])
+		if (image != 'None')
+			embed.set_image(url=image)
+
+		try:
+			embed.set_author(name=str(anilistResults['data']['Character']['media']['nodes'][0]['title']['romaji']), url=str(anilistResults['data']['Character']['media']['nodes'][0]['siteUrl']), icon_url=str(anilistResults['data']['Character']['media']['nodes'][0]['coverImage']['medium']))
+		except IndexError:
+			print('Character had empty show name or url, or image')
+
+		embed.set_footer(text=alts)
+
+		await ctx.send(embed=embed)
+
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
 		serverID = str(ctx.guild.id)
