@@ -82,7 +82,7 @@ class Anilist(graphene.ObjectType):
 								romaji
 							}
 							coverImage {
-								large
+								medium
 							}
 							siteUrl
 						}
