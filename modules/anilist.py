@@ -7,7 +7,7 @@ class Anilist(graphene.ObjectType):
 	def aniSearch(show):
 		# query of info we want from AniList
 		query = '''
-		query ($id: Int, $search: String, $asHtml: Boolean) {
+		query ($id: Int, $search: String, $asHtml: Boolean, $isMain: Boolean) {
 	        Media (id: $id, search: $search) {
 	            id
 	            title {
@@ -35,6 +35,12 @@ class Anilist(graphene.ObjectType):
 	            genres
 	            meanScore
 	            popularity
+	            studios (isMain: $isMain) {
+	            	nodes {
+	            		name
+	            		siteUrl
+	            	}
+	            }
 	            siteUrl
 	        }
 		}
@@ -42,7 +48,8 @@ class Anilist(graphene.ObjectType):
 		
 		variables = {
 		    'search': show,
-		    'asHtml': False
+		    'asHtml': False,
+		    'isMain': True
 		}
 			
 		source = 'https://graphql.anilist.co'
