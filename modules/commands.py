@@ -99,7 +99,7 @@ class Commands:
 
 		if 'None' != str(anilistResults['data']['Media']['coverImage']['large']):
 			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
-		
+
 		# studio name and link to their AniList page
 		try:
 			embed.set_author(name=str(anilistResults['data']['Media']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['Media']['studios']['nodes'][0]['siteUrl']))
@@ -153,7 +153,7 @@ class Commands:
 				url = str(anilistResults['data']['Character']['siteUrl'])
 			)
 
-		# make alternative names look nice 
+		# make alternative names look nice
 		alts = str(anilistResults['data']['Character']['name']['alternative'])
 		alts = alts.replace('\'', '')
 		alts = alts.replace('[', '')
@@ -185,6 +185,9 @@ class Commands:
 		# result = Config.cfgRead(serverID, "Bot Channel")
 		await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
 
+	@bot.command(pass_context=True)
+	async def untala(ctx):
+		await ctx.send(file=discord.File('https://github.com/SigSigSigurd/kotori-san-bot/blob/master/assets/lou.gif'))
 # helper function for anilist search
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']
