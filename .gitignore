@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # custom
-token.txt
+config.json
 config/
 user/

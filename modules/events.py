@@ -60,7 +60,7 @@ class Events:
 			userID = str(user.id)
 			userName = str(user.name)
 			if path.exists("./user/"+userID+".json"):
-				User.cfgUpdate(userID, "Name", userName)
+				User.userUpdate(userID, "Name", userName)
 			else:
 				with open("./user/"+userID+".json", 'x') as user_json:
 					json_data = {"Name": userName}
