@@ -21,11 +21,11 @@ class Main:
 	if path.exists("config.json"): #retrives the token from the root directory (for testing)
 		with open("config.json", 'r') as config_json:
 			json_data = json.load(config_json)
-			token = json_data["token"]
+			token = str(json_data["token"])
 
-	tokenEnv = str(os.environ.get('BOT_TOKEN')) #retrives BOT_TOKEN from Heroku/whatever
+	#tokenEnv = str(os.environ.get('BOT_TOKEN')) #retrives BOT_TOKEN from Heroku/whatever
 
-	if not tokenEnv == "None":
-		token = tokenEnv
+	#if not tokenEnv == "None":
+	#	token = tokenEnv
 
 	bot.run(token) #runs the Discord bot using one of the above tokens
