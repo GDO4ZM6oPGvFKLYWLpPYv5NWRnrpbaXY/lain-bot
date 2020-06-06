@@ -8,6 +8,7 @@ from os import path
 from .client import Client
 from .config import Config
 from .safebooru import Safebooru
+from .user import User
 
 bot = Client.bot
 game = discord.Game("with her phone") #sets the game the bot is currently playing
@@ -55,3 +56,12 @@ class Events:
 				with open("./config/"+serverID+".json", 'x') as server_json:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
+		for user in bot.users:
+			userID = str(user.id)
+			userName = str(user.name)
+			if path.exists("./user/"+userID+".json"):
+				User.cfgUpdate(userID, "Name", userName)
+			else:
+				with open("./user/"+userID+".json", 'x') as user_json:
+					json_data = {"Name": userName}
+					json.dump(json_data, user_json)

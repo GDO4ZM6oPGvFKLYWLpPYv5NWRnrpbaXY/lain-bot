@@ -1,5 +1,4 @@
 import discord
-import sqlite3
 import json
 
 from .client import Client
