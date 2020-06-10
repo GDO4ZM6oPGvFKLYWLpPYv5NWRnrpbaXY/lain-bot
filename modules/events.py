@@ -65,3 +65,12 @@ class Events:
 				with open("./user/"+userID+".json", 'x') as user_json:
 					json_data = {"Name": userName}
 					json.dump(json_data, user_json)
+
+	@bot.event
+	async def on_member_join(member):
+		if str(member) == 'UWMadisonRecWell#3245':
+			for guild in bot.guilds:
+				if str(guild.id) == '554770485079179264':
+					role = discord.utils.get(guild.roles, name='RecWell')
+					await discord.Member.add_roles(member, role)
+					break
