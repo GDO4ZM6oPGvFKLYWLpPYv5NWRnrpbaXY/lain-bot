@@ -10,6 +10,7 @@ from .config import Config
 from .events import Events
 from .safebooru import Safebooru
 from .anilist import Anilist
+from .vndb import Vndb
 
 bot = Client.bot
 
