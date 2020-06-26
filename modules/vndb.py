@@ -24,17 +24,7 @@ class Vndb():
 	
 	def vn(self, title):
 		# prepare command
-		type = 'vn'
-		flags = 'basic'
-		filters = '(title="Higurashi")'
-		options = ''
-		args = '{0} {1} {2} {3}'.format(type, flags, filters, options)
-
-		# format and send command
-		whole = ''
-		whole += 'get'.lower()
-		whole += ' ' + args 
-		whole = 'get vn basic,details,screens (title ~ "{0}")'.format(title)
+		whole = 'get vn basic,details,stats,screens (title ~ "{0}")'.format(title)
 		self.sock.send(('{0}\x04'.format(whole)).encode())
 
 		# listen for response form vndb
@@ -47,9 +37,4 @@ class Vndb():
 		
 		remove = whole.replace('\x04', '')
 		res = json.loads(remove.replace('results', ''))
-		try:
-			print('\n' + res['items'][0]['title'])
-			if len(res['items'][0]['screens']) != 0:
-				print(res['items'][0]['screens'])
-		except:
-			print(res)
+		return res
