@@ -50,6 +50,7 @@ class Commands:
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid anilist command passed...')
 
+
 	@al.command(pass_context=True)
 	async def search(ctx):
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
@@ -57,26 +58,7 @@ class Commands:
 		anilistResults = Anilist.aniSearch(show)
 
 		# parse out website styling
-		desc = str(anilistResults['data']['Media']['description'])
-		# make italic
-		desc = desc.replace('<i>', '*')
-		desc = desc.replace('</i>', '*')
-		# make bold
-		desc = desc.replace('<b>', '**')
-		desc = desc.replace('</b>', '**')
-		# remove br
-		desc = desc.replace('<br>', '')
-
-		# keep '...' in
-		desc = desc.replace('...', '><.')
-
-		# limit description to three sentences
-		sentences = findSentences(desc)
-		if len(sentences) > 3:
-			desc = desc[:sentences[2] + 1]
-
-		# re-insert '...'
-		desc = desc.replace('><', '..')
+		desc = shorten(str(anilistResults['data']['Media']['description']))
 
 		# make genre list look nice
 		gees = str(anilistResults['data']['Media']['genres'])
@@ -173,6 +155,133 @@ class Commands:
 
 		await ctx.send(embed=embed)
 
+	@bot.group()
+	async def vn(ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid vndb command passed...')
+
+	@vn.command(pass_context=True)
+	async def get(ctx):
+		# name of vn
+		arg = str(ctx.message.content)[(len(ctx.prefix) + len('vn get ')):]
+		try:
+			# grab info from database
+			vn = Vndb()
+			r = vn.vn(arg.strip())
+			r = r['items'][0]
+
+			# assign variables
+			title = r['title']
+			link = 'https://vndb.org/v' + str(r['id'])
+
+			try:
+				desc = shorten(r['description'])
+			except:
+				desc = 'Empty Description'
+			# ----
+			try:
+				score = str(r['rating'])
+			except:
+				score = 'Unknown'
+			# ----
+			try:
+				votes = str(r['votecount'])
+			except:
+				votes = 'Unknown'
+			# ----
+			try:
+				popularity = str(r['popularity'])
+			except:
+				popularity = 'Unknown'
+			# ----
+			try:
+				released = r['released']
+			except:
+				released = 'Unknown'
+			# ----
+			try:
+				length = {
+					1 : 'Very Short (< 2 hours)',
+					2 : 'Short (2 - 10 hours)',
+					3 : 'Medium (10 - 30 hours)',
+					4 : 'Long (30 - 50 hours)',
+					5 : 'Very Long (> 50 hours)'
+				}[r['length']]
+			except:
+				length = 'Unknown'
+			# ----
+			try:
+				image = r['image']
+			except:
+				image = 'https://i.kym-cdn.com/photos/images/original/000/290/992/0aa.jpg'
+			# ----
+			try:
+				screens = r['screens']
+			except:
+				screens = []
+			# ----
+			try:
+				langs = str(r['languages']).replace('[', '').replace(']', '').replace('\'','')
+			except:
+				langs = 'Unknown'
+			# ----
+			try:
+				platforms = str(r['platforms']).replace('[', '').replace(']', '').replace('\'','')
+			except:
+				platforms = 'Unknown'
+			# NSFW images disabled by default
+			nsfw = False
+
+			# display info on discord
+			embed = discord.Embed(
+					title = title,
+					description = desc,
+					color = discord.Color.purple(),
+					url = link
+				)
+			try:
+				embed.set_author(name='vndb')
+			except:
+				pass
+			
+			# adding fields to embed
+			if score != 'Unknown':
+				embed.add_field(name='Score', value=score, inline=True)
+			if votes != 'Unknown':
+				embed.add_field(name='Votes', value=votes, inline=True)	
+			if popularity != 'Unknown':
+				embed.add_field(name='Popularity', value=popularity, inline=True)
+			if released != 'Unknown':
+				embed.add_field(name='Released', value=released, inline=True)
+			if length != 'Unknown':
+				embed.add_field(name='Time To Complete', value=length, inline=True)
+			if langs != 'Unknown':
+				embed.add_field(name='Languages', value=langs, inline=True)
+			if platforms != 'Unknown':
+				embed.add_field(name='Platforms', value=platforms, inline=True)
+
+			embed.set_footer(text='NSFW: {0}'.format({False : 'off', True : 'on'}[nsfw]))
+
+			embed.set_thumbnail(url=image)
+			
+			# Filter out porn
+			risky = []
+			for pic in screens:
+				if pic['nsfw']:
+					risky.append(pic)
+
+			for f in risky:
+				screens.remove(f)
+
+			# Post image
+			if len(screens) >= 1:
+				embed.set_image(url=random.choice(screens)['image'])
+
+			await ctx.send(embed=embed)
+		except Exception as e:
+			print(e)
+			await ctx.send('VN no found')
+
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
 		serverID = str(ctx.guild.id)
@@ -189,6 +298,30 @@ class Commands:
 	@bot.command(pass_context=True)
 	async def untala(ctx):
 		await ctx.send(file=discord.File('https://github.com/SigSigSigurd/kotori-san-bot/blob/master/assets/lou.gif'))
-# helper function for anilist search
+
+# helper functions for vn and anilist search
+def shorten(desc):
+	# italic
+	desc = desc.replace('<i>', '*')
+	desc = desc.replace('</i>', '*')
+	# bold
+	desc = desc.replace('<b>', '**')
+	desc = desc.replace('</b>', '**')
+	# remove br
+	desc = desc.replace('<br>', '')
+
+	# keep '...' in
+	desc = desc.replace('...', '><.')
+
+	# limit description to three sentences
+	sentences = findSentences(desc)
+	if len(sentences) > 3:
+		desc = desc[:sentences[2] + 1]
+
+	# re-insert '...'
+	desc = desc.replace('><', '..')
+
+	return desc
+
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']
