@@ -14,6 +14,8 @@ bot = Client.bot
 
 class Main:
 
+	os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project root
+
 	load_dotenv()
 	TOKEN = os.getenv("BOT_TOKEN")
 
