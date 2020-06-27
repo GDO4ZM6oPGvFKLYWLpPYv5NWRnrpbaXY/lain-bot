@@ -11,5 +11,4 @@ class Framedata():
             for comm in i["Command"]:
                 if comm.lower() == move.lower():
                     return_move = i
-
-        return return_move
+                    return return_move
