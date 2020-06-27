@@ -112,7 +112,7 @@
     "Block": "-1"
   },
   {
-    "Command": ["qcf.A", "236A"],
+    "Command": ["qcf+A", "qcf.A", "236A"],
     "Startup": "16",
     "Active": "-",
     "Recovery": "30",
@@ -121,7 +121,7 @@
     "Notes": "Advantage measured at closest range."
   },
   {
-    "Command": ["qcf.C", "236C"],
+    "Command": ["qcf+C", "qcf.C", "236C"],
     "Startup": "16",
     "Active": "-",
     "Recovery": "33",
@@ -130,7 +130,7 @@
     "Notes": "Advantage measured at closest range."
   },
   {
-    "Command": ["qcf.AC", "236AC"],
+    "Command": ["qcf+AC", "qcf.AC", "236AC"],
     "Startup": "13",
     "Active": "-",
     "Recovery": "27",
@@ -139,7 +139,7 @@
     "Notes": "Advantage measured at closest range."
   },
   {
-    "Command": ["dp.A", "623A"],
+    "Command": ["dp+A", "dp.A", "623A"],
     "Startup": "4",
     "Active": "9",
     "Recovery": "43",
@@ -147,7 +147,7 @@
     "Block": "-30"
   },
   {
-    "Command": ["dp.C", "623C"],
+    "Command": ["dp+C", "dp.C", "623C"],
     "Startup": "7",
     "Active": "15",
     "Recovery": "49",
@@ -155,7 +155,7 @@
     "Block": "-59"
   },
   {
-    "Command": ["dp.AC", "623AC"],
+    "Command": ["dp+AC", "dp.AC", "623AC"],
     "Startup": "4",
     "Active": "12,(2),2,(2),13",
     "Recovery": "48",
@@ -163,7 +163,7 @@
     "Block": "-59"
   },
   {
-    "Command": ["hcb.B", "63214B"],
+    "Command": ["hcb+B", "hcb.B", "63214B"],
     "Startup": "14",
     "Active": "6",
     "Recovery": "21",
@@ -172,7 +172,7 @@
     "Notes": "Activation box appears on frame 8~22, 35 total frames if attack doesn't activate, 21 fixed frames of recovery on block"
   },
   {
-    "Command": ["hcb.D", "63214D"],
+    "Command": ["hcb+D", "hcb.D", "63214D"],
     "Startup": "14",
     "Active": "6",
     "Recovery": "21",
@@ -181,7 +181,7 @@
     "Notes": "Activation box appears on frame 8~22, 47 total frames if attack doesn't activate, 21 fixed frames of recovery on block"
   },
   {
-    "Command": ["hcb.BD", "63214BD"],
+    "Command": ["hcb+BD", "hcb.BD", "63214BD"],
     "Startup": "4",
     "Active": "1",
     "Recovery": "45",
@@ -189,7 +189,7 @@
     "Block": "Unblockable"
   },
   {
-    "Command": ["qcf.B", "236B"],
+    "Command": ["qcf+B", "qcf.B", "236B"],
     "Startup": "12",
     "Active": "5,(13),6",
     "Recovery": "13",
@@ -205,7 +205,7 @@
     "Block": "-3"
   },
   {
-    "Command": ["qcf.BD", "236BD"],
+    "Command": ["qcf.BD", "qcf.BD", "236BD"],
     "Startup": "18",
     "Active": "4,(9),6",
     "Recovery": "11",
@@ -213,7 +213,7 @@
     "Block": "+1"
   },
   {
-    "Command": ["rdp.B", "421B"],
+    "Command": ["rdp+B", "rdp.B", "421B"],
     "Startup": "10",
     "Active": "5",
     "Recovery": "24",
@@ -221,7 +221,7 @@
     "Block": "-11"
   },
   {
-    "Command": ["rdp.D", "421D"],
+    "Command": ["rdp+D", "rdp.D", "421D"],
     "Startup": "13",
     "Active": "4,(11),4,(19),3",
     "Recovery": "40",
@@ -229,7 +229,7 @@
     "Block": "-63"
   },
   {
-    "Command": ["rdp.BD", "421BD"],
+    "Command": ["rdp+BD", "rdp.BD", "421BD"],
     "Startup": "10",
     "Active": "4,(11),4,(19),3",
     "Recovery": "40",
@@ -237,7 +237,8 @@
     "Block": "-63"
   },
   {
-    "Command": ["qcbhcf.A/C", "qcbhcf.A", "qcbhcf.C",
+    "Command": ["qcbhcf+A/C", "qcbhcf+A", "qcbhcf+C",
+    "qcbhcf.A", "qcbhcf.C",
     "2141236A", "2141236C",
     "21416A", "21416C"],
     "Startup": "17",
@@ -248,7 +249,8 @@
     "Notes": "Freeze of 29, 11f startup with slight change"
   },
   {
-    "Command": ["j.qcbhcf.A/C", "j.qcbhcf.A", "j.qcbhcf.C",
+    "Command": ["j.qcbhcf+A/C", "j.qcbhcf+A", "j.qcbhcf+C",
+    "j.qcbhcf.A", "j.qcbhcf.C",
     "j.2141236A", "j.2141236C",
     "j.21416A", "j.21416C"],
     "Startup": "12",
@@ -258,7 +260,7 @@
     "Block": "-"
   },
   {
-    "Command": ["qcbhcf.AC",
+    "Command": ["qcbhcf+AC", "qcbhcf.AC"
     "2141236AC",
     "21416AC"],
     "Startup": "9",
@@ -268,7 +270,7 @@
     "Block": "-17"
   },
   {
-    "Command": ["j.qcbhcf.AC",
+    "Command": ["j.qcbhcf+AC", "j.qcbhcf.AC",
     "j.2141236AC",
     "j.21416AC"],
     "Startup": "7",
@@ -278,7 +280,7 @@
     "Block": "-"
   },
   {
-    "Command": ["dqcf.AC", "236236AC"],
+    "Command": ["dqcf+AC", "dqcf.AC", "236236AC"],
     "Startup": "7",
     "Active": "-",
     "Recovery": "56",
@@ -326,7 +328,7 @@
     "Blockstun": "19(hop), 23(jump)"
   },
   {
-    "Command": ["Jump d.C", "j.d.C", "j.2C"],
+    "Command": ["Jump d.C", "j.d+C", "j.d.C", "j.2C"],
     "Startup": "8",
     "Active": "4",
     "Recovery": "Until landing+1",

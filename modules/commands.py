@@ -318,6 +318,7 @@ class Commands:
 		)
 
 		embed.add_field(name='Move', value=movename, inline=True)
+		embed.add_field(name='Startup Frames', value=startup, inline=True)
 		embed.add_field(name='Active Frames', value=active, inline=True)
 		embed.add_field(name='Recovery Frames', value=recovery, inline=True)
 		if hit != "null":
