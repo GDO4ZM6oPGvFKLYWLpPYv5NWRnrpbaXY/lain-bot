@@ -24,7 +24,7 @@
     "Block": "-1"
   },
   {
-    "Command": ["cr.B", "2A"],
+    "Command": ["cr.B", "2B"],
     "Startup": "4",
     "Active": "4",
     "Recovery": "8",
