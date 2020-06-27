@@ -277,7 +277,7 @@
     "Block": "-"
   },
   {
-    "Command": ["dqcf.AC", "236236AC"]
+    "Command": ["dqcf.AC", "236236AC"],
     "Startup": "7",
     "Active": "-",
     "Recovery": "56",
@@ -285,7 +285,7 @@
     "Block": "-34"
   },
   {
-    "Command": ["Jump A", "j.A", "j.5A"]
+    "Command": ["Jump A", "j.A", "j.5A"],
     "Startup": "6",
     "Active": "5(hop), 7(jump)",
     "Recovery": "Until landing+1",
@@ -293,7 +293,7 @@
     "Blockstun": "13"
   },
   {
-    "Command": ["Jump B", "j.B", "j.5B"]
+    "Command": ["Jump B", "j.B", "j.5B"],
     "Startup": "5",
     "Active": "9(hop), 12(jump)",
     "Recovery": "Until landing+1",
@@ -301,7 +301,7 @@
     "Blockstun": "13"
   },
   {
-    "Command": ["Jump C", "j.C", "j.5C"]
+    "Command": ["Jump C", "j.C", "j.5C"],
     "Startup": "6",
     "Active": "4(hop), 5(jump)",
     "Recovery": "Until landing+1",
@@ -309,7 +309,7 @@
     "Blockstun": "16"
   },
   {
-    "Command": ["Jump D", "j.D", "j.5D"]
+    "Command": ["Jump D", "j.D", "j.5D"],
     "Startup": "8",
     "Active": "5",
     "Recovery": "Until landing+1",
@@ -317,7 +317,7 @@
     "Blockstun": "16"
   },
   {
-    "Command": ["Jump CD", "j.CD", "j.5CD"]
+    "Command": ["Jump CD", "j.CD", "j.5CD"],
     "Startup": "10",
     "Active": "8(hop), 10(jump)",
     "Recovery": "Until landing+1",
@@ -325,7 +325,7 @@
     "Blockstun": "19(hop), 23(jump)"
   },
   {
-    "Command": ["Jump d.C", "j.d.C", "j.2C"]
+    "Command": ["Jump d.C", "j.d.C", "j.2C"],
     "Startup": "8",
     "Active": "4",
     "Recovery": "Until landing+1",
