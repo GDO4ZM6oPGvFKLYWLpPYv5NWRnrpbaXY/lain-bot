@@ -1,0 +1,10 @@
+[
+  {
+    "Command": "st.A",
+    "Startup": "5",
+    "Active": "4",
+    "Recovery": "7",
+    "Hit": "+4",
+    "Block": "+2"
+  }
+]

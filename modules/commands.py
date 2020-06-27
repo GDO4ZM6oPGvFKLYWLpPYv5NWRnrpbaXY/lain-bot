@@ -11,6 +11,7 @@ from .events import Events
 from .safebooru import Safebooru
 from .anilist import Anilist
 from .vndb import Vndb
+from .framedata import Framedata
 
 bot = Client.bot
 
@@ -243,12 +244,12 @@ class Commands:
 				embed.set_author(name='vndb')
 			except:
 				pass
-			
+
 			# adding fields to embed
 			if score != 'Unknown':
 				embed.add_field(name='Score', value=score, inline=True)
 			if votes != 'Unknown':
-				embed.add_field(name='Votes', value=votes, inline=True)	
+				embed.add_field(name='Votes', value=votes, inline=True)
 			if popularity != 'Unknown':
 				embed.add_field(name='Popularity', value=popularity, inline=True)
 			if released != 'Unknown':
@@ -263,7 +264,7 @@ class Commands:
 			embed.set_footer(text='NSFW: {0}'.format({False : 'off', True : 'on'}[nsfw]))
 
 			embed.set_thumbnail(url=image)
-			
+
 			# Filter out porn
 			risky = []
 			for pic in screens:
@@ -281,6 +282,29 @@ class Commands:
 		except Exception as e:
 			print(e)
 			await ctx.send('VN no found')
+
+	@bot.command(pass_context=True)
+	async def xiii(ctx, char, move):
+		channel = ctx.message.channel
+
+		frames = Framedata.search("xiii", char, move)
+		startup = frames["Startup"]
+		active = frames["Active"]
+		recovery = frames["Recovery"]
+		hit = frames["Hit"]
+		block = frames["Block"]
+
+		embed = discord.Embed(
+			title = char
+		)
+
+		embed.add_field(name='Move', value=move, inline=True)
+		embed.add_field(name='Active Frames', value=active, inline=True)
+		embed.add_field(name='Recovery Frames', value=recovery, inline=True)
+		embed.add_field(name='Hit Advantage', value=hit, inline=True)
+		embed.add_field(name='Block Advantage', value=block, inline=True)
+
+		await channel.send(embed=embed)
 
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
