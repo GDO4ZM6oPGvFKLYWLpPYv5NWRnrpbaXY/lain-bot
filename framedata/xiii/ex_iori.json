@@ -1,0 +1,431 @@
+[
+  {
+    "Command": ["cl.A", "cl.5A"],
+    "Startup": "4",
+    "Active": "3",
+    "Recovery": "9",
+    "Hit": "+3",
+    "Block": "+1"
+  },
+  {
+    "Command": ["st.A", "5A"],
+    "Startup": "6",
+    "Active": "3",
+    "Recovery": "6",
+    "Hit": "+6",
+    "Block": "+4"
+  },
+  {
+    "Command": ["cr.A", "2A"],
+    "Startup": "5",
+    "Active": "4",
+    "Recovery": "9",
+    "Hit": "+2",
+    "Block": "0"
+  },
+  {
+    "Command": ["cl.B", "cl.5B"],
+    "Startup": "5",
+    "Active": "6",
+    "Recovery": "5",
+    "Hit": "+4",
+    "Block": "+2"
+  },
+  {
+    "Command": ["st.B", "5B"],
+    "Startup": "6",
+    "Active": "4",
+    "Recovery": "10",
+    "Hit": "+1",
+    "Block": "-1"
+  },
+  {
+    "Command": ["cr.B", "2B"],
+    "Startup": "4",
+    "Active": "6",
+    "Recovery": "7",
+    "Hit": "+2",
+    "Block": "0"
+  },
+  {
+    "Command": ["cl.C", "cl.5C"],
+    "Startup": "3",
+    "Active": "7",
+    "Recovery": "14",
+    "Hit": "0",
+    "Block": "-2"
+  },
+  {
+    "Command": ["st.C", "st.5C"],
+    "Startup": "8",
+    "Active": "3",
+    "Recovery": "20",
+    "Hit": "-2",
+    "Block": "-4"
+  },
+  {
+    "Command": ["cr.C", "2C"],
+    "Startup": "6",
+    "Active": "4",
+    "Recovery": "19",
+    "Hit": "-2",
+    "Block": "-4"
+  },
+  {
+    "Command": ["cl.D", "cl.5D"],
+    "Startup": "7",
+    "Active": "5",
+    "Recovery": "15",
+    "Hit": "+1",
+    "Block": "-1"
+  },
+  {
+    "Command": ["st.D", "5D"],
+    "Startup": "9",
+    "Active": "4",
+    "Recovery": "17",
+    "Hit": "0",
+    "Block": "-2"
+  },
+  {
+    "Command": ["cr.D", "2D"],
+    "Startup": "6",
+    "Active": "7",
+    "Recovery": "34",
+    "Hit": "Knockdown",
+    "Block": "-22"
+  },
+  {
+    "Command": ["f.A", "6A"],
+    "Startup": "9",
+    "Active": "2",
+    "Recovery": "22",
+    "Hit": "-3",
+    "Block": "-5"
+  },
+  {
+    "Command": ["f.AA", "6AA"],
+    "Startup": "13",
+    "Active": "7",
+    "Recovery": "19",
+    "Hit": "-5",
+    "Block": "-7"
+  },
+  {
+    "Command": ["f.A.x", "6A.x"],
+    "Startup": "9",
+    "Active": "2",
+    "Recovery": "22",
+    "Hit": "-3",
+    "Block": "-5"
+  },
+  {
+    "Command": ["f.AA.x", "6AA.x"],
+    "Startup": "13",
+    "Active": "7",
+    "Recovery": "19",
+    "Hit": "-5",
+    "Block": "-7"
+  },
+  {
+    "Command": ["f.B", "6B"],
+    "Startup": "24",
+    "Active": "3",
+    "Recovery": "19",
+    "Hit": "-1",
+    "Block": "-3"
+  },
+  {
+    "Command": ["f.B.x", "6B.x"],
+    "Startup": "24",
+    "Active": "3",
+    "Recovery": "19",
+    "Hit": "-1",
+    "Block": "-3"
+  },
+  {
+    "Command": ["st.CD", "5CD", "CD"],
+    "Startup": "11",
+    "Active": "8",
+    "Recovery": "20",
+    "Hit": "Knockdown",
+    "Block": "-5"
+  },
+  {
+    "Command": ["qcf.A", "236A"],
+    "Startup": "16",
+    "Active": "-",
+    "Recovery": "31",
+    "Hit": "0",
+    "Block": "-3",
+    "Notes": "Advantage measured at closest range"
+  },
+  {
+    "Command": ["qcf.C", "236C"],
+    "Startup": "13",
+    "Active": "-",
+    "Recovery": "39",
+    "Hit": "-8",
+    "Block": "-11"
+  },
+  {
+    "Command": ["qcf.AC", "236AC"],
+    "Startup": "22",
+    "Active": "-",
+    "Recovery": "27",
+    "Hit": "+69",
+    "Block": "-2"
+  },
+  {
+    "Command": ["dp.A", "623A"],
+    "Startup": "6",
+    "Active": "12",
+    "Recovery": "29",
+    "Hit": "Knockdown",
+    "Block": "-23"
+  },
+  {
+    "Command": ["dp.C", "623C"],
+    "Startup": "6",
+    "Active": "18",
+    "Recovery": "41",
+    "Hit": "Knockdown",
+    "Block": "-36"
+  },
+  {
+    "Command": ["dp.AC", "623AC"],
+    "Startup": "4",
+    "Active": "10,(8),10,(11),18",
+    "Recovery": "44",
+    "Hit": "Knockdown",
+    "Block": "-39"
+  },
+  {
+    "Command": ["hcb.B", "63214B"],
+    "Startup": "20",
+    "Active": "7",
+    "Recovery": "35",
+    "Hit": "Knockdown",
+    "Block": "-19",
+    "Notes": "Activation box appears on frame 7~30; 49 total frames if attack doesn't activate; recovery on whiff after activation is 28"
+  },
+  {
+    "Command": ["hcb.D", "63214D"],
+    "Startup": "20",
+    "Active": "7",
+    "Recovery": "35",
+    "Hit": "Knockdown",
+    "Block": "-19",
+    "Notes": "Activation box appears on 7~41; 60 total frames if attack doesn't activate; recovery on whiff after activation is 28"
+  },
+  {
+    "Command": ["hcb.BD", "63214BD"],
+    "Startup": "8",
+    "Active": "6",
+    "Recovery": "32",
+    "Hit": "Knockdown",
+    "Block": "-18"
+  },
+  {
+    "Command": ["hcbf.A", "632146A", "6246A",
+    "hcbf.C", "632146C", "6246C"],
+    "Startup": "13",
+    "Active": "1",
+    "Recovery": "33",
+    "Hit": "+12",
+    "Block": "Unblockable"
+  },
+  {
+    "Command": ["hcbf.AC", "632146AC", "6246A"],
+    "Startup": "13",
+    "Active": "1",
+    "Recovery": "37",
+    "Hit": "+15",
+    "Block": "Unblockable"
+  },
+  {
+    "Command": ["qcb.A", "214A"],
+    "Startup": "9",
+    "Active": "3",
+    "Recovery": "22",
+    "Hit": "-4",
+    "Block": "-9"
+  },
+  {
+    "Command": ["qcb.A, qcb.A", "214A214A",
+    "qcb.Ax2", "214Ax2"],
+    "Startup": "9",
+    "Active": "3",
+    "Recovery": "25",
+    "Hit": "Knockdown",
+    "Block": "-10"
+  },
+  {
+    "Command": ["qcb.A, qcb.A, qcb.A", "214A214A214A",
+    "qcb.Ax3", "214Ax3"],
+    "Startup": "18",
+    "Active": "2",
+    "Recovery": "27",
+    "Hit": "Knockdown",
+    "Block": "-11"
+  },
+  {
+    "Command": ["qcb.C", "214C"],
+    "Startup": "15",
+    "Active": "3",
+    "Recovery": "25",
+    "Hit": "-7",
+    "Block": "-12"
+  },
+  {
+    "Command": ["qcb.C, qcb.C", "214C214C",
+    "qcb.Cx2", "214Cx2"],
+    "Startup": "12",
+    "Active": "3",
+    "Recovery": "28",
+    "Hit": "Knockdown",
+    "Block": "-13"
+  },
+  {
+    "Command": ["qcb.C, qcb.C, qcb.C", "214C214C214C",
+    "qcb.Cx3", "214Cx3"],
+    "Startup": "18",
+    "Active": "9",
+    "Recovery": "27",
+    "Hit": "Knockdown",
+    "Block": "-18"
+  },
+  {
+    "Command": ["qcb.AC", "214AC"],
+    "Startup": "13",
+    "Active": "3",
+    "Recovery": "19",
+    "Hit": "-1",
+    "Block": "-4"
+  },
+  {
+    "Command": ["qcb.AC, qcb.AC", "214AC214AC",
+    "qcb.ACx2", "214ACx2"],
+    "Startup": "11",
+    "Active": "3",
+    "Recovery": "28",
+    "Hit": "Knockdown",
+    "Block": "-13"
+  },
+  {
+    "Command": ["qcb.AC, qcb.AC, qcb.AC", "214AC214AC214AC",
+    "qcb.ACx3", "214ACx3"],
+    "Startup": "12",
+    "Active": "15",
+    "Recovery": "21",
+    "Hit": "Knockdown",
+    "Block": "-18"
+  },
+  {
+    "Command": ["qcfhcb.A", "qcfhcb.C",
+    "2363214.A", "2363214.C",
+    "23634.A", "23634.C"],
+    "Startup": "9",
+    "Active": "13",
+    "Recovery": "25",
+    "Hit": "Knockdown",
+    "Block": "-12"
+  },
+  {
+    "Command": ["qcfhcb.A, qcf.Ax4", "qcfhcb.A,qcf.Ax4",
+    "2363214.A,236Ax4", "2363214.c,236Cx4"],
+    "Startup": "6",
+    "Active": "1,(45),21,(52),12",
+    "Recovery": "-",
+    "Hit": "Knockdown",
+    "Block": "Unblockable"
+  },
+  {
+    "Command": ["qcfhcb.AC", "2363214.AC", "23634.AC"],
+    "Startup": "3",
+    "Active": "13",
+    "Recovery": "25",
+    "Hit": "Knockdown",
+    "Block": "-12"
+  },
+  {
+    "Command": ["dqcf.A", "qcfqcf.A", "214214A"],
+    "Startup": "5",
+    "Active": "10,(19),10",
+    "Recovery": "25",
+    "Hit": "Knockdown",
+    "Block": "-6"
+  },
+  {
+    "Command": ["dqcf.C", "qcfqcf.C", "214214C"],
+    "Startup": "11",
+    "Active": "10,(19),10",
+    "Recovery": "25",
+    "Hit": "Knockdown",
+    "Block": "-6"
+  },
+  {
+    "Command": ["qcbhcf.AC", "2141236.AC", "21416.AC"],
+    "Startup": "17",
+    "Active": "1",
+    "Recovery": "42",
+    "Hit": "Knockdown",
+    "Block": "Unblockable"
+  },
+  {
+    "Command": ["j.x"],
+    "Startup": "4(prejump frames)",
+    "Active": "-",
+    "Recovery": "1(landing frame)",
+    "Hitstun": "-",
+    "Blockstun": "-"
+  },
+  {
+    "Command": ["j.A", "j.5A"],
+    "Startup": "5(hop), 6(jump)",
+    "Active": "6(hop), 8(jump)",
+    "Recovery": "Until landing+1",
+    "Hitstun": "13",
+    "Blockstun": "13"
+  },
+  {
+    "Command": ["j.B", "j.5B"],
+    "Startup": "5",
+    "Active": "6(hop), 7(jump)",
+    "Recovery": "Until landing+1",
+    "Hitstun": "13",
+    "Blockstun": "13"
+  },
+  {
+    "Command": ["j.C", "j.5C"],
+    "Startup": "9",
+    "Active": "4",
+    "Recovery": "Until landing+1",
+    "Hitstun": "13",
+    "Blockstun": "16"
+  },
+  {
+    "Command": ["j.D", "j.5D"],
+    "Startup": "6",
+    "Active": "5",
+    "Recovery": "Until landing+1",
+    "Hitstun": "13",
+    "Blockstun": "16"
+  },
+  {
+    "Command": ["j.CD", "j.5CD"],
+    "Startup": "12(hop), 13(hop)",
+    "Active": "5(hop), 6(jump)",
+    "Recovery": "Until landing+1",
+    "Hitstun": "Knockdown",
+    "Blockstun": "19(hop), 23(jump)"
+  },
+  {
+    "Command": ["j.f.B", "j.6B"],
+    "Startup": "5",
+    "Active": "5",
+    "Recovery": "Until landing+1",
+    "Hitstun": "21",
+    "Blockstun": "19"
+  }
+]
