@@ -2,6 +2,7 @@ import youtube_dl
 import ffmpeg
 import discord
 from discord.ext import commands
+from discord.utils import get
 import random
 import sqlite3
 
@@ -12,6 +13,7 @@ from .safebooru import Safebooru
 from .anilist import Anilist
 from .vndb import Vndb
 from .framedata import Framedata
+from .radio import Radio
 
 bot = Client.bot
 
@@ -282,6 +284,87 @@ class Commands:
 		except Exception as e:
 			print(e)
 			await ctx.send('VN no found')
+
+	@bot.group()
+	async def radio(ctx):
+		if ctx.invoked_subcommand is None:
+				await ctx.send('Invalid radio command passed...')
+
+	@bot.command(pass_context=True)
+	async def start(ctx):
+		try:
+			# r/a/dio link
+			url = 'https://stream.r-a-d.io/main.mp3'
+
+			# get voice channel
+			channel = ctx.author.voice.channel
+			if channel != None:
+				await ctx.send('Joining')
+
+				# join channel
+				vc = await channel.connect()
+				
+				# play music
+				Radio.players[ctx.guild.id] = vc
+				vc.play(discord.FFmpegPCMAudio(url), after=lambda e: print('done', e))
+		except AttributeError as a:
+			print(a)
+			await ctx.send('User is not in a channel.')
+		except Exception as e:
+			print(e)
+			await ctx.send('Unexpected error')
+		
+	@radio.command(pass_context=True)
+	async def info(ctx):
+		r = Radio.information()
+		try:
+			# variables
+			main = r['main']
+			song = main['np']
+			q = main['queue']
+			djname = main['dj']['djname']
+			bitrate = str(main['bitrate'])
+			listeners = str(main['listeners'])
+
+			embed = discord.Embed(
+					title = 'R/a/dio Information',
+					color = discord.Color.red(),
+					url = 'https://r-a-d.io/'
+				)
+			
+			# now playing
+			embed.add_field(name='Now Playing', value=song, inline=False)
+
+			# queued songs
+			i = 1
+			out = ''
+			for s in q:
+				out += str(i) + '. ' + s['meta'] + '\n'
+				i += 1
+			embed.add_field(name='Queue', value=out, inline=False)
+			
+			embed.set_footer(text='DJ: {0}, Listeners: {1}, Bitrate: {2}'.format(djname, listeners, bitrate))
+
+			await ctx.send(embed=embed)
+		except:
+			await ctx.send('Error retrieving data')
+
+	@radio.command(pass_context=True)
+	async def stop(ctx):
+		try:
+			channel = ctx.author.voice.channel
+			voice = get(bot.voice_clients, guild=ctx.guild)
+
+			if voice and voice.is_connected():
+				await voice.disconnect()
+			else:
+				await ctx.send('Not connected to a voice channel')
+		except AttributeError as a:
+			print(a)
+			await ctx.send('Not in a voice channel')
+		except Exception as e:
+			print(e)
+			await ctx.send('Unexpected error')
 
 	@bot.command(pass_context=True)
 	async def xiii(ctx, char, move):
