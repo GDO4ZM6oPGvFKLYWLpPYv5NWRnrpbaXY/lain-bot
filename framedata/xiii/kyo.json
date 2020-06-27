@@ -1,10 +1,19 @@
 [
   {
-    "Command": "st.A",
+    "Command": ["st.A", "5A"],
     "Startup": "5",
     "Active": "4",
     "Recovery": "7",
     "Hit": "+4",
     "Block": "+2"
+  },
+  {
+    "Command": ["qcf.A", "236A"],
+    "Startup": "16",
+    "Active": "-",
+    "Recovery": "30",
+    "Hit": "+1",
+    "Block": "-2",
+    "Notes": "Advantage measured at closest range."
   }
 ]
