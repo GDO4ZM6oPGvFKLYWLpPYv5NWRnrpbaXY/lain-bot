@@ -1,7 +1,8 @@
 # Kotori Bot
 [![Discord invite](https://discordapp.com/api/guilds/554770485079179264/embed.png)](https://discord.gg/byDqmcX)
 
-A Discord bot designed for integration with websites such as AniList and Steam, to allow for personal features to be used on Discord chat servers. Invite the bot using this [link](https://discord.com/oauth2/authorize?client_id=703061485781385358&scope=bot)
+A Discord bot designed for integration with websites such as AniList, VNDB and Steam, to allow for personal features to be used on Discord chat servers. Invite the bot using this [link](https://discord.com/oauth2/authorize?client_id=703061485781385358&scope=bot)
+The bot also supports frame data for King of Fighters XIII, and more games will be supported down the line.
 
 ## Getting Started
 Run main.py, and provide a Discord Bot token either through a text file named "token.txt" or through the environment variable %BOT_TOKEN%. For more details [read the following](https://discord.com/developers/).
@@ -15,6 +16,7 @@ Run main.py, and provide a Discord Bot token either through a text file named "t
 * **graphene** - *2.1.8*
 * **fmmpeg-python** - *0.2.0*
 * **youtube_dl** - *2020.3.24*
+* **python_dotenv** - *0.13.0*
 
 ## Contributing
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
