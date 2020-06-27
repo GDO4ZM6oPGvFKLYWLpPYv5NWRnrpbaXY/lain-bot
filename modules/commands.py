@@ -312,7 +312,7 @@ class Commands:
 			await ctx.send('User is not in a channel.')
 		except Exception as e:
 			print(e)
-			await ctx.send('Unexpected error')
+			await ctx.send(f'Unexpected error: {e}')
 		
 	@radio.command(pass_context=True)
 	async def info(ctx):
