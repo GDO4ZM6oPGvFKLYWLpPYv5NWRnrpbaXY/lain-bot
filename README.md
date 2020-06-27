@@ -22,8 +22,8 @@ Run main.py, and provide a Discord Bot token either through a text file named "t
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
 
 ## Authors
-* **Tatsu Eliason** - *Initial work* - [SigSigSigurd](https://github.com/SigSigSigurd)
-* **Jay Russell** - *AniList API integration* - [Jay-Russell](https://github.com/Jay-Russell)
+* **Tatsu Eliason** - *Initial work + frame data integration* - [SigSigSigurd](https://github.com/SigSigSigurd)
+* **Jay Russell** - *AniList, VNDB API integration* - [Jay-Russell](https://github.com/Jay-Russell)
 
 See also the list of [contributors](https://github.com/SigSigSigurd/kotori-san-bot/contributors) who participated in this project.
 
