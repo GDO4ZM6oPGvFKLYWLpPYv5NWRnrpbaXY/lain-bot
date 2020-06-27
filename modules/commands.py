@@ -288,21 +288,28 @@ class Commands:
 		channel = ctx.message.channel
 
 		frames = Framedata.search("xiii", char, move)
+		movename = frames["Command"][0]
 		startup = frames["Startup"]
 		active = frames["Active"]
 		recovery = frames["Recovery"]
 		hit = frames["Hit"]
 		block = frames["Block"]
+		try:
+			notes = frames["Notes"]
+		except:
+			notes = "null"
 
 		embed = discord.Embed(
-			title = char
+			title = "Frame data for "+movename+" of "+char.capitalize()
 		)
 
-		embed.add_field(name='Move', value=move, inline=True)
+		embed.add_field(name='Move', value=movename, inline=True)
 		embed.add_field(name='Active Frames', value=active, inline=True)
 		embed.add_field(name='Recovery Frames', value=recovery, inline=True)
 		embed.add_field(name='Hit Advantage', value=hit, inline=True)
 		embed.add_field(name='Block Advantage', value=block, inline=True)
+		if notes != "null":
+			embed.add_field(name='Block Advantage', value=notes, inline=True)
 
 		await channel.send(embed=embed)
 
