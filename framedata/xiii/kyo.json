@@ -135,7 +135,8 @@
     "Active": "-",
     "Recovery": "27",
     "Hit": "Knockdown",
-    "Block": "+5"
+    "Block": "+5",
+    "Notes": "Advantage measured at closest range."
   },
   {
     "Command": ["dp.A", "623A"],
