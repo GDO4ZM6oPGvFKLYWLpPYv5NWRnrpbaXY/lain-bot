@@ -290,7 +290,7 @@ class Commands:
 		if ctx.invoked_subcommand is None:
 				await ctx.send('Invalid radio command passed...')
 
-	@bot.command(pass_context=True)
+	@radio.command(pass_context=True)
 	async def start(ctx):
 		try:
 			# r/a/dio link
