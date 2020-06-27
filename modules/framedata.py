@@ -2,7 +2,8 @@ import json
 
 class Framedata():
     def search(game, char, move):
-        with open("/frame_data/"+game+"/"+char+".json", "r") as frame_json:
+        path = "./frame_data/"+game+"/"+char+".json"
+        with open(path, "r") as frame_json:
             json_data = json.load(frame_json)
         for i in json_data:
             if i["Command"] == move:
