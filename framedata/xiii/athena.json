@@ -212,7 +212,7 @@
     "Notes": "17 fixed frames of recovery on block"
   },
   {
-    "Command": ["qcb+BD", "qcb.BD" "214BD"],
+    "Command": ["qcb+BD", "qcb.BD", "214BD"],
     "Startup": "11",
     "Active": "20",
     "Recovery": "29",
