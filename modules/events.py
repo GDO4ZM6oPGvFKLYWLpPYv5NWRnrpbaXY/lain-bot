@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 import asyncio
 import sqlite3
 import json
+import os
 from os import path
 
 from .client import Client
@@ -50,19 +51,19 @@ class Events:
 		for guild in bot.guilds:
 			serverID = str(guild.id)
 			serverName = str(guild.name)
-			if path.exists("./config/"+serverID+".json"):
+			if path.exists(os.getcwd()+"/config/"+serverID+".json"):
 				Config.cfgUpdate(serverID, "Name", serverName)
 			else:
-				with open("./config/"+serverID+".json", 'x') as server_json:
+				with open(os.getcwd()+"/config/"+serverID+".json", 'x') as server_json:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
 		for user in bot.users:
 			userID = str(user.id)
 			userName = str(user.name)
-			if path.exists("./user/"+userID+".json"):
+			if path.exists(os.getcwd()+"/user/"+userID+".json"):
 				User.userUpdate(userID, "Name", userName)
 			else:
-				with open("./user/"+userID+".json", 'x') as user_json:
+				with open(os.getcwd()+"/user/"+userID+".json", 'x') as user_json:
 					json_data = {"Name": userName}
 					json.dump(json_data, user_json)
 
