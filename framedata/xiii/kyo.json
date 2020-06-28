@@ -260,7 +260,7 @@
     "Block": "-"
   },
   {
-    "Command": ["qcbhcf+AC", "qcbhcf.AC"
+    "Command": ["qcbhcf+AC", "qcbhcf.AC",
     "2141236AC",
     "21416AC"],
     "Startup": "9",
