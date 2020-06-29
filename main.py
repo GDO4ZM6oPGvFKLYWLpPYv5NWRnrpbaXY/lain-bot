@@ -9,6 +9,7 @@ from modules.config import Config
 from modules.commands import Commands
 from modules.events import Events
 from modules.safebooru import Safebooru
+from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
 bot = Client.bot
 
