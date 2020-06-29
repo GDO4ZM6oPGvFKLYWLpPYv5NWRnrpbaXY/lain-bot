@@ -12,6 +12,7 @@ class Anilist(graphene.ObjectType):
 	            id
 	            title {
 	                romaji
+					english
 	            }
 	            status
 	            description(asHtml: $asHtml)
@@ -55,7 +56,7 @@ class Anilist(graphene.ObjectType):
 		source = 'https://graphql.anilist.co'
 		
 		response = requests.post(source, json={'query': query, 'variables': variables})
-		result = response.json();
+		result = response.json()
 		
 		if response.status_code == 200:
 			return result
@@ -99,7 +100,7 @@ class Anilist(graphene.ObjectType):
 		url = 'https://graphql.anilist.co'
 		
 		response = requests.post(url, json={'query': query, 'variables': variables})
-		result = response.json();
+		result = response.json()
 
 		if response.status_code == 200:
 			return result
