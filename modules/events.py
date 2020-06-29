@@ -54,7 +54,7 @@ class Events:
 			if path.exists(os.getcwd()+"/config/"+serverID+".json"):
 				Config.cfgUpdate(serverID, "Name", serverName)
 			else:
-				with open(os.getcwd()+"/config/"+serverID+".json", 'x') as server_json:
+				with open(os.getcwd()+"/config/"+serverID+".json", "x") as server_json:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
 		for user in bot.users:
@@ -63,7 +63,7 @@ class Events:
 			if path.exists(os.getcwd()+"/user/"+userID+".json"):
 				User.userUpdate(userID, "Name", userName)
 			else:
-				with open(os.getcwd()+"/user/"+userID+".json", 'x') as user_json:
+				with open(os.getcwd()+"/user/"+userID+".json", "x") as user_json:
 					json_data = {"Name": userName}
 					json.dump(json_data, user_json)
 
