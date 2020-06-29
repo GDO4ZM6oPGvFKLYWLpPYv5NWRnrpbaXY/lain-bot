@@ -37,7 +37,7 @@ class EsportsClub:
                 if "@wisc.edu" in content:
                     verificationCode = ''.join((random.choice(asciiChars) for i in range(4)))
                     print('Verification Code:'+verificationCode)
-                    User.userUpdate(str(userID), "VerificationCode", verificationCode)
+                    User.userUpdate(str(user.id), "VerificationCode", verificationCode)
                     print(content)
 
                     subject = "Esports Club Verification Code"
