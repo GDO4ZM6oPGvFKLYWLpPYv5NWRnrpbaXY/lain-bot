@@ -56,6 +56,10 @@ class EsportsClub:
                         server.ehlo()
                         server.starttls()
                         server.login(gmail_user, gmail_pass)
+                    except:
+                        await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
+                        print("Error with gmail login!")
+                    try:
                         server.sendmail(gmail_user, content, message)
                         server.close()
 
@@ -64,7 +68,7 @@ class EsportsClub:
                         print("Email sent to "+content)
                     except:
                         await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
-                        print("Error with gmail login!")
+                        print("Error with sending the email!")
                 else:
                     await user.send("Be sure to use your ``@wisc.edu`` email address!")
             elif subcommand == "code ":
