@@ -130,5 +130,7 @@ dmypy.json
 
 # custom
 config.json
-config/
-user/
+config/*
+!config/.gitkeep
+user/*
+!user/.gitkeep

@@ -58,6 +58,7 @@ class EsportsClub:
                         server.close()
 
                         await user.send("An email has been sent to "+content+" with additional instructions!")
+                        User.userUpdate(str(user.id), "Email", content)
                         print("Email sent to "+content)
                     except:
                         await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
