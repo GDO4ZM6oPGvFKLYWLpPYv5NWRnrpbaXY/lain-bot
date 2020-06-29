@@ -13,8 +13,8 @@ from .events import Events
 from .safebooru import Safebooru
 from .anilist import Anilist
 from .vndb import Vndb
-from modules.fighting.framedata import Framedata
 from .radio import Radio
+from modules.fighting.fginfo import FgInfo
 
 bot = Client.bot
 
@@ -376,7 +376,7 @@ class Commands:
 	async def fd(ctx, char, move):
 		channel = ctx.message.channel
 
-		frames = Framedata.search("xiii", char, move)
+		frames = FgInfo.searchFd("xiii", char, move)
 		movename = frames["Command"][0]
 		startup = frames["Startup"]
 		active = frames["Active"]
@@ -425,7 +425,27 @@ class Commands:
 
 	@xiii.command(pass_context=True)
 	async def char(ctx, char):
-		await ctx.send("null")
+		channel = ctx.message.channel
+		info = FgInfo.searchChar("xiii", char)
+
+		name = info["Name"]
+		charimage = info["Image"]
+		bio = info["Bio"]
+		gameplay = info["Gameplay"]
+		dreamcancel = info["DreamCancel"]
+		shoryuken = info["Shoryuken"]
+
+		embed = discord.Embed(
+			title = name,
+		)
+
+		embed.set_image(url=charimage)
+		embed.add_field(name='Biography', value=bio, inline=False)
+		embed.add_field(name='Gameplay', value=gameplay, inline=False)
+		embed.add_field(name='Dream Cancel Wiki Page', value=dreamcancel, inline=False)
+		embed.add_field(name='Shoryuken Wiki Page', value=shoryuken, inline=False)
+
+		await channel.send(embed=embed)
 
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
@@ -439,10 +459,6 @@ class Commands:
 		serverID = str(ctx.guild.id)
 		# result = Config.cfgRead(serverID, "Bot Channel")
 		await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
-
-	@bot.command(pass_context=True)
-	async def untala(ctx):
-		await ctx.send(file=discord.File('https://github.com/SigSigSigurd/kotori-san-bot/blob/master/assets/lou.gif'))
 
 # helper functions for vn and anilist search
 def shorten(desc):
