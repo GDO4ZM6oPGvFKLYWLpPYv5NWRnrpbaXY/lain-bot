@@ -5,6 +5,7 @@ from discord.ext import commands
 from discord.utils import get
 import random
 import sqlite3
+import os
 
 from .client import Client
 from .config import Config
@@ -12,7 +13,7 @@ from .events import Events
 from .safebooru import Safebooru
 from .anilist import Anilist
 from .vndb import Vndb
-from .framedata import Framedata
+from modules.fighting.framedata import Framedata
 from .radio import Radio
 
 bot = Client.bot
@@ -303,7 +304,7 @@ class Commands:
 
 				# join channel
 				vc = await channel.connect()
-				
+
 				# play music
 				Radio.players[ctx.guild.id] = vc
 				vc.play(discord.FFmpegPCMAudio(url), after=lambda e: print('done', e))
@@ -313,7 +314,7 @@ class Commands:
 		except Exception as e:
 			print(e)
 			await ctx.send(f'Unexpected error: {e}')
-		
+
 	@radio.command(pass_context=True)
 	async def info(ctx):
 		r = Radio.information()
@@ -331,7 +332,7 @@ class Commands:
 					color = discord.Color.red(),
 					url = 'https://r-a-d.io/'
 				)
-			
+
 			# now playing
 			embed.add_field(name='Now Playing', value=song, inline=False)
 
@@ -342,7 +343,7 @@ class Commands:
 				out += str(i) + '. ' + s['meta'] + '\n'
 				i += 1
 			embed.add_field(name='Queue', value=out, inline=False)
-			
+
 			embed.set_footer(text='DJ: {0}, Listeners: {1}, Bitrate: {2}'.format(djname, listeners, bitrate))
 
 			await ctx.send(embed=embed)
@@ -366,8 +367,13 @@ class Commands:
 			print(e)
 			await ctx.send('Unexpected error')
 
-	@bot.command(pass_context=True)
-	async def xiii(ctx, char, move):
+	@bot.group()
+	async def xiii(ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid xiii command passed...')
+
+	@xiii.command(pass_context=True)
+	async def fd(ctx, char, move):
 		channel = ctx.message.channel
 
 		frames = Framedata.search("xiii", char, move)
@@ -416,6 +422,10 @@ class Commands:
 			embed.add_field(name='Notes', value=notes, inline=True)
 
 		await channel.send(embed=embed)
+
+	@xiii.command(pass_context=True)
+	async def char(ctx, char):
+		await ctx.send("null")
 
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
