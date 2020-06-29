@@ -7,8 +7,8 @@ class Anilist(graphene.ObjectType):
 	def aniSearch(show):
 		# query of info we want from AniList
 		query = '''
-		query ($id: Int, $search: String, $asHtml: Boolean, $isMain: Boolean) {
-	        Media (id: $id, search: $search) {
+		query ($id: Int, $search: String, $asHtml: Boolean, $isMain: Boolean, $format_not_in: [MediaFormat]) {
+	        Media (id: $id, search: $search, format_not_in: $format_not_in) {
 	            id
 	            title {
 	                romaji
@@ -50,7 +50,8 @@ class Anilist(graphene.ObjectType):
 		variables = {
 		    'search': show,
 		    'asHtml': False,
-		    'isMain': True
+		    'isMain': True,
+			'format_not_in': ['MANGA', 'NOVEL', 'ONE_SHOT']
 		}
 
 		source = 'https://graphql.anilist.co'
