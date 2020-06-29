@@ -18,9 +18,11 @@ class FgInfo():
     def searchChar(game, char: str):
         with open(os.getcwd()+"/modules/fighting/"+game+"/characters.json", "r") as char_json:
             json_data = json.load(char_json)
+            charlower = char.lower()
         for i in json_data:
             #if name.lower().startswith(char):
-            name = i["Character"]
-            if name.lower() == char.lower():
-                return_char = i
-                return return_char
+            for name in i["Character"]:
+                namelower = name.lower()
+                if namelower.startswith(charlower):
+                    return_char = i
+                    return return_char

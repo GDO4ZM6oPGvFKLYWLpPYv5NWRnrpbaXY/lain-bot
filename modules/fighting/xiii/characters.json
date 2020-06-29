@@ -1,11 +1,326 @@
 [
   {
-    "Character": "Kyo",
+    "Character": ["kyo_kusanagi", "rekka_kyo"],
     "Name": "Kyo Kusanagi",
     "Image": "https://dreamcancel.com/wiki/images/0/09/Kyoxiii.jpg",
     "Bio": "Kyo Kusanagi is the main protagonist in SNK's The King of Fighters video game series. He was first introduced in The King of Fighters '94 as the leader of the Japan team. He is the rival of Iori Yagami. (SNK Wiki)",
     "Gameplay": "Kyo is featured as the well rounded character that has all the fundamental tools to win. His exceptional ability to go on offense with a fast hop with a great downward hitting jump-in coupled with fast, low-hitting attacks that hitconfirm into knockdown combos makes his offensive game quite scary. As a contrast, he is also fitted with the tools to be able to keep out opponents with long reaching horizontal jumping attacks, projectiles, and great grounded normal attacks. He isn't the best in either fields but ranks high in either style of play and putting both playstyles together makes him to be force to be reckoned with. (Shoryuken Wiki)",
     "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Kyo_Kusanagi",
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kyo"
+  },
+  {
+    "Character": ["andy_bogard"],
+    "Name": "Andy Bogard",
+    "Image": "https://dreamcancel.com/wiki/images/7/74/Andyxiii.jpg",
+    "Bio": "Andy Bogard is a video game character in both the Fatal Fury and The King of Fighters series by SNK. He is Terry Bogard's younger brother. His official nickname is The Human Weapon or Whole Body Weapon (Zenshin Kyoukin). (SNK Wiki)",
+    "Gameplay": "Andy is easily able to hold his own against any character in the game. He's able to control the pace of the fight quite well, and can position himself wherever he pleases with his set of moves that give him high mobility, invulnerability, pressure or zoning. He's able to suit nearly any playstyle, as he's one of the better characters in nearly every aspect of the game, with a set of meterless tools that make him more versatile than practically any other character. He is truly meant to be on first in a team, as he's got all of his tools already without meter, and having additional meter mostly just gives him slightly better damage. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Andy_Bogard",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Andy"
+  },
+  {
+    "Character": ["ash_crimson"],
+    "Name": "Ash Crimson",
+    "Image": "https://dreamcancel.com/wiki/images/7/78/Ashxiii.jpg",
+    "Bio": "Ash Crimson is the protagonist of the story arc TALES OF ASH (KOF 2003-KOF XIII); his first appearance is in The King of Fighters 2003 as the leader of the New Hero Team. His official nickname is Sneering Firelight (Azawarau Hokage) or The Sneering Blaze. (SNK Wiki)",
+    "Gameplay": "Ash's play style is something of an enigma. He predominantly relies on charge moves but also has a nice set of moves to zone and combo with. His zoning options revolve around Ventose, Genee, and Thermidor. He can use Nivose, Sans Culotte and Pluivose for anti-airs. His Sans Culotte allows him to do a free style combo to his opponent because of temporary zero charge time, also allowing him to combo into command attacks and, if that isn't enough, he can follow-up with his Germinal DM to seal all his opponents gauges for a brief period. His play-style is good for people who like to zone and poke their opponents; however, good precision and timing is required for his juggle and Sans Culotte custom combos. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Ash_Crimson",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Ash"
+  },
+  {
+    "Character": ["athena_asamiya"],
+    "Name": "Athena Asamiya",
+    "Image": "https://dreamcancel.com/wiki/images/1/12/Athenaxiii.jpg",
+    "Bio": "Athena Asamiya is a character originally from Psycho Soldier and a distant relative and modern-day counterpart of Princess Athena from Athena. She later appears as a regular fighter in The King of Fighters series; she is perhaps best known for changing her outfit and hair style for virtually every main installment. (SNK Wiki)",
+    "Gameplay": "Athena's play-style combines the elements of powerful zoning, speed, and pokes. Her psycho ball is one of the best projectiles in the game because of it's speed variations and her quick recovery, using it with her Psycho Teleport she can switch sides with the opponent or go right in their face to quickly throw them off. Against projectiles Athena can simply use psycho reflector to reflect them back towards her opponent but also continue to zone them with psycho ball again. Her okizeme/wake-up options are quite strong thanks to her normal throw and her Super Psychic Throw which provides excellent space for many different setups. Overall, Athena is a good character for both beginners and advanced players who are looking for a fast, quick character who has excellent zoning capabilities, decent corner pressure, and good okizeme from her throws. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Athena_Asamiya",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Athena"
+  },
+  {
+    "Character": ["benimaru_nikaido"],
+    "Name": "Benimaru Nikaido",
+    "Image": "https://dreamcancel.com/wiki/images/7/71/Benimaruxiii.jpg",
+    "Bio": "Benimaru Nikaido is a The King of Fighters character and one of Kyo Kusanagi's friends. His straight hair stays up during fights due to a rather exaggerated case of electrostatics. His official nickname is The Shooting Star. (SNK Wiki)",
+    "Gameplay": "Benimaru's ground game is exceptionally good with his good standing and crouching normals, and he can control and maintain space in the air with his aerial Raijinken's, his annoying jump D and air throw. His command throw, the Benimaru Collider can create some very nasty okizeme mix-ups, and his normal throw in the corner can be juggled after to inflict major damage. Benimaru's long range capabilities are a little weak, but he can threaten projectiles with his EX Benimaru Lancer and his NeoMax. His meter and drive usage is very economical and dish out heavy damage in many of his combos, especially in the corner. Overall, Benimaru is a very well rounded character that can fit in almost any team position, and is great for beginners learning the game, and as well for seasoned veterans who are interested in mastering his more difficult combos. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Benimaru_Nikaido",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Benimaru"
+  },
+  {
+    "Character": ["chin_gentsai"],
+    "Name": "Chin Gentsai",
+    "Image": "https://dreamcancel.com/wiki/images/c/cc/Chin_XIII.jpg",
+    "Bio": "Chin Gentsai is one of the original members of the Psycho Soldier Team, which first appeared in The King of Fighters '94. His character's age and fighting style were considered to be essential for the series when developers were selecting fighters for the roster. He is most likely modeled on Yuen Siu Tien's character in the martial arts film, Drunken Master. His official nickname is The Drunken Fist Master. (SNK Wiki)",
+    "Gameplay": "First of all, why Chin?  He's the only small character in XIII yet he doesn't have the typical advantages of being small which is annoying.  The purpose, is to annoy the hell out of people with the limited, but well thought-out moveset he has.  Although, he mainly has one or two combos with many variations to it, he has many combo starters as mentioned in the combo section (Overhead, d.B combos, hcf+K, df.B as an anti air, counter and so forth). Master him and people will stop underestimating \"just the gimmicky old guy\". The biggest threat about Chin is that he makes the opponents have to play Chin's game. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Chin_Gentsai",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Chin"
+  },
+  {
+    "Character": ["clark_still"],
+    "Name": "Clark Still",
+    "Image": "https://dreamcancel.com/wiki/images/8/80/Clarkxiii.jpg",
+    "Bio": "Clark Still, also mistakenly known as Clark Steel in some translations, is a character from the Ikari Warriors, Metal Slug and The King of Fighters video game series. In Gamest's 1997 Heroes Collection, Clark was voted as the staff's twenty-seventh favorite character. He shared the spot with Kizuna Encounter character, Kim Sue Il. His official nickname is Tough & Cool. (SNK Wiki)",
+    "Gameplay": "Making a return to KOFXIII, Clark Still has become a rather interesting and powerful character to utilize. Clark is one of the residential grappling characters so to speak, having very great range on his normals, damaging juggle combos, and most noticeably, very devastating grabs. Clark's Super Argentine Backbreaker (hcf+K) have unique purposes to them, depending on which kick button is pressed. If the B is used, Clark will have a lot of start up but he will also have autoguard. This version can be used for placing the opponent into a really bad situation for recklessly attacking. The D version of hcf+K is a 1 frame command grab that can be comboed into or used as a powerful option for punishing other characters moves after blocking. Another aspect to highlight is that Clark hits rather hard, especially when it comes to juggles combos and punishment. Clark's A version Gatling Attack can be used to launch the opponent into the air for elaborate combos if the player wishes to hit confirm into the move or punish with it, but it is unsafe on block. The EX version will blow up players for using badly timed projectiles. Clark is a very powerful character with a relatively simple game plan. Clark also can make use of CD attack pressure quite easily, making him very scary from up close, especially as far as the corner pressure is concerned. It is important for the player to maximize on their combo damage, punishes and command grab usage when they are applicable in the match. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Clark_Still",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Clark"
+  },
+  {
+    "Character": ["duo_lon", "duolon"],
+    "Name": "Duo Lon",
+    "Image": "https://dreamcancel.com/wiki/images/2/2c/DuoLonxiii.jpg",
+    "Bio": "Duo Lon is a video game character in The King of Fighters series, who made his first appearance in The King of Fighters 2003 as a member of the year's Hero Team. He is the first male character from The Flying Brigands to resemble a handsome man, and the first to sport an ornate design. His overall look was based on the title character from the anime Vampire Hunter D. His official nickname is The Silent Assassin. (SNK Wiki)",
+    "Gameplay": "Duo Lon is one of the more versatile players in the XIII roster. His gameplay revolves around his pokes, fast mix up with Rekkas (Suteki Juryu, qcf+P x3), and his teleports. With the introduction of Ex specials in XIII, his (air) f+A and (air) f+B command/special attack become very useful for setting up mixups. He's typically a rush down character but at the same time he can zone his opponent well with his f+A ground and air version. His f+B also prevents opponents from turtling him from a far. Despite having overall a low damage output and losing his other variation of Rekkas from '03 and XI, he's still a very capable silent assasin like his official nickname suggests. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Duo_Lon",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Duo_Lon"
+  },
+  {
+    "Character": ["elisabeth_branctorche", "elizabeth_branctorche"],
+    "Name": "Elisabeth Branctorche",
+    "Image": "https://dreamcancel.com/wiki/images/b/b1/Elisabethxiii.jpg",
+    "Bio": "Elisabeth Blanctorche is one of three original characters debuting in The King of Fighters XI. Her official nickname is Controller of the white light. (SNK Wiki)",
+    "Gameplay": "Elisabeth's tools are pretty straightforward but quite effective for going on the offense, controlling the neutral game, and frustrating zoning characters. Known for her fast Grand Rafale anywhere juggle DM which can be landed 1,001 ways though the damage has been slightly toned down for the console release of XIII. In spite of her slight downtoning, she still manages to rival Shen in terms of damage and her utility is even stronger now with her new EX command dashes. Elisabeth's a mid-level execution character, though her reversals aren't very reliable and so players should be able to block with confidence and poise. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Elisabeth_Branctorche",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Elisabeth"
+  },
+  {
+    "Character": ["goro_daimon", "daimon"],
+    "Name": "Goro Daimon",
+    "Image": "https://dreamcancel.com/wiki/images/e/e1/Daimonxiii.jpg",
+    "Bio": "Goro Daimon is a character who debuted as a member to the Hero Team in The King of Fighters '94, along with Kyo Kusanagi and Benimaru Nikaido. His character was created to add a practitioner of Judo to the cast, and many elements from his original designs, such as his geta and his victory cries, remained for his final look. In Gamest's 1997 Heroes Collection, Daimon was voted as the staff's forty-fourth favorite character. He shared the spot with Street Fighter character, Alex. His official nickname is The Rising Storm. and Over-Towering Mountain Storm. (SNK Wiki)",
+    "Gameplay": "Initially he may be a plain looking character compared to the rest of the KOF cast, Daimon has demonstrated spacial dominance and a frightening mix-ups based around his grappling game. He was a top tier monster in The King of Fighters 98 and he returns as a very competent grappling character. Some fans even regard Daimon's defense/turtling game to be called the \"Wall of Goro\" with his innate ability to keep out with his quick, long limbs. Up close, his ability to just trap the opponent in the corner is fearsome with his good aerial normals during his hop and his ability to mask tick throw attempts with chunky attack strings. Together with the buffs he received in the console version of The King of Fighters XIII, Daimon is certainly a force to be reckoned with. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Goro_Daimon",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Daimon"
+  },
+  {
+    "Character": ["hwa_jai"],
+    "Name": "Hwa Jai",
+    "Image": "https://dreamcancel.com/wiki/images/6/64/HwaJaixiii.jpg",
+    "Bio": "Hwa Jai is a character from the Fatal Fury series and The King of Fighters series. He first appeared in the original Fatal Fury game and appeared as a playable character once more in The King of Fighters XIII. The producer for KoF XIII stated that he was added to be the \"surprise character\" for KoF fans, keeping true to their theme of not always adding popular characters for the newer cast's balance. He thought Hwa Jai would be one of the most interesting characters for an appearance in KoF, due to his detailed background history and previously lone playable appearance.",
+    "Gameplay": "Hwa Jai is an extremely offensively oriented character. If played properly he should cause opponents to be constantly alert and afraid, since he has a tool to punish every single option in the game. Essentially Hwa is one of the scariest characters in the game when it comes to cracking defenses and landing hits against turtles, if not the single scariest. He is also one of the harder characters to use well, but the rewards are very obvious to those willing to practice with him for a long time. Unfortunately, he has to power up several times per round. His true strength lies in his Drink Pink state, which gives him several new tools as well as forcing the enemy to be extremely cautious, as basically any hit that Hwa lands can be turned into an extremely powerful combo. You will want to make a mental note while time is temporarily stopped when Hwa uses his drink DM of how many seconds are left on the round timer. Just remember that in 15 seconds, whatever combo you may be doing will have to be cut short. For example, if the there are 60 seconds left on the clock when you use Hwa's drink DM, then you should be ready to lose your powerup when there are only 45 seconds left in the round. Luckily Hwa can stop his combos at any point and do a DM finisher. Take a quick look at the timer when your combo is starting and just make sure that you have at least 3 or 4 seconds left before the drink wears off, or else cut your combo short and do qcfx2+B/D if you can afford the meter. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Hwa_Jai",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Daimon"
+  },
+  {
+    "Character": ["iori_yagami"],
+    "Name": "Iori Yagami",
+    "Image": "https://dreamcancel.com/wiki/images/1/12/Ioriclaw.jpg",
+    "Bio": "Iori Yagami is a character who made his first appearance in The King of Fighters '95. He is a central recurring character, and the initial enemy (and eventual rival) of Kyo Kusanagi. (SNK Wiki)",
+    "Gameplay": "Traditionally, Iori has the been the kind of character that has mostly every type of tool at his disposal. With the change of his moveset in King of Fighters XII and XIII, Iori has been focused into rushdown character with stronger \"inside\" mix-ups at the expense of his ability to zone and space against opponents with his projectile. Overall, his normals have remained the same and his close game is complemented with a new, better overhead attack and an Orochi Yashiro-like (from King of Fighters 97/98) command grab that gives Iori hit-reset mix ups that are hard to read. To newer players, one could liken this kind of mix up to Sakura's EX Shunpukyaku hit-reset mix up in the Street Fighter IV series, but with heightened dynamics. Essentially, Iori is dangerous up close and is able to confirm into easy, damaging combos from a single mix-up all while retaining some form of defense with his good grounded and aerial normal attacks. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Iori_Yagami",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Iori"
+  },
+  {
+    "Character": ["joe_higashi"],
+    "Name": "Joe Higashi",
+    "Image": "https://dreamcancel.com/wiki/images/3/3d/Joe_XIII.jpg",
+    "Bio": "Joe Higashi is a character in both the Fatal Fury and The King of Fighters series, used mainly for comic relief. He tried to date Lilly Kane, a relationship which her brother greatly disapproves, although it's implied from within the Fatal Fury Team's backstory in The King of Fighters XIV that he got rejected due to his incident with a drag queen at the end of KOF XIII. His official nickname is The Young Champ of Muay Thai. (SNK Wiki)",
+    "Gameplay": "The Hot-blooded Muay Thai champ is back again. Joe's one of the stronger offensive/spacial control characters in XIII with large, full-screen projectiles that allow him to control a huge amount of the playing space. His close game is stronger than ever with great frame traps, hit-confirms and corner damage, while his mid-distance normals work great for passive offense or defense, especially for keeping an opponent cornered. Joe's an alright choice for a beginning zoning character as well as being a great character for spicy, seasoned players, but keep in mind that Joe requires some executional feats to get the most damage out of his combos. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Joe_Higashi",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Joe"
+  },
+  {
+    "Character": ["k'", "kdash", "k_dash"],
+    "Name": "K'",
+    "Image": "https://dreamcancel.com/wiki/images/2/26/K%27xiii.jpg",
+    "Bio": "K', (pronounced as \"K Dash\"), sometimes known as \"K Prime\", is a character who debuted as the leader of the Hero Team in The King of Fighters '99. He stars as the reluctant hero in the NESTS saga of the series, often letting his partner Maxima handle any social necessities in his stead. He is the protagonist of the NESTS Saga (KOF 99-KOF 2001). To contrast the previous protagonist of the series, K' was made to be the \"dark hero\".",
+    "Gameplay": "Sporting classy new sunglasses and the continued favouritism of the new SNK', K' returns to KoF once more. With decent damage off practically everything, insane corner carry, anywhere juggles, easy crossups, good zoning and great meter building potential, K' is one of the better characters in XIII. K's versatility in the front of almost any situation means he can find a slot in basically any team, though he is most commonly used as a battery due to his damage output not requiring meter, and continuous use of Ein Trigger being so safe. However, K' has rewarding powerful combos for those that master him, meaning he's a character that can appeal to anyone. Using K' effectively will take a moderate amount of execution overall, as well as solid understanding of how to adapt your playstyle to each situation in a match as is appropriate.",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/K%27",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/K%27"
+  },
+  {
+    "Character": ["kim_kaphwan", "kaphwan_kim"],
+    "Name": "Kim Kaphwan",
+    "Image": "https://dreamcancel.com/wiki/images/b/b7/Kimxiii.jpg",
+    "Bio": "Kaphwan Kim, usually written surname first as Kim Kaphwan, is a character in both the Fatal Fury and The King of Fighters series by SNK. Kim is a master of Taekwondo and considers himself a fighter of justice. Kim's original teammates, Chang Koehan and Choi Bounge, were to be teamed up with another dangerous criminal character to form the \"Fugitive Team\", but Kim was added to the team instead. His official nickname is The Crown Jewel of Taekwondo.",
+    "Gameplay": "Tae Kwon Do master and vigilante of justice, Kim continues his perfect KOF attendance legacy. While Kim is an solid offensive character with high and low pressure, and a multitude of hard knockdowns leading to tricky mixups, he's also being able to cancel into his safe special moves to continually lock the opponent down and force a mistake, all the while building meter at a fast rate. In addition to being incredibly safe, Kim's special moves Drive Cancel very naturally, making Kim great for getting the feel for the new subsystems of KOF XIII. Good control of Kim takes a moderate level of execution from a player as well as strong knowledge of how to apply close range pressure to take advantage of Kim's normals, frametraps, crossups, and guard damage output. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Kim_Kaphwan",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kim"
+  },
+  {
+    "Character": ["king"],
+    "Name": "King",
+    "Image": "https://dreamcancel.com/wiki/images/0/00/Kingxiii.jpg",
+    "Bio": "King is a character in both Art of Fighting and The King of Fighters series. She debuted in the original Art of Fighting as the sole playable female character. Her official nickname is The Beautiful Kick's Illusion. (SNK Wiki)",
+    "Gameplay": "King is one of the more zoning-oriented characters in XIII due to her strong normals, but she has the tools to press the advantage on a knockdown. Her jump-ins are now more relevant from a hop compared to previous games, her hit-confirms are easy, and with meter she has multiple strong anti-air options. Overall King requires a good knowledge of controlling space with normals, the caution to apply passive-aggressive rushdown, and solid blocking fundamentals to find a way out of enemy rushdown.",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/King",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/King"
+  },
+  {
+    "Character": ["kula_diamond"],
+    "Name": "Kula Diamond",
+    "Image": "https://dreamcancel.com/wiki/images/7/7b/Kula_XIII.jpg",
+    "Bio": "Kula Diamond first appeared as the sub-boss in The King of Fighters 2000. She enters as a normal participant in subsequent appearances. Her original hair color is strawberry blonde (confirmed after the game's release), but changes to a light blue when she activates her powers. She's often seen with her companions, Diana, Foxy and Candy Diamond. Her official nickname is Ice Doll. (SNK Wiki)",
+    "Gameplay": "Quite the fan favorite, Kula makes her return in the latest installment of KOF. Originally designed as the anti-K' in KOF 2000, Kula shares several \"sister\" moves and normals to her counterpart K'. She's a solid character to have on point due to her fast meter building and that she doesn't rely on HD combos for large damage output, but she is a good character in any place on a team. Kula's game plan revolves around a mixture of rushdown and smartly spaced pokes, as her poke-game is extremely good and allows her to take control of a match. (Shoryuken)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Kula_Diamond",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kula"
+  },
+  {
+    "Character": ["leona_heidern"],
+    "Name": "Leona Heidern",
+    "Image": "https://dreamcancel.com/wiki/images/f/fb/Leonaxiii.jpg",
+    "Bio": "Leona, also known under her codename Leona Heidern, is a character introduced in The King of Fighters '96 as the new member to the Ikari Team. Her official nickname is The Silent Soldier. (SNK Wiki)",
+    "Gameplay": "This woman of few words is quite an intense personality. Leona is a character that commands the air space with air throw option selects, great air-to-air normals, and more or less the best air-to-air and air-to-ground Desperation Move in the game. She is supplemented with good grounded normal attacks for aerial control, but she lacks a really deep jump-in attack for hopping pressure compared to rushdown oriented characters. Thus, she is more optimized for good defensive play as well as offensive play in the manner of controlling the opponent's options rather than trying to break their defenses. But in lieu of hopping pressure, she has some devastating instant overhead attacks that combo into special attacks and Desperations Moves for the knockdown (though unsafe on block if she reads the opponent incorrectly.) Leona is a great character that fits with those that really like to zone and space while having a few aces up their sleeves. (Shoryuken)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Leona_Heidern",
+    "Shoryuken": ""
+  },
+  {
+    "Character": ["mai_shiranui"],
+    "Name": "Mai Shiranui",
+    "Image": "https://dreamcancel.com/wiki/images/4/4a/Maixiii.jpg",
+    "Bio": "Mai Shiranui is a character from both the Fatal Fury and The King of Fighters series. Her official nickname is The Alluring Ninja Girl. (SNK Wiki)",
+    "Gameplay": "Of course this Fatal Fury femme fatale returns with this iteration of The King of Fighters. Although she has uniquely fast but high-arcing jumps and hops that makes her high and low game slightly more obvious, her focus is in her ability to zone and coax the opponent into approaching and setting them up for a trap. She's a tricky character with strong ground and aerial game. Though she may lack a fast attack that quickly rises above her vertically for an easy anti-air, she can play in a proactive manner that covers her bases to thoroughly make up for her shortcomings. While she may require the player to be more familiar and comfortable with spacing with normals, she's a fun and tricky character to play and has great attacks that beat out and control hop usage really well.",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Mai_Shiranui",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Mai"
+  },
+  {
+    "Character": ["mature"],
+    "Name": "Mature",
+    "Image": "https://dreamcancel.com/wiki/images/4/48/Maturexiii.jpg",
+    "Bio": "Mature appears as a member of Iori's Team in The King of Fighters '96. Her official nickname is The Speedy Cruel Beauty. (SNK Wiki)",
+    "Gameplay": "One of more classy woman from the KOF series, Mature returns after her supposed death in the KOF tournament. Traditionally a more zoning-type character, Mature now has a strong mix of both rushdown and zoning. Her pressure and combos are now much more fluid and stronger than they have ever been before, and she still retains most of her previous zoning abilities with vertically large projectile. (Shoryuken)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Mature",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Mature"
+  },
+  {
+    "Character": ["maxima"],
+    "Name": "Maxima",
+    "Image": "https://dreamcancel.com/wiki/images/0/00/MaximaXIII.jpg",
+    "Bio": "Maxima was a normal Canadian soldier that decided to get augmented who acts as a cyborg elder figure for the impetuous Kula and K'. Maxima's known for the large amount of Autoguard on his attacks and in KOFXIII this is no different. His normals are slow, but powerful, his jumping attacks are improved as compared to previous KOF games, and he has an instant command grab. With meter Maxima can deal heavy damage from simple combos and has access to powerful utility tools that can shut down many of the enemy's options.",
+    "Gameplay": "The best way to describe Maxima is a big, blue wall. Maxima, from his specials, to his normals are meant to keep counter an opponent and lock them down. Although he has one command grab, he has an air grab and variations of his command grab to give him utility. On top of being a highly defensive player, his moves have the dreaded \"Guard Point\" ability that lets him absorb a hit while he does a move. Nothing hurts an opponent's spirit more than to have their attacks blocked AND get hit at the same time! Some would think he's the \"Big Guy\" kinda tank, but this man packs power. For 1 meter, Maxima can take half an opponent's life away. He is rippling with power and should never be underestimated. Despite being slow, with meter, he can be a very big threat. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Maxima",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Maxima"
+  },
+  {
+    "Character": ["raiden"],
+    "Name": "Raiden",
+    "Image": "https://dreamcancel.com/wiki/images/1/11/Raiden.jpg",
+    "Bio": "Raiden is a character from the Fatal Fury series who originally appeared in the first Fatal Fury. He was long considered for The King of Fighters series and he finally made his debut in The King of Fighters XII. Developers wanted to add him as the big burly guy for the cast. The reason they didn't choose his face counterpart was due to the overall insistence to add a giant, evil character. His official nickname is The Out-of-Control Giant. He is based on the late professional wrestler Big Van Vader, who was quite popular in Japan in the 1990s. (SNK Wiki)",
+    "Gameplay": "Raiden became instantly infamous in the arcade version of KOF XIII due to his invulnerable drop kicks leading to simple 100% combos. In this newer version, his drop kicks have been toned down and so Raiden players must now use his lesser-explored grappling tools and abusively safe normals to use him effectively. Raiden can set up (really stupid) ambiguous cross ups after his command grab, hitconfirm back into his grabs quite easily, and he can build meter and still land his dropkicks so don't write him off as a nerf victim.",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Raiden",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Raiden"
+  },
+  {
+    "Character": ["ralf_jones"],
+    "Name": "Ralf Jones",
+    "Image": "https://dreamcancel.com/wiki/images/8/88/RalfXIII.jpg",
+    "Bio": "Ralf Jones is a character from the Ikari Warriors, Metal Slug, and The King of Fighters video game series. He also starred as the player character in the shooting games T.N.K. III and Iron Tank. His official nickname is The One-man Army.",
+    "Gameplay": "Ralf \"Rambo\" Jones is rather different than how you may remember him. Although he is still primarily based around mid range zoning, abusing his powerful far normals like st.C and st.D, and his amazing st.CD, Ralf has also lost the use of his command grab. To make up for this, he's been given a cancelable cr.B, along with some extremely powerful basic combos that do a lot of stun and damage, making him a powerful first character. Unlike many a lot of other chars in XIII, Ralf's combos do not really involve quick inputs or juggles, but he has more of an emphasis on links. His execution requirements are fairly low (unless you are extremely bad at loose links!), and most of his game is space control with normals, so you may feel more comfortable with Ralf's slower, more basic combos and easy to grasp zoning game coming from a Street Fighter background. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Ralf_Jones",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Ralf"
+  },
+  {
+    "Character": ["robert_garcia"],
+    "Name": "Robert Garcia",
+    "Image": "https://dreamcancel.com/wiki/images/9/94/Robertxiii.jpg",
+    "Bio": "Robert Garcia debuted as the deuteragonist in the Art of Fighting series, forming the second half of the Japanese's series namesake as \"The Raging Tiger\" or \"The Mightiest Tiger\". He is the first known foreign practitioner of Kyokugenryu Karate. (SNK Wiki)",
+    "Gameplay": " Robert's equipped with a full 'shoto' style arsenal of tools which allow him to play a strong fireball and anti-air (even Street Fighteresque) game much like Andy. Make no mistake though, while being well equipped for zoning, Robert is capable of going on the offensive. He has a command grab for opening up the opponent which works in conjunction with his capable normals, and his command normals have unique properties. Robert's combos may not be as initially overwhelming as Andy's, but Robert has more tools for breaking down an opponent's defenses as his nickname of \"The Mightiest Tiger\" would imply. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Robert_Garcia",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Robert"
+  },
+  {
+    "Character": ["ryo_sakazaki"],
+    "Name": "Ryo Sakazaki",
+    "Image": "https://dreamcancel.com/wiki/images/e/e7/Ryoxiii.jpg",
+    "Bio": "Ryo Sakazaki is the main protagonist in Art of Fighting, forming the first half of the Japanese series's namesake as the The Invincible Dragon. His name is frequently written in katakana; earlier games used to write his name in kanji. (SNK Wiki)",
+    "Gameplay": "Art of Fighting protagonist, KOF regular, and the original Ryu clone that caused Capcom to create Dan in parody. Ryo has a moveset that should be somewhat familiar to a 'shoto' player, though Ryo cannot play a full zoning game but makes up for it with his close-range tools. Ryo has a strong set of fundamental normals with plenty of hard-hitting, cancelable pokes that beef up his grounded game. Although an executionally simple character, Ryo can deal solid damage with meter while controling both the neutral and close ranges. As such, Ryo makes for a viable character for any level of play. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Ryo_Sakazaki",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Ryo"
+  },
+  {
+    "Character": ["shen_woo"],
+    "Name": "Shen Woo",
+    "Image": "https://dreamcancel.com/wiki/images/9/9d/Shenxiii.jpg",
+    "Bio": "Shen Woo is a character from The King of Fighters series who makes his first playable appearance in The King of Fighters 2003. His official nickname is \"Shanghai's God of War.\" (SNK Wiki)",
+    "Gameplay": "Shen is an offensive beast with almost every tool imaginable available to him to deal with whatever is thrown his way. While infamous for his killer Hyperdrive combos, Shen is strong placed anywhere on a team. His low mixup is somewhat lackluster without HD Meter, but Shen can easily make up for it with his command grab and the wall of hitboxes on his normals. Shen's a low execution character who's easy to learn while being a superb team member for advanced players. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Shen_Woo",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Shen"
+  },
+  {
+    "Character": ["sie_kensou", "kensou_sie"],
+    "Name": "Sie Kensou",
+    "Image": "https://dreamcancel.com/wiki/images/8/81/Kensouxiii.jpg",
+    "Bio": "Sie Kensou is a character who first appeared in the SNK video game Psycho Soldier. He appears in The King of Fighters series as an active member of the Psycho Soldiers Team. Ever since his first appearance, he has always served as a comic relief character. At one point, developers described his psychic powers being similar to Koichi's powers in Babel II. His official nickname is The Young Rising Dragon.",
+    "Gameplay": "Kensou is a somewhat different beast, especially now in Console XIII. He a character that is not a master of any discipline but can really hold his own in any. He's a very capable zoner and has the ability to rushdown and pressure well, however his stubby normals and the fact that people can start negating his zoning once meter is gained really hammer home the point that he is not meant to excel in any particular area. Success with Kensou is achieved by knowing when to enact a rushdown or zoning style and when to incorporate his normals and moves that have their specific niches. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Sie_Kensou",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kensou"
+  },
+  {
+    "Character": ["takuma_sakazaki"],
+    "Name": "Takuma Sakazaki",
+    "Image": "https://dreamcancel.com/wiki/images/3/34/Takuma.jpg",
+    "Bio": "Takuma Sakazaki is a character from both the Art of Fighting and The King of Fighters fighting game series. His distinguishing feature is an X-shaped scar on his right pectoral. He is also somewhat eccentric, donning his tengu mask and insisting he's Mr. Karate, and delivering speeches that are supposed to rally morale, but often make him look silly. Takuma is the most established known Kyokugenryu Karate practitioner, and he is the only one in the discipline who can make full use of the discipline's most difficult moves. (SNK Wiki)",
+    "Gameplay": "Takuma is what you would call a \"powerhouse character\" that revolves around really strong close range combat with proficient zoning ability. He can keep his opponents at bay with Ko Ou Ken and Haohshikouken and if those don't work the EX versions should get it done. He is a very powerful character that fits the bill for anyone looking for a high tier character for their team. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Takuma_Sakazaki",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Takuma"
+  },
+  {
+    "Character": ["terry_bogard"],
+    "Name": "Terry Bogard",
+    "Image": "https://dreamcancel.com/wiki/images/2/25/Terryxiii.jpg",
+    "Bio": "Terry Bogard is the main protagonist of the Fatal Fury series. He has appeared in every Fatal Fury and King of Fighters game, and is one of the characters of choice to symbolize the company in crossover games, merchandise and publicity. He appears to fit many Japanese stereotypes for an American character in appearance, personality and speech (his in-game vocabulary is usually limited to American colloquialisms, such as \"Okay!\" and \"Hey, c'mon, c'mon.\"). (SNK Wiki)",
+    "Gameplay": "Quite the renowned character, this SNK hero makes his inevitable return. Although Terry is a straight forward, pressure character, he isn't quite adept as Kyo or Iori in regards to breaking an opponent's ability to guard high and low attacks (not to say he can't do that kind of offensive pressure at all.) In return, Terry has strong game plan based around chunky block-strings and good frame traps that breaks the opponent's guard gauge. Overall he's a simple character and is a great character for beginners and experienced players alike. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Terry_Bogard",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Terry"
+  },
+  {
+    "Character": ["vice"],
+    "Name": "Vice",
+    "Image": "https://dreamcancel.com/wiki/images/c/c8/Vicexiii.jpg",
+    "Bio": "Vice is a character who debuted as a member of the Iori Team in The King of Fighters '96. Her official nickname is Throbbing Brutal Sadic (SNK Wiki).",
+    "Gameplay": "Vice is traditionally a grappler who excels in her grounded game with far-reaching normals to make up for her poor aerial control from her jumping normals. This time around Vice's hop arc is lower to the ground and her jumping normals have been switched up, giving her a valid jump-in and cross up. She still retains her fundamental normals but the range has been slightly shortened on some of these moves. However, Vice can turn almost any antiair into a full combo with her EX Decide so she can limit the opponent to a grounded approach. In addition her 'delayed grab' from previous games is removed which takes away from her grappler oki, but to make amends for it she now gains an ambiguous roll opportunities, crossup setups, her standby meaty cr.B pressure, and an airthrow DM. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Vice",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Vice"
+  },
+  {
+    "Character": ["Yuri_Sakazaki"],
+    "Name": "Yuri Sakazaki",
+    "Image": "https://dreamcancel.com/wiki/images/4/4b/Yuri_XIII.jpg",
+    "Bio": "Yuri Sakazaki is a character introduced in the Art of Fighting series as a damsel in distress and eventually as a playable character. Since then, she has appeared in many SNK fighting games, alongside her older brother, Ryo Sakazaki. She is the first female practitioner of Kyokugenryu Karate. Her official nickname is Wild Flying Swallow. (SNK Wiki)",
+    "Gameplay": "Yuri Sakazaki is a character that can operate under multiple situations. Another thing to note is that Yuri is also one of the more mix-up heavy characters. In Yuri's arsenal, she has a short ranged projectile along with two special moves that can function as anti-airs. Yuri has a dive kick (df+B) which can be used as a pressuring tool, mix ups, ambiguous cross-ups, safe jump set ups, and starting combos. She also has a Demon Flip series (DP+K) which provides her with many offensive options and the ability continue combos for more damage. Another thing about Yuri is that she can net very good damage if she has meter. Many of her special moves are relatively easy to drive cancel out of. Yuri has a command throw, which can function as a one frame command grab or a run-up grab. Both versions of her command grab can also be comboed into from normal moves. Last, Yuri fits very well into any team position as she can play many different roles and help the player succeed in winning the match. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Yuri_Sakazaki",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Yuri"
+  },
+  {
+    "Character": ["billy_kane"],
+    "Name": "Billy Kane",
+    "Image": "https://dreamcancel.com/wiki/images/0/05/Kof13billylong.jpg",
+    "Bio": "Billy Kane is a character in both the Fatal Fury and The King of Fighters series. His family name, Kane, is meant to be pronounced like \"Kon\" or \"Kaan\" (as in James Caan, an American actor), rather than the word \"cane\". His official nickname is Emperor's Right-Hand Man. (SNK Wiki)",
+    "Gameplay": "Billy's quite a unique character, and one of the few characters similar to him is Rolento from the Street Fighter series (and not just because he holds a staff). However, Billy's staff does have a hurtbox, so his long range moves should not be used too liberally, or you'll get stuffed and/or counterhit often. What makes him stand out is his diverse capability of both offense and defense and his uncanny ability to change his momentum of play with such versatility. Those that like ranged pokes and zoning should enjoy this character. Those that are fond of high and low pressure and confirming into a few chunky combos should also enjoy playing Billy. Players that would be really effective with Billy will be those that really know how to set the pace of the round, but he's an easy enough character for most players to pick up and play. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Billy_Kane",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Billy"
+  },
+  {
+    "Character": ["saiki"],
+    "Name": "Saiki",
+    "Image": "https://dreamcancel.com/wiki/images/e/ed/Saikikof13long.jpg",
+    "Bio": "Saiki is the main antagonist and sub-boss of The King of Fighters XIII. His official nickname is The One who Rules Time Although his boss form is unplayable, his normal form is included as an unlockable character in the console versions. (SNK Wiki)",
+    "Gameplay": "Saiki resembles Ash in a lot of ways, his overall game plan is very different. Unlike Ash Crimson, he is a motion character. Saiki is considered a zoning character who is also relatively versatile, having quite a few anti-airs at his disposal for keeping the opponent from jumping in on him at different spacing. Saiki also has a lot of tools that can be used for multiple situations outside of fundamentals, such as baiting reversals with his jumping B (changes the trajectory of his jump), punishment, getting out of pressure, keep-away and more. Another thing to note about Saiki is that most of his combos are relatively simple and has extremely high damage output in the corner. Saiki has one of the best fire balls in the game (qcf+A) to zone around with. If the player is careful and has a great idea of how the \"KOF\" fundamentals work, the player can dominate in a match with Saiki thanks to how his move set and game play is set up. (Dream Cancel Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Saiki",
+    "Shoryuken": ""
+  },
+  {
+    "Character": ["ex_iori", "flame_iori", "iori_ex", "iori_flame", "exiori", "flameiori"],
+    "Name": "Iori with the Power of Flames",
+    "Image": "https://dreamcancel.com/wiki/images/b/be/Exiorikoflongpic.jpg",
+    "Bio": "Iori Yagami is a character who made his first appearance in The King of Fighters '95. He is a central recurring character, and the initial enemy (and eventual rival) of Kyo Kusanagi. (SNK Wiki)",
+    "Gameplay": "Ever since Iori's moveset was changed in XII, fans have cried out for their old Iori back. And in XIII their wish was granted in the form of Classic Iori as DLC. For those unfamiliar with the original Iori, he is infamous for dominating the metagame of the most common tournament-played versions of KOF ('98, 2002, and their updated rereleases Ultimate and Unlimited Match) before this game, and for good reason. Iori's mixup game is absolutely amazing, and his combos can deal massive amounts of damage both with and without meter. XIII definitely succeeds in recreating the feel of his classic self: easy to use, not so much in utilizing him to his full potential. To select EX Iori, highlight Iori and hit Back/Select after downloading him. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Iori_with_the_Power_of_Flames",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/EX_Iori"
+  },
+  {
+    "Character": ["mr_karate", "karate", "mrkarate"],
+    "Name": "Mr. Karate",
+    "Image": "https://dreamcancel.com/wiki/images/0/04/Mrkaratelongpic.png",
+    "Bio": "Mr. Karate is the alter ego of Takuma Sakazaki that has appeared in a handful of SNK games. His first appearances was in Art of Fighting as the final boss. He wears a Tengu mask to hide his true identity. His name wasn't originally stated in-game, though the announcer did refer to him as \"Mr. Karate\" in versus mode. He was officially named as such in later games.",
+    "Gameplay": "Mr. Karate is a dominant king of nearly any situation, sacrificing some of Takuma's damage output for some of the safest and arguably most dominant offense and defense in the game. Karate fits any position on a team, has a perfect super for reaction punishes, has possibly the best DP in the entire game which converts into a buff combo with resources, his hop arc is the lowest in the game, his j.CD is one of the best in the game which complements his safejump setups, and his combo damage is on the higher end in most situations. To select Mr. Karate, highlight Takuma and hit Back/Select. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/Mr._Karate",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Mr._Karate"
+  },
+  {
+    "Character": ["ex_kyo", "nests_kyo", "nestskyo", "exkyo", "kyo_nests", "kyo_ex", "kyonests", "kyoex"],
+    "Name": "NESTS Style Kyo",
+    "Image": "https://dreamcancel.com/wiki/images/2/2b/Nestskyokoflong.jpg",
+    "Bio": "Kyo Kusanagi is the main protagonist in SNK's The King of Fighters video game series. He was first introduced in The King of Fighters '94 as the leader of the Japan team. He is the rival of Iori Yagami. (SNK Wiki)",
+    "Gameplay": "Likewise with Iori, those who prefer Kyo's Rekka moveset from '96 onward will have much to look forward to with this character. Despite the name, this version of Kyo has hardly any moves from the NESTS arc. Rather, EX Kyo is more akin to his KOF '98 self, with some 2000-2002 thrown in for good measure. While he lacks the simplicity of regular Kyo, EX Kyo can perform long, damaging combos with his Rekkas, along with utilizing devastating mixups. To select EX Kyo, highlight Kyo and hit Back/Select. (Shoryuken Wiki)",
+    "DreamCancel": "https://dreamcancel.com/wiki/index.php/The_King_of_Fighters_XIII/NESTS_Style_Kyo",
+    "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/EX_Kyo"
   }
 ]
