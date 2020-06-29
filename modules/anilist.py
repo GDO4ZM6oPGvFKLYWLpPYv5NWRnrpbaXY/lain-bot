@@ -46,18 +46,18 @@ class Anilist(graphene.ObjectType):
 	        }
 		}
 		'''
-		
+
 		variables = {
 		    'search': show,
 		    'asHtml': False,
 		    'isMain': True
 		}
-			
+
 		source = 'https://graphql.anilist.co'
-		
+
 		response = requests.post(source, json={'query': query, 'variables': variables})
 		result = response.json()
-		
+
 		if response.status_code == 200:
 			return result
 		else:
@@ -98,7 +98,7 @@ class Anilist(graphene.ObjectType):
 		}
 
 		url = 'https://graphql.anilist.co'
-		
+
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
