@@ -406,20 +406,19 @@ class Commands:
 			title = "Frame data for "+movename+" of "+char.capitalize()
 		)
 
-		embed.add_field(name='Move', value=movename, inline=True)
-		embed.add_field(name='Startup Frames', value=startup, inline=True)
-		embed.add_field(name='Active Frames', value=active, inline=True)
-		embed.add_field(name='Recovery Frames', value=recovery, inline=True)
+		embed.add_field(name='Startup Frames:', value=startup, inline=True)
+		embed.add_field(name='Active Frames:', value=active, inline=True)
+		embed.add_field(name='Recovery Frames:', value=recovery, inline=True)
 		if hit != "null":
-			embed.add_field(name='Hit Advantage', value=hit, inline=True)
+			embed.add_field(name='Hit Advantage:', value=hit, inline=True)
 		if block != "null":
-			embed.add_field(name='Block Advantage', value=block, inline=True)
+			embed.add_field(name='Block Advantage:', value=block, inline=True)
 		if hitstun != "null":
-			embed.add_field(name='Hitstun', value=hitstun, inline=True)
+			embed.add_field(name='Hitstun:', value=hitstun, inline=True)
 		if blockstun != "null":
-			embed.add_field(name='Blockstun', value=blockstun, inline=True)
+			embed.add_field(name='Blockstun:', value=blockstun, inline=True)
 		if notes != "null":
-			embed.add_field(name='Notes', value=notes, inline=True)
+			embed.add_field(name='Notes:', value=notes, inline=True)
 
 		await channel.send(embed=embed)
 
@@ -440,10 +439,10 @@ class Commands:
 		)
 
 		embed.set_image(url=charimage)
-		embed.add_field(name='Biography', value=bio, inline=False)
-		embed.add_field(name='Gameplay', value=gameplay, inline=False)
-		embed.add_field(name='Dream Cancel Wiki Page', value=dreamcancel, inline=False)
-		embed.add_field(name='Shoryuken Wiki Page', value=shoryuken, inline=False)
+		embed.add_field(name='Biography:', value=bio, inline=False)
+		embed.add_field(name='Gameplay:', value=gameplay, inline=False)
+		embed.add_field(name='Dream Cancel Wiki:', value=dreamcancel, inline=False)
+		embed.add_field(name='Shoryuken Wiki:', value=shoryuken, inline=False)
 
 		await channel.send(embed=embed)
 
