@@ -10,6 +10,7 @@ class Anilist(graphene.ObjectType):
 		query ($id: Int, $search: String, $asHtml: Boolean, $isMain: Boolean, $format_not_in: [MediaFormat]) {
 	        Media (id: $id, search: $search, format_not_in: $format_not_in) {
 	            id
+				idMal
 	            title {
 	                romaji
 					english
