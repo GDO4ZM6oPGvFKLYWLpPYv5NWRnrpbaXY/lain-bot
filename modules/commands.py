@@ -15,6 +15,7 @@ from .anilist import Anilist
 from .vndb import Vndb
 from .radio import Radio
 from modules.fighting.fginfo import FgInfo
+from .themes import Themes
 
 bot = Client.bot
 
@@ -293,27 +294,9 @@ class Commands:
 
 	@radio.command(pass_context=True)
 	async def start(ctx):
-		try:
-			# r/a/dio link
-			url = 'https://stream.r-a-d.io/main.mp3'
-
-			# get voice channel
-			channel = ctx.author.voice.channel
-			if channel != None:
-				await ctx.send('Joining')
-
-				# join channel
-				vc = await channel.connect()
-
-				# play music
-				Radio.players[ctx.guild.id] = vc
-				vc.play(discord.FFmpegPCMAudio(url), after=lambda e: print('done', e))
-		except AttributeError as a:
-			print(a)
-			await ctx.send('User is not in a channel.')
-		except Exception as e:
-			print(e)
-			await ctx.send(f'Unexpected error: {e}')
+		# r/a/dio link
+		url = 'https://stream.r-a-d.io/main.mp3'
+		await join(ctx, url)
 
 	@radio.command(pass_context=True)
 	async def info(ctx):
@@ -349,8 +332,8 @@ class Commands:
 			await ctx.send(embed=embed)
 		except:
 			await ctx.send('Error retrieving data')
-
-	@radio.command(pass_context=True)
+	
+	@bot.command(pass_context=True)
 	async def stop(ctx):
 		try:
 			channel = ctx.author.voice.channel
@@ -366,6 +349,151 @@ class Commands:
 		except Exception as e:
 			print(e)
 			await ctx.send('Unexpected error')
+
+	
+	@bot.command(pass_context=True)
+	async def op(ctx, num):
+		# 1 = opening
+		t = 1
+		build = parse(ctx, num)
+
+		# show to search for
+		show = build['show']
+		# which opening to pick
+		num = build['num']
+
+		# first get list of openings from openings.moe
+		songs = Themes.openingsMoe()
+
+		if show == '':
+			pick = random.choice(songs)
+			show = pick['source']
+			select = pick['title']
+		else:
+			select = 'Opening ' + num
+		
+		# anilist data
+		anime = Anilist.aniSearch(show)
+
+		# assign variables
+		try:
+			english = str(anime['data']['Media']['title']['english'])
+			romaji = str(anime['data']['Media']['title']['romaji'])
+			showUrl = anime['data']['Media']['siteUrl']
+			showPic = anime['data']['Media']['coverImage']['extraLarge']
+			year = anime['data']['Media']['startDate']['year']
+			mal = str(anime['data']['Media']['idMal'])
+		except:
+			await ctx.send('Invalid show')
+
+		# get rid of null returns
+		if english == 'None':
+			english = romaji
+		elif romaji == 'None':
+			romaji == english
+		
+		parts = Themes.search(english.lower(), romaji.lower(), show, select, songs)
+		if parts['found']:
+			embed = discord.Embed(
+					title = parts['big'],
+					color = discord.Color.orange(),
+					url = parts['video']
+				)
+			
+			embed.set_author(name=parts['title'], url=showUrl, icon_url=showPic)
+			embed.set_footer(text=parts['op/ed'], icon_url='https://openings.moe/assets/logo/512px.png')
+			await ctx.send(embed=embed)
+			
+			await join(ctx, parts['video'])
+		else:
+			try:
+				parts = Themes.themesMoe(year, select, mal, t, num)
+				big = num
+				embed = discord.Embed(
+						title = parts['name'],
+						color = discord.Color.orange(),
+						url = parts['video']
+				)
+				embed.set_author(name=romaji, url=showUrl, icon_url=showPic)
+				embed.set_footer(text=select, icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico')
+				await ctx.send(embed=embed)
+				
+				await join(ctx, parts['video'])
+			except Exception as e:
+				print(e)
+				await ctx.send('Show not found in database')
+
+	@bot.command(pass_context=True)
+	async def ed(ctx, num):
+		# 2 = ending
+		t = 2
+		build = parse(ctx, num)
+
+		# show to search for
+		show = build['show']
+		# which ending to pick
+		num = build['num']
+
+		# first get list of openings from openings.moe
+		songs = Themes.openingsMoe()
+
+		if show == '':
+			pick = random.choice(songs)
+			show = pick['source']
+			select = pick['title']
+		else:
+			select = 'Ending ' + num
+
+		# anilist data
+		anime = Anilist.aniSearch(show)
+
+		# search for ED
+		try:
+			english = str(anime['data']['Media']['title']['english'])
+			romaji = str(anime['data']['Media']['title']['romaji'])
+			showUrl = anime['data']['Media']['siteUrl']
+			showPic = anime['data']['Media']['coverImage']['extraLarge']
+			year = anime['data']['Media']['startDate']['year']
+			mal = str(anime['data']['Media']['idMal'])
+		except:
+			await ctx.send('Invalid show')
+
+		# get rid of null returns
+		if english == 'None':
+			english = romaji
+		elif romaji == 'None':
+			romaji == english
+		
+		parts = Themes.search(english, romaji, show, select, songs)
+		if parts['found']:
+			embed = discord.Embed(
+					title = parts['big'],
+					color = discord.Color.orange(),
+					url = parts['video']
+				)
+			
+			embed.set_author(name=parts['title'], url=showUrl, icon_url=showPic)
+			embed.set_footer(text=parts['op/ed'], icon_url='https://openings.moe/assets/logo/512px.png')
+			await ctx.send(embed=embed)
+			
+			await join(ctx, parts['video'])
+		else:
+			try:
+				parts = Themes.themesMoe(year, select, mal, t, num)
+				big = num
+				embed = discord.Embed(
+						title = parts['name'],
+						color = discord.Color.orange(),
+						url = parts['video']
+				)
+				embed.set_author(name=romaji, url=showUrl, icon_url=showPic)
+				embed.set_footer(text=select, icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico')
+				await ctx.send(embed=embed)
+				
+				await join(ctx, parts['video'])
+			except Exception as e:
+				print(e)
+				await ctx.send('Show not found in database')
 
 	@bot.group()
 	async def xiii(ctx):
@@ -475,7 +603,50 @@ class Commands:
 		# result = Config.cfgRead(serverID, "Bot Channel")
 		await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
 
+# join a voice channel and play link
+async def join(ctx, url):
+	global voice
+	try:
+		# get voice channel
+		channel = ctx.author.voice.channel
+		if channel != None:
+			# join channel
+			voice = get(bot.voice_clients, guild=ctx.guild)
+			
+			if voice and voice.is_connected():
+				# play music
+				Radio.players[ctx.guild.id] = voice
+				
+			else:
+				voice = await channel.connect()
+			
+			voice.play(discord.FFmpegPCMAudio(url), after=lambda e: print('Player error: %s' % e) if e else None)
+	except AttributeError as a:
+		print(a)
+		await ctx.send('User is not in a channel.')
+	except Exception as e:
+		print(e)
+		await ctx.send('Unexpected error')
+
 # helper functions for vn and anilist search
+def parse(ctx, num):
+		# determine which op/ed should be played
+		show = ''
+		try:
+			int(num[0])
+			# get show name
+			show = str(ctx.message.content)[(len(ctx.prefix) + len('op ' + str(num) + ' ')):]
+		except ValueError as v:
+			print(v)
+			if len(num) >= 2:	
+				num = '1'
+				show = str(ctx.message.content)[(len(ctx.prefix) + len('op ')):]
+				#await ctx.send('Choose which OP you want to play first (1, 2, 3...)')
+		except IndexError as f:
+			print(f)
+		
+		return {'show' : show, 'num' : num}
+
 def shorten(desc):
 	# italic
 	desc = desc.replace('<i>', '*')
