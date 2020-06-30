@@ -325,7 +325,7 @@
     "Command": ["qcfhcb+A", "qcfhcb+C",
     "qcfhcb.A", "qcfhcb.C",
     "2363214A", "2363214C",
-    "23634A", "23634C"],
+    "23624A", "23624C"],
     "Startup": "9",
     "Active": "13",
     "Recovery": "25",
@@ -343,7 +343,7 @@
     "Block": "Unblockable"
   },
   {
-    "Command": ["qcfhcb+AC", "qcfhcb.AC", "2363214AC", "23634AC"],
+    "Command": ["qcfhcb+AC", "qcfhcb.AC", "2363214AC", "23624AC"],
     "Startup": "3",
     "Active": "13",
     "Recovery": "25",
