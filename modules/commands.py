@@ -446,6 +446,22 @@ class Commands:
 
 		await channel.send(embed=embed)
 
+	@xiii.command(pass_context=True)
+	async def game(ctx):
+		channel = ctx.message.channel
+
+		embed = discord.Embed(
+			title = "The King of Fighters XIII"
+		)
+		embed.set_image(url="https://dreamcancel.com/wiki/images/0/04/KOF_XIII_Logo.png")
+		embed.add_field(name="Gameplay", "King of Fighters XIII is the latest entry in the KOF series. While it resembles XII graphically, all of XII's new systems (clash, critical counter, guard attack) have been removed. The developers stated that their concept for the game was "KOF-ism," so many classic KOF systems return, such as guard cancel rolls and guard cancel attacks. Hyperdrive mode is modeled on 2002's BC mode, while Max Cancels resemble XI's Dream Cancels. Finally, new to the series are EX moves (more powerful special moves costing one bar) and Drive Cancels (canceling from one special to another.)")
+		embed.add_field(name="Steam Store", "https://store.steampowered.com/app/222940/THE_KING_OF_FIGHTERS_XIII_STEAM_EDITION/")
+		embed.add_field(name="Fanatical Store", "https://www.fanatical.com/en/game/the-king-of-fighters-xiii-steam-edition")
+		embed.add_field(name="GMG", "https://www.greenmangaming.com/games/the-king-of-fighters-xiii-steam-edition-pc/")
+		embed.add_field(name="Note", "This command will be updated down the line to check for sales, and it will be able to automatically post sales")
+
+		await channel.send(embed=embed)
+
 	@bot.command(pass_context=True)
 	async def botChannel(ctx):
 		serverID = str(ctx.guild.id)
