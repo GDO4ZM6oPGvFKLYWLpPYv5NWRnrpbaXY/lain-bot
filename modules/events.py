@@ -12,7 +12,8 @@ from .safebooru import Safebooru
 from .user import User
 
 bot = Client.bot
-game = discord.Game("with her phone") #sets the game the bot is currently playing
+phone = discord.Game("with her phone") #sets the game the bot is currently playing
+esportsStatus = discord.Game("Fortnite with Bucky")
 
 class Events:
 
@@ -20,7 +21,7 @@ class Events:
 	async def on_ready(): #bot startup event
 
 		print('Kotori-san is ready to go!')
-		await bot.change_presence(status=discord.Status.online, activity=game)
+
 
 		# channel = bot.get_channel(Config.botChannel)
 		# Client.serverID = channel.guild.id
@@ -60,6 +61,11 @@ class Events:
 			if serverID == str(147255790078656513):
 				with open(os.getcwd()+"/assets/esports.png", "rb") as f:
 					await bot.user.edit(avatar=f.read())
+					await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
+			else:
+				with open(os.getcwd()+"/assets/avatar.png", "rb") as f:
+					await bot.user.edit(avatar=f.read())
+					await bot.change_presence(status=discord.Status.online, activity=phone)
 		for user in bot.users:
 			userID = str(user.id)
 			userName = str(user.name)
