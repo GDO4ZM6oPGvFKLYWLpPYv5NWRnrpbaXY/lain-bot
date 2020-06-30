@@ -6,6 +6,7 @@ from discord.utils import get
 import random
 import sqlite3
 import os
+import json
 
 from .client import Client
 from .config import Config
@@ -412,7 +413,7 @@ class Commands:
 			found = True
 		
 		if found:
-			await ctx.send('Second DB')
+			await ctx.send(json.load(open('config.json', 'r')))
 			try:
 				parts = Themes.themesMoe(year, select, mal, t, num)
 				ctx.send(parts)
