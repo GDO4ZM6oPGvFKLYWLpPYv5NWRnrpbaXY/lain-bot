@@ -414,8 +414,8 @@ class Commands:
 		
 		if found:
 			try:
+				ctx.send(year + ' ' + select + ' ' + mal + ' ' + t + ' ' + num)
 				parts = Themes.themesMoe(year, select, mal, t, num)
-				ctx.send(parts)
 				big = num
 				embed = discord.Embed(
 						title = parts['name'],
