@@ -362,8 +362,6 @@ class Commands:
 		# which opening to pick
 		num = build['num']
 
-		await ctx.send(show + ' ' + num)
-
 		# first get list of openings from openings.moe
 		songs = Themes.openingsMoe()
 
@@ -482,6 +480,7 @@ class Commands:
 		else:
 			try:
 				parts = Themes.themesMoe(year, select, mal, t, num)
+				await ctx.send(parts)
 				big = num
 				embed = discord.Embed(
 						title = parts['name'],
