@@ -28,33 +28,6 @@ class Events:
 			print('Lain is online')
 			await bot.change_presence(status=discord.Status.online, activity=status)
 
-
-		# channel = bot.get_channel(Config.botChannel)
-		# Client.serverID = channel.guild.id
-
-		# safebooruSearch = Safebooru.booruSearch('otonashi_kotori 1girl')
-
-#
-		# safebooruImageURL = safebooruSearch[0]
-		# safebooruPageURL = safebooruSearch[1]
-		# safebooruTagsTogether = safebooruSearch[2]
-
-#
-		# embed = discord.Embed(
-			# title = 'こんにちは、プロデューサーさん！',
-			# description = 'Kotori is now online!',
-			# color = discord.Color.green(),
-			# url = safebooruPageURL
-		# )
-
-#
-		# embed.set_image(url=safebooruImageURL)
-		# embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/assets/search.png')
-		# embed.set_footer(text=safebooruTagsTogether)
-
-#
-
-		# writes initial config files for each server the bot is in, and updates the dictionary with the current server name
 		for guild in bot.guilds:
 			serverID = str(guild.id)
 			serverName = str(guild.name)
@@ -64,14 +37,6 @@ class Events:
 				with open(os.getcwd()+"/config/"+serverID+".json", "x") as server_json:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
-			# if serverID == str(147255790078656513):
-				# with open(os.getcwd()+"/assets/esports.png", "rb") as f:
-					# await bot.user.edit(avatar=f.read())
-					# await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
-			# else:
-				# with open(os.getcwd()+"/assets/avatar.png", "rb") as f:
-					# await bot.user.edit(avatar=f.read())
-					# await bot.change_presence(status=discord.Status.online, activity=phone)
 
 		for user in bot.users:
 			userID = str(user.id)
