@@ -59,7 +59,7 @@ class Events:
 					json.dump(json_data, server_json)
 			if serverID == str(147255790078656513):
 				with open(os.getcwd()+"/assets/esports.png", "rb") as f:
-					await bot.edit(avatar=f.read())
+					await bot.user.edit(avatar=f.read())
 		for user in bot.users:
 			userID = str(user.id)
 			userName = str(user.name)
