@@ -7,3 +7,4 @@ youtube_dl==2020.3.24
 requests==2.23.0
 graphene==2.1.8
 python-dotenv==0.13.0
+praw==7.1.0

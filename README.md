@@ -17,6 +17,7 @@ Run main.py, and provide a Discord Bot token either through a text file named "t
 * **fmmpeg-python** - *0.2.0*
 * **youtube_dl** - *2020.3.24*
 * **python_dotenv** - *0.13.0*
+* **praw** - *7.1.0*
 
 ## Contributing
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).

@@ -7,7 +7,8 @@ class Client:
 
 	serverID = 0
 
-	bot = commands.Bot(command_prefix='k!', description=description) #sets up the bot
+	prefix = "k!"
+	bot = commands.Bot(command_prefix=prefix, description=description) #sets up the bot
 
 	# @bot.check
 	# async def check_serverID(ctx):

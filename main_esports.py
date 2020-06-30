@@ -9,17 +9,17 @@ from modules.config import Config
 from modules.commands import Commands
 from modules.events import Events
 from modules.safebooru import Safebooru
-#from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
+from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
 bot = Client.bot
 
-class Main:
+esports = "TRUE"
 
-	esports = "FALSE"
+class Main:
 
 	os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project root
 
 	load_dotenv()
-	TOKEN = os.getenv("BOT_TOKEN")
+	TOKEN = os.getenv("ESPORTS_TOKEN")
 
 	bot.run(TOKEN) #runs the Discord bot using one of the above tokens

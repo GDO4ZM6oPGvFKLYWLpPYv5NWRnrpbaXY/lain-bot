@@ -20,7 +20,13 @@ class Events:
 	@bot.event
 	async def on_ready(): #bot startup event
 
-		print('Kotori-san is ready to go!')
+		if bot.user.id == 727537208235524178:
+			print('Esports Club is ready to go!')
+			await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
+			bot.command_prefix = "b!"
+		else:
+			print('Kotori-san is ready to go!')
+			await bot.change_presence(status=discord.Status.online, activity=phone)
 
 
 		# channel = bot.get_channel(Config.botChannel)
@@ -58,14 +64,15 @@ class Events:
 				with open(os.getcwd()+"/config/"+serverID+".json", "x") as server_json:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
-			if serverID == str(147255790078656513):
-				with open(os.getcwd()+"/assets/esports.png", "rb") as f:
-					await bot.user.edit(avatar=f.read())
-					await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
-			else:
-				with open(os.getcwd()+"/assets/avatar.png", "rb") as f:
-					await bot.user.edit(avatar=f.read())
-					await bot.change_presence(status=discord.Status.online, activity=phone)
+			# if serverID == str(147255790078656513):
+				# with open(os.getcwd()+"/assets/esports.png", "rb") as f:
+					# await bot.user.edit(avatar=f.read())
+					# await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
+			# else:
+				# with open(os.getcwd()+"/assets/avatar.png", "rb") as f:
+					# await bot.user.edit(avatar=f.read())
+					# await bot.change_presence(status=discord.Status.online, activity=phone)
+
 		for user in bot.users:
 			userID = str(user.id)
 			userName = str(user.name)
