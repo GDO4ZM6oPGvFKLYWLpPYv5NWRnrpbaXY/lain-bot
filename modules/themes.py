@@ -32,7 +32,7 @@ class Themes():
         
         return {'found': False}
     
-    def themesMoe(year, select, mal, which, num):
+    def themesMoe(year, mal, which, num):
         config = json.load(open('themes.json', 'r'))
         reddit = praw.Reddit(client_id=config['id'], client_secret=config['secret'], user_agent='Snans')
 
@@ -47,7 +47,7 @@ class Themes():
 
         contains = ''
         for wikipage in reddit.subreddit('animethemes').wiki:
-            if wikipage.name == year:
+            if str(wikipage.name) == str(year):
                 contains = wikipage
                 break
         

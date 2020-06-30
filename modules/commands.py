@@ -415,7 +415,7 @@ class Commands:
 		if found:
 			try:
 				await ctx.send(str(year) + ' ' + str(select) + ' ' + str(mal) + ' ' + str(t) + ' ' + str(num))
-				parts = Themes.themesMoe(year, select, mal, t, num)
+				parts = Themes.themesMoe(year, mal, t, num)
 				big = num
 				embed = discord.Embed(
 						title = parts['name'],
