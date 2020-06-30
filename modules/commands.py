@@ -414,7 +414,6 @@ class Commands:
 		
 		if found:
 			try:
-				await ctx.send(json.load(open('themes.json', 'r')))
 				parts = Themes.themesMoe(year, select, mal, t, num)
 				ctx.send(parts)
 				big = num
