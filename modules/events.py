@@ -12,7 +12,7 @@ from .safebooru import Safebooru
 from .user import User
 
 bot = Client.bot
-phone = discord.Game("with her phone") #sets the game the bot is currently playing
+status = discord.Game("on Wired") #sets the game the bot is currently playing
 esportsStatus = discord.Game("Fortnite with Bucky")
 
 class Events:
@@ -25,8 +25,8 @@ class Events:
 			await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
 			bot.command_prefix = "b!"
 		else:
-			print('Kotori-san is ready to go!')
-			await bot.change_presence(status=discord.Status.online, activity=phone)
+			print('Lain is online')
+			await bot.change_presence(status=discord.Status.online, activity=status)
 
 
 		# channel = bot.get_channel(Config.botChannel)

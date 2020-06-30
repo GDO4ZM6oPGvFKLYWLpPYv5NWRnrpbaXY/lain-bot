@@ -7,7 +7,7 @@ class Client:
 
 	serverID = 0
 
-	prefix = "k!"
+	prefix = ">"
 	bot = commands.Bot(command_prefix=prefix, description=description) #sets up the bot
 
 	# @bot.check
