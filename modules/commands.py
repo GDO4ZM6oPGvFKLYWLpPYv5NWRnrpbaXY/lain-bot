@@ -413,8 +413,8 @@ class Commands:
 			found = True
 		
 		if found:
-			await ctx.send(json.load(open('edops.json', 'r')))
 			try:
+				await ctx.send(json.load(open('edops.json', 'r')))
 				parts = Themes.themesMoe(year, select, mal, t, num)
 				ctx.send(parts)
 				big = num
