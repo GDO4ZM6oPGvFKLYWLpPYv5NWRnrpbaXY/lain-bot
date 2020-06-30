@@ -33,7 +33,7 @@ class Themes():
         return {'found': False}
     
     def themesMoe(year, select, mal, which, num):
-        config = json.load(open('edops.json', 'r'))
+        config = json.load(open('themes.json', 'r'))
         reddit = praw.Reddit(client_id=config['id'], client_secret=config['secret'], user_agent='Snans')
 
         which = {
