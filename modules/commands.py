@@ -517,51 +517,55 @@ class Commands:
 		channel = ctx.message.channel
 
 		frames = FgInfo.searchFd("xiii", char, move)
+
 		name = FgAlias.char("xiii", char, "Name")
 		moveName = FgAlias.move(move, "KOF")
-		startup = frames["Startup"]
-		active = frames["Active"]
-		recovery = frames["Recovery"]
 		try:
-			hit = frames["Hit"]
-		except:
-			hit = "null"
-		try:
-			block = frames["Block"]
-		except:
-			block = "null"
-		try:
-			notes = frames["Notes"]
-		except:
-			notes = "null"
-		try:
-			blockstun = frames["Blockstun"]
-		except:
-			blockstun = "null"
-		try:
-			hitstun = frames["Hitstun"]
-		except:
-			hitstun = "null"
+			startup = frames["Startup"]
+			active = frames["Active"]
+			recovery = frames["Recovery"]
+			try:
+				hit = frames["Hit"]
+			except:
+				hit = "null"
+			try:
+				block = frames["Block"]
+			except:
+				block = "null"
+			try:
+				notes = frames["Notes"]
+			except:
+				notes = "null"
+			try:
+				blockstun = frames["Blockstun"]
+			except:
+				blockstun = "null"
+			try:
+				hitstun = frames["Hitstun"]
+			except:
+				hitstun = "null"
 
-		embed = discord.Embed(
-			title = "Frame data for "+moveName+" of "+name
-		)
+			embed = discord.Embed(
+				title = "Frame data for "+moveName+" of "+name
+			)
 
-		embed.add_field(name='Startup Frames:', value=startup, inline=True)
-		embed.add_field(name='Active Frames:', value=active, inline=True)
-		embed.add_field(name='Recovery Frames:', value=recovery, inline=True)
-		if hit != "null":
-			embed.add_field(name='Hit Advantage:', value=hit, inline=True)
-		if block != "null":
-			embed.add_field(name='Block Advantage:', value=block, inline=True)
-		if hitstun != "null":
-			embed.add_field(name='Hitstun:', value=hitstun, inline=True)
-		if blockstun != "null":
-			embed.add_field(name='Blockstun:', value=blockstun, inline=True)
-		if notes != "null":
-			embed.add_field(name='Notes:', value=notes, inline=True)
+			embed.add_field(name='Startup Frames:', value=startup, inline=True)
+			embed.add_field(name='Active Frames:', value=active, inline=True)
+			embed.add_field(name='Recovery Frames:', value=recovery, inline=True)
+			if hit != "null":
+				embed.add_field(name='Hit Advantage:', value=hit, inline=True)
+			if block != "null":
+				embed.add_field(name='Block Advantage:', value=block, inline=True)
+			if hitstun != "null":
+				embed.add_field(name='Hitstun:', value=hitstun, inline=True)
+			if blockstun != "null":
+				embed.add_field(name='Blockstun:', value=blockstun, inline=True)
+			if notes != "null":
+				embed.add_field(name='Notes:', value=notes, inline=True)
 
-		await channel.send(embed=embed)
+			await channel.send(embed=embed)
+		except:
+			await channel.send("An error has occured! Make sure you're spelling everything correctly!")
 
 	@xiii.command(pass_context=True)
 	async def char(ctx, char):

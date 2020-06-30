@@ -1,6 +1,6 @@
 [
   {
-    "Command": ["st.A", "5A"],
+    "Command": "5A",
     "Startup": "5",
     "Active": "4",
     "Recovery": "7",
@@ -8,7 +8,7 @@
     "Block": "+2"
   },
   {
-    "Command": ["cr.A", "2A"],
+    "Command": "2A",
     "Startup": "4",
     "Active": "3",
     "Recovery": "7",
@@ -16,7 +16,7 @@
     "Block": "+3"
   },
   {
-    "Command": ["st.B", "5B"],
+    "Command": "5B",
     "Startup": "6",
     "Active": "6",
     "Recovery": "13",
@@ -24,7 +24,7 @@
     "Block": "-6"
   },
   {
-    "Command": ["cr.B", "2B"],
+    "Command": "2B",
     "Startup": "4",
     "Active": "4",
     "Recovery": "9",
@@ -32,7 +32,7 @@
     "Block": "0"
   },
   {
-    "Command": ["cl.C", "cl.5C"],
+    "Command": "clC",
     "Startup": "4",
     "Active": "7",
     "Recovery": "14",
@@ -40,7 +40,7 @@
     "Block": "-2"
   },
   {
-    "Command": ["st.C", "5C"],
+    "Command": "5C",
     "Startup": "11",
     "Active": "4",
     "Recovery": "21",
@@ -48,7 +48,7 @@
     "Block": "-6"
   },
   {
-    "Command": ["cr.C", "2C"],
+    "Command": "2C",
     "Startup": "7",
     "Active": "5",
     "Recovery": "15",
@@ -56,7 +56,7 @@
     "Block": "-1"
   },
   {
-    "Command": ["cl.D", "cl.5D"],
+    "Command": "clD",
     "Startup": "3",
     "Active": "2",
     "Recovery": "21",
@@ -64,7 +64,7 @@
     "Block": "-4"
   },
   {
-    "Command": ["st.D", "5D"],
+    "Command": "5D",
     "Startup": "6",
     "Active": "2,(10),2",
     "Recovery": "14",
@@ -72,7 +72,7 @@
     "Block": "+3"
   },
   {
-    "Command": ["cr.D", "2D"],
+    "Command": "2D",
     "Startup": "8",
     "Active": "7",
     "Recovery": "19",
@@ -80,7 +80,7 @@
     "Block": "-7"
   },
   {
-    "Command": ["ff+A", "ff.A", "66A"],
+    "Command": "66A",
     "Startup": "10",
     "Active": "7",
     "Recovery": "21",
@@ -88,7 +88,7 @@
     "Block": "-21"
   },
   {
-    "Command": ["ff+A.x", "ff.A.x", "66A.x"],
+    "Command": "66A.x",
     "Startup": "10",
     "Active": "7",
     "Recovery": "21",
@@ -96,7 +96,7 @@
     "Block": "-21"
   },
   {
-    "Command": ["f+B", "f.B", "6B"],
+    "Command": "6B",
     "Startup": "20",
     "Active": "4",
     "Recovery": "19",
@@ -104,7 +104,7 @@
     "Block": "-4"
   },
   {
-    "Command": ["f+B.x", "f.B.x", "6B.x"],
+    "Command": "6B.x",
     "Startup": "23",
     "Active": "4",
     "Recovery": "19",
@@ -112,7 +112,7 @@
     "Block": "-4"
   },
   {
-    "Command": ["st.CD", "5CD", "CD"],
+    "Command": "5CD",
     "Startup": "15",
     "Active": "7",
     "Recovery": "17",
@@ -120,7 +120,7 @@
     "Block": "-1"
   },
   {
-    "Command": ["qcb+B", "qcb.B", "214B"],
+    "Command": "214B",
     "Startup": "16",
     "Active": "2",
     "Recovery": "18",
@@ -129,7 +129,7 @@
     "Note": "25 fixed frames of recovery on block"
   },
   {
-    "Command": ["qcb+D", "qcb.D", "214D"],
+    "Command": "214D",
     "Startup": "9",
     "Active": "3,(5),6,(2),2",
     "Recovery": "25",
@@ -138,7 +138,7 @@
     "Note": "32 fixed frames of recovery on block"
   },
   {
-    "Command": ["qcb+BD", "qcb.BD", "214BD"],
+    "Command": "214BD",
     "Startup": "11",
     "Active": "2,(1),2",
     "Recovery": "11",
@@ -147,7 +147,7 @@
     "Note": "15 fixed frames of recovery on block"
   },
   {
-    "Command": ["d~u+B", "d~u.B", "[2]8B"],
+    "Command": "[2]8D",
     "Startup": "4",
     "Active": "6",
     "Recovery": "40",
@@ -155,7 +155,7 @@
     "Block": "-28"
   },
   {
-    "Command": ["d~u+D", "d~u.D", "[2]8D"],
+    "Command": "[2]8D",
     "Startup": "6",
     "Active": "3,(2),6",
     "Recovery": "45",
@@ -163,7 +163,7 @@
     "Block": "-33"
   },
   {
-    "Command": ["d~u+BD", "d~u.BD", "[2]8BD"],
+    "Command": "[2]8BD",
     "Startup": "3",
     "Active": "5,(6),5,(21),6",
     "Recovery": "34",
@@ -171,7 +171,7 @@
     "Block": "-43"
   },
   {
-    "Command": ["j.qcb+B", "j.qcb.B", "j.214B"],
+    "Command": "j214B",
     "Startup": "15",
     "Active": "7",
     "Recovery": "Until landing+15",
@@ -180,7 +180,7 @@
     "Notes": "-2 on block at lowest possible height"
   },
   {
-    "Command": ["j.qcb+D", "j.qcb.D", "j.214D"],
+    "Command": "j214D",
     "Startup": "17",
     "Active": "7",
     "Recovery": "Until landing+10",
@@ -189,7 +189,7 @@
     "Notes": "+2 on block at lowest possible height"
   },
   {
-    "Command": ["j.qcb+BD", "j.qcb.BD", "j.214BD"],
+    "Command": "j.214BD",
     "Startup": "5",
     "Active": "3,(4),6,(2),7",
     "Recovery": "Until landing+15",
@@ -198,7 +198,7 @@
     "Notes": "0 on block at lowest possible height"
   },
   {
-    "Command": ["j.qcf+B", "j.qcf.B", "j.236B"],
+    "Command": "j236B",
     "Startup": "10",
     "Active": "Until landing/hitting",
     "Recovery": "17(landing)",
@@ -207,7 +207,7 @@
     "Notes": "Landing recovery of 13 on hit or block; -31 on block at lowest possible height"
   },
   {
-    "Command": ["j.qcf+D", "j.qcf.D", "j.236D"],
+    "Command": "j236D",
     "Startup": "10",
     "Active": "Until landing/hitting",
     "Recovery": "17(landing)",
@@ -216,7 +216,7 @@
     "Notes": "Landing recovery of 13 on hit or block; -31 on block at lowest possible height"
   },
   {
-    "Command": ["j.qcf+BD", "j.qcf.BD", "j.236BD"],
+    "Command": "j236BD",
     "Startup": "13",
     "Active": "Until landing",
     "Recovery": "19(landing)",
@@ -225,7 +225,7 @@
     "Notes": "Landing recovery of 16 on hit or block; +1 on block at lowest possible height"
   },
   {
-    "Command": ["j.x"],
+    "Command": "jX",
     "Startup": "4(prejump frames)",
     "Active": "-",
     "Recovery": "1(landing frame)",
@@ -233,7 +233,7 @@
     "Block": "-"
   },
   {
-    "Command": ["j.A", "j.5A"],
+    "Command": "jA",
     "Startup": "5(hop), 6(jump)",
     "Active": "6",
     "Recovery": "Until landing+1",
@@ -241,7 +241,7 @@
     "Blockstun": "13"
   },
   {
-    "Command": ["j.B", "j.5B"],
+    "Command": "jB",
     "Startup": "5",
     "Active": "9(hop), 12(jump)",
     "Recovery": "Until landing+1",
@@ -249,7 +249,7 @@
     "Blockstun": "13"
   },
   {
-    "Command": ["j.C", "j.5C"],
+    "Command": "jC",
     "Startup": "9(hop), 10(jump)",
     "Active": "6",
     "Recovery": "Until landing+1",
@@ -257,7 +257,7 @@
     "Blockstun": "16"
   },
   {
-    "Command": ["j.D", "j.5D"],
+    "Command": "jD",
     "Startup": "8",
     "Active": "6(hop), 7(jump)",
     "Recovery": "Until landing+1",
@@ -265,7 +265,7 @@
     "Blockstun": "16"
   },
   {
-    "Command": ["j.CD", "j.5CD"],
+    "Command": "jCD",
     "Startup": "12",
     "Active": "6(hop), 7(jump)",
     "Recovery": "Until landing+1",

@@ -12,7 +12,7 @@ class FgInfo():
         for i in json_data:
             if i["Command"].lower() == alias.lower():
                 return i
-
+                
     def searchChar(game, char: str):
         alias = FgAlias.char(game, char, "String")
         with open(os.getcwd()+"/modules/fighting/"+game+"/characters.json", "r") as char_json:
