@@ -31,6 +31,7 @@ class Anilist(graphene.ObjectType):
 	            seasonYear
 	            episodes
 	            coverImage {
+					extraLarge
 	            	large
 	            }
 	            bannerImage
