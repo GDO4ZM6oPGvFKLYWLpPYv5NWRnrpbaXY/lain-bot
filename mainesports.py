@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import json
 import discord
 from discord.ext import commands
 
@@ -14,7 +13,7 @@ from modules.safebooru import Safebooru
 
 bot = Client.bot
 
-class Main:
+class MainEsports:
 
 	os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project root
 
