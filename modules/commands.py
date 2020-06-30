@@ -479,8 +479,8 @@ class Commands:
 			await join(ctx, parts['video'])
 		else:
 			try:
-				parts = Themes.themesMoe(year, select, mal, t, num)
 				await ctx.send(parts)
+				parts = Themes.themesMoe(year, select, mal, t, num)
 				big = num
 				embed = discord.Embed(
 						title = parts['name'],
