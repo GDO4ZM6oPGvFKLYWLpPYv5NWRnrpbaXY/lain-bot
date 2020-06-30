@@ -362,6 +362,8 @@ class Commands:
 		# which opening to pick
 		num = build['num']
 
+		await ctx.send(show + ' ' + num)
+
 		# first get list of openings from openings.moe
 		songs = Themes.openingsMoe()
 
