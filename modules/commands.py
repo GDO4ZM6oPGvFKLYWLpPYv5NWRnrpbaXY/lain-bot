@@ -16,6 +16,7 @@ from .anilist import Anilist
 from .vndb import Vndb
 from .radio import Radio
 from modules.fighting.fginfo import FgInfo
+from modules.fighting.fgalias import FgAlias
 from .themes import Themes
 
 bot = Client.bot
@@ -41,7 +42,7 @@ class Commands:
 		)
 
 		embed.set_image(url=safebooruImageURL)
-		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/assets/search.png')
+		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/assets/search.jpg')
 		embed.set_footer(text=safebooruTagsTogether)
 
 		await channel.send(embed=embed)
@@ -333,7 +334,7 @@ class Commands:
 			await ctx.send(embed=embed)
 		except:
 			await ctx.send('Error retrieving data')
-	
+
 	@bot.command(pass_context=True)
 	async def stop(ctx):
 		try:
@@ -351,7 +352,7 @@ class Commands:
 			print(e)
 			await ctx.send('Unexpected error')
 
-	
+
 	@bot.command(pass_context=True)
 	async def op(ctx, num):
 		# 1 = opening
@@ -372,7 +373,7 @@ class Commands:
 			select = pick['title']
 		else:
 			select = 'Opening ' + num
-		
+
 		# anilist data
 		anime = Anilist.aniSearch(show)
 
@@ -392,7 +393,7 @@ class Commands:
 			english = romaji
 		elif romaji == 'None':
 			romaji == english
-		
+
 		parts = Themes.search(english.lower(), romaji.lower(), show, select, songs)
 		found = False
 		try:
@@ -401,16 +402,16 @@ class Commands:
 					color = discord.Color.orange(),
 					url = parts['video']
 				)
-			
+
 			embed.set_author(name=parts['title'], url=showUrl, icon_url=showPic)
 			embed.set_footer(text=parts['op/ed'], icon_url='https://openings.moe/assets/logo/512px.png')
 			await ctx.send(embed=embed)
-			
+
 			await join(ctx, parts['video'])
 		except Exception as e:
 			print(e)
 			found = True
-		
+
 		if found:
 			try:
 				parts = Themes.themesMoe(year, mal, t, num)
@@ -423,7 +424,7 @@ class Commands:
 				embed.set_author(name=romaji, url=showUrl, icon_url=showPic)
 				embed.set_footer(text=select, icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico')
 				await ctx.send(embed=embed)
-				
+
 				await join(ctx, parts['video'])
 			except Exception as e:
 				print(e)
@@ -469,7 +470,7 @@ class Commands:
 			english = romaji
 		elif romaji == 'None':
 			romaji == english
-		
+
 		parts = Themes.search(english, romaji, show, select, songs)
 		found = False
 		try:
@@ -478,16 +479,16 @@ class Commands:
 					color = discord.Color.orange(),
 					url = parts['video']
 				)
-			
+
 			embed.set_author(name=parts['title'], url=showUrl, icon_url=showPic)
 			embed.set_footer(text=parts['op/ed'], icon_url='https://openings.moe/assets/logo/512px.png')
 			await ctx.send(embed=embed)
-			
+
 			await join(ctx, parts['video'])
 		except Exception as e:
 			print(e)
 			found = True
-		
+
 		if found:
 			try:
 				parts = Themes.themesMoe(year, mal, t, num)
@@ -500,7 +501,7 @@ class Commands:
 				embed.set_author(name=romaji, url=showUrl, icon_url=showPic)
 				embed.set_footer(text=select, icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico')
 				await ctx.send(embed=embed)
-				
+
 				await join(ctx, parts['video'])
 			except Exception as e:
 				print(e)
@@ -516,7 +517,8 @@ class Commands:
 		channel = ctx.message.channel
 
 		frames = FgInfo.searchFd("xiii", char, move)
-		movename = frames["Command"][0]
+		name = FgAlias.char("xiii", char, "Name")
+		moveName = FgAlias.move(move, "KOF")
 		startup = frames["Startup"]
 		active = frames["Active"]
 		recovery = frames["Recovery"]
@@ -542,7 +544,7 @@ class Commands:
 			hitstun = "null"
 
 		embed = discord.Embed(
-			title = "Frame data for "+movename+" of "+char.capitalize()
+			title = "Frame data for "+moveName+" of "+name
 		)
 
 		embed.add_field(name='Startup Frames:', value=startup, inline=True)
@@ -601,18 +603,26 @@ class Commands:
 
 		await channel.send(embed=embed)
 
-	@bot.command(pass_context=True)
-	async def botChannel(ctx):
+	@bot.group()
+	async def config():
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid config command passed...')
+
+	@config.command(pass_context=True)
+	async def channel(ctx):
 		serverID = str(ctx.guild.id)
 		channelID = str(ctx.channel.id)
 		Config.cfgUpdate(serverID, "Bot Channel", channelID)
 		await ctx.send("Bot channel successfully updated to here!")
 
-	@bot.command(pass_context=True)
-	async def botWhere(ctx):
+	@config.command(pass_context=True)
+	async def where(ctx):
 		serverID = str(ctx.guild.id)
-		# result = Config.cfgRead(serverID, "Bot Channel")
-		await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
+		try:
+			result = Config.cfgRead(serverID, "Bot Channel")
+			await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
+		except:
+			await ctx.send("Error!")
 
 # join a voice channel and play link
 async def join(ctx, url):
@@ -623,14 +633,14 @@ async def join(ctx, url):
 		if channel != None:
 			# join channel
 			voice = get(bot.voice_clients, guild=ctx.guild)
-			
+
 			if voice and voice.is_connected():
 				# play music
 				Radio.players[ctx.guild.id] = voice
-				
+
 			else:
 				voice = await channel.connect()
-			
+
 			voice.play(discord.FFmpegPCMAudio(url), after=lambda e: print('Player error: %s' % e) if e else None)
 	except AttributeError as a:
 		print(a)
@@ -649,13 +659,13 @@ def parse(ctx, num):
 			show = str(ctx.message.content)[(len(ctx.prefix) + len('op ' + str(num) + ' ')):]
 		except ValueError as v:
 			print(v)
-			if len(num) >= 2:	
+			if len(num) >= 2:
 				num = '1'
 				show = str(ctx.message.content)[(len(ctx.prefix) + len('op ')):]
 				#await ctx.send('Choose which OP you want to play first (1, 2, 3...)')
 		except IndexError as f:
 			print(f)
-		
+
 		return {'show' : show, 'num' : num}
 
 def shorten(desc):

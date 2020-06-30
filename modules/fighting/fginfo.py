@@ -1,28 +1,25 @@
 import os
 import json
-
+from .fgalias import FgAlias
 
 class FgInfo():
+
     def searchFd(game, char, move: str):
-        with open(os.getcwd()+"/modules/fighting/"+game+"/fd/"+char+".json", "r") as frame_json:
+        alias = FgAlias.move(move, "Command")
+        aliasChar = FgAlias.char(game, char, "String")
+        with open(os.getcwd()+"/modules/fighting/"+game+"/fd/"+aliasChar+".json", "r") as frame_json:
             json_data = json.load(frame_json)
         for i in json_data:
-            #if i["Command"] == move:
-                #return_move = i
-            for comm in i["Command"]:
-                if comm.lower() == move.lower():
-                    return_move = i
-                    return return_move
-
+            if i["Command"].lower() == alias.lower():
+                return i
 
     def searchChar(game, char: str):
+        alias = FgAlias.char(game, char, "String")
         with open(os.getcwd()+"/modules/fighting/"+game+"/characters.json", "r") as char_json:
             json_data = json.load(char_json)
-            charlower = char.lower()
         for i in json_data:
             #if name.lower().startswith(char):
             for name in i["Character"]:
-                namelower = name.lower()
-                if namelower.startswith(charlower):
+                if alias == name:
                     return_char = i
                     return return_char

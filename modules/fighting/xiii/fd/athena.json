@@ -1,6 +1,6 @@
 [
   {
-    "Command": ["st.A", "5A"],
+    "Command": "5A",
     "Startup": "4",
     "Active": "5",
     "Recovery": "8",
