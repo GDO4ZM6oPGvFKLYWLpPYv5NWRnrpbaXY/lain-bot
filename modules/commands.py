@@ -479,7 +479,7 @@ class Commands:
 			await join(ctx, parts['video'])
 		else:
 			try:
-				await ctx.send(parts)
+				await ctx.send('Second DB')
 				parts = Themes.themesMoe(year, select, mal, t, num)
 				big = num
 				embed = discord.Embed(
