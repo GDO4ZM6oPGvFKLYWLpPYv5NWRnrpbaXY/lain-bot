@@ -409,12 +409,12 @@ class Commands:
 			await join(ctx, parts['video'])
 		except Exception as e:
 			print(e)
-			ctx.send('Not in first DB')
+			await ctx.send('Not in first DB')
 			found = True
 		
 		if found:
 			try:
-				ctx.send(str(year))
+				await ctx.send(str(year))
 				parts = Themes.themesMoe(year, select, mal, t, num)
 				big = num
 				embed = discord.Embed(
