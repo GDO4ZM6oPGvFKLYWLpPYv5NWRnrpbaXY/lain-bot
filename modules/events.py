@@ -57,6 +57,9 @@ class Events:
 				with open(os.getcwd()+"/config/"+serverID+".json", "x") as server_json:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
+			if serverID == str(147255790078656513):
+				with open(os.getcwd()+"/assets/esports.png", "rb") as f:
+					await bot.edit_profile(avatar=f.read())
 		for user in bot.users:
 			userID = str(user.id)
 			userName = str(user.name)
@@ -66,6 +69,8 @@ class Events:
 				with open(os.getcwd()+"/user/"+userID+".json", "x") as user_json:
 					json_data = {"Name": userName}
 					json.dump(json_data, user_json)
+
+
 
 	@bot.event
 	async def on_member_join(member):
