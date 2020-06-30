@@ -393,7 +393,8 @@ class Commands:
 			romaji == english
 		
 		parts = Themes.search(english.lower(), romaji.lower(), show, select, songs)
-		if parts['found']:
+		found = False
+		try:
 			embed = discord.Embed(
 					title = parts['big'],
 					color = discord.Color.orange(),
@@ -405,9 +406,16 @@ class Commands:
 			await ctx.send(embed=embed)
 			
 			await join(ctx, parts['video'])
-		else:
+		except Exception as e:
+			print(e)
+			ctx.send('Not in first DB')
+			found = True
+		
+		if found:
+			await ctx.send('Second DB')
 			try:
 				parts = Themes.themesMoe(year, select, mal, t, num)
+				ctx.send(parts)
 				big = num
 				embed = discord.Embed(
 						title = parts['name'],
