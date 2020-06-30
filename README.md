@@ -6,7 +6,7 @@ The bot also supports frame data for King of Fighters XIII, and more games will 
 If you're here from the Madison Esports Club, the bot for the club is developed/deployed alongside the primary Lain bot build.
 
 ## Getting Started
-Run main.py, and provide a Discord Bot token either through a text file named "token.txt" or through the environment variable %BOT_TOKEN%. For more details [read the following](https://discord.com/developers/).
+Run main.py, and provide a Discord Bot token through .env with the line "BOT_TOKEN=\[your token\]". For more details [read the following](https://discord.com/developers/).
 
 ### Prerequisites
 * **discord.py**
@@ -24,8 +24,8 @@ Run main.py, and provide a Discord Bot token either through a text file named "t
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
 
 ## Authors
-* **Tatsu Eliason** - *Initial work + frame data integration* - [SigSigSigurd](https://github.com/SigSigSigurd)
-* **Jay Russell** - *AniList, VNDB API integration* - [Jay-Russell](https://github.com/Jay-Russell)
+* **Tatsu Eliason** - *Initial work, frame data integration, backend development* - [SigSigSigurd](https://github.com/SigSigSigurd)
+* **Jay Russell** - *AniList, VNDB, openingsmoe API integration* - [Jay-Russell](https://github.com/Jay-Russell)
 * **TomiLahren** - *Making the JS version of the UW-Madison esports club bot*
 
 See also the list of [contributors](https://github.com/SigSigSigurd/kotori-san-bot/contributors) who participated in this project.
