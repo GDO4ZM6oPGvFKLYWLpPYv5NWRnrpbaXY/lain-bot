@@ -19,7 +19,6 @@ class FgInfo():
             json_data = json.load(char_json)
         for i in json_data:
             #if name.lower().startswith(char):
-            for name in i["Character"]:
-                if alias == name:
-                    return_char = i
-                    return return_char
+            if alias == i["Character"]:
+                return_char = i
+                return return_char

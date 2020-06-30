@@ -1,6 +1,6 @@
 [
   {
-    "Character": ["kyo_kusanagi", "rekka_kyo"],
+    "Character": "kyo",
     "Name": "Kyo Kusanagi",
     "Image": "https://dreamcancel.com/wiki/images/0/09/Kyoxiii.jpg",
     "Bio": "Kyo Kusanagi is the main protagonist in SNK's The King of Fighters video game series. He was first introduced in The King of Fighters '94 as the leader of the Japan team. He is the rival of Iori Yagami. (SNK Wiki)",
@@ -9,7 +9,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kyo"
   },
   {
-    "Character": ["andy_bogard"],
+    "Character": "andy",
     "Name": "Andy Bogard",
     "Image": "https://dreamcancel.com/wiki/images/7/74/Andyxiii.jpg",
     "Bio": "Andy Bogard is a video game character in both the Fatal Fury and The King of Fighters series by SNK. He is Terry Bogard's younger brother. His official nickname is The Human Weapon or Whole Body Weapon (Zenshin Kyoukin). (SNK Wiki)",
@@ -18,7 +18,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Andy"
   },
   {
-    "Character": ["ash_crimson"],
+    "Character": "ash",
     "Name": "Ash Crimson",
     "Image": "https://dreamcancel.com/wiki/images/7/78/Ashxiii.jpg",
     "Bio": "Ash Crimson is the protagonist of the story arc TALES OF ASH (KOF 2003-KOF XIII); his first appearance is in The King of Fighters 2003 as the leader of the New Hero Team. His official nickname is Sneering Firelight (Azawarau Hokage) or The Sneering Blaze. (SNK Wiki)",
@@ -27,7 +27,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Ash"
   },
   {
-    "Character": ["athena_asamiya"],
+    "Character": "athena",
     "Name": "Athena Asamiya",
     "Image": "https://dreamcancel.com/wiki/images/1/12/Athenaxiii.jpg",
     "Bio": "Athena Asamiya is a character originally from Psycho Soldier and a distant relative and modern-day counterpart of Princess Athena from Athena. She later appears as a regular fighter in The King of Fighters series; she is perhaps best known for changing her outfit and hair style for virtually every main installment. (SNK Wiki)",
@@ -36,7 +36,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Athena"
   },
   {
-    "Character": ["benimaru_nikaido"],
+    "Character": "benimaru",
     "Name": "Benimaru Nikaido",
     "Image": "https://dreamcancel.com/wiki/images/7/71/Benimaruxiii.jpg",
     "Bio": "Benimaru Nikaido is a The King of Fighters character and one of Kyo Kusanagi's friends. His straight hair stays up during fights due to a rather exaggerated case of electrostatics. His official nickname is The Shooting Star. (SNK Wiki)",
@@ -45,7 +45,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Benimaru"
   },
   {
-    "Character": ["chin_gentsai"],
+    "Character": "chin",
     "Name": "Chin Gentsai",
     "Image": "https://dreamcancel.com/wiki/images/c/cc/Chin_XIII.jpg",
     "Bio": "Chin Gentsai is one of the original members of the Psycho Soldier Team, which first appeared in The King of Fighters '94. His character's age and fighting style were considered to be essential for the series when developers were selecting fighters for the roster. He is most likely modeled on Yuen Siu Tien's character in the martial arts film, Drunken Master. His official nickname is The Drunken Fist Master. (SNK Wiki)",
@@ -54,7 +54,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Chin"
   },
   {
-    "Character": ["clark_still"],
+    "Character": "clark",
     "Name": "Clark Still",
     "Image": "https://dreamcancel.com/wiki/images/8/80/Clarkxiii.jpg",
     "Bio": "Clark Still, also mistakenly known as Clark Steel in some translations, is a character from the Ikari Warriors, Metal Slug and The King of Fighters video game series. In Gamest's 1997 Heroes Collection, Clark was voted as the staff's twenty-seventh favorite character. He shared the spot with Kizuna Encounter character, Kim Sue Il. His official nickname is Tough & Cool. (SNK Wiki)",
@@ -63,7 +63,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Clark"
   },
   {
-    "Character": ["duo_lon", "duolon"],
+    "Character": "duolon",
     "Name": "Duo Lon",
     "Image": "https://dreamcancel.com/wiki/images/2/2c/DuoLonxiii.jpg",
     "Bio": "Duo Lon is a video game character in The King of Fighters series, who made his first appearance in The King of Fighters 2003 as a member of the year's Hero Team. He is the first male character from The Flying Brigands to resemble a handsome man, and the first to sport an ornate design. His overall look was based on the title character from the anime Vampire Hunter D. His official nickname is The Silent Assassin. (SNK Wiki)",
@@ -72,7 +72,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Duo_Lon"
   },
   {
-    "Character": ["elisabeth_branctorche", "elizabeth_branctorche"],
+    "Character": "elisabeth",
     "Name": "Elisabeth Branctorche",
     "Image": "https://dreamcancel.com/wiki/images/b/b1/Elisabethxiii.jpg",
     "Bio": "Elisabeth Blanctorche is one of three original characters debuting in The King of Fighters XI. Her official nickname is Controller of the white light. (SNK Wiki)",
@@ -81,7 +81,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Elisabeth"
   },
   {
-    "Character": ["goro_daimon", "daimon"],
+    "Character": "daimon",
     "Name": "Goro Daimon",
     "Image": "https://dreamcancel.com/wiki/images/e/e1/Daimonxiii.jpg",
     "Bio": "Goro Daimon is a character who debuted as a member to the Hero Team in The King of Fighters '94, along with Kyo Kusanagi and Benimaru Nikaido. His character was created to add a practitioner of Judo to the cast, and many elements from his original designs, such as his geta and his victory cries, remained for his final look. In Gamest's 1997 Heroes Collection, Daimon was voted as the staff's forty-fourth favorite character. He shared the spot with Street Fighter character, Alex. His official nickname is The Rising Storm. and Over-Towering Mountain Storm. (SNK Wiki)",
@@ -90,7 +90,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Daimon"
   },
   {
-    "Character": ["hwa_jai"],
+    "Character": "hwa",
     "Name": "Hwa Jai",
     "Image": "https://dreamcancel.com/wiki/images/6/64/HwaJaixiii.jpg",
     "Bio": "Hwa Jai is a character from the Fatal Fury series and The King of Fighters series. He first appeared in the original Fatal Fury game and appeared as a playable character once more in The King of Fighters XIII. The producer for KoF XIII stated that he was added to be the \"surprise character\" for KoF fans, keeping true to their theme of not always adding popular characters for the newer cast's balance. He thought Hwa Jai would be one of the most interesting characters for an appearance in KoF, due to his detailed background history and previously lone playable appearance.",
@@ -99,7 +99,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Daimon"
   },
   {
-    "Character": ["iori_yagami"],
+    "Character": "iori",
     "Name": "Iori Yagami",
     "Image": "https://dreamcancel.com/wiki/images/1/12/Ioriclaw.jpg",
     "Bio": "Iori Yagami is a character who made his first appearance in The King of Fighters '95. He is a central recurring character, and the initial enemy (and eventual rival) of Kyo Kusanagi. (SNK Wiki)",
@@ -108,7 +108,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Iori"
   },
   {
-    "Character": ["joe_higashi"],
+    "Character": "joe",
     "Name": "Joe Higashi",
     "Image": "https://dreamcancel.com/wiki/images/3/3d/Joe_XIII.jpg",
     "Bio": "Joe Higashi is a character in both the Fatal Fury and The King of Fighters series, used mainly for comic relief. He tried to date Lilly Kane, a relationship which her brother greatly disapproves, although it's implied from within the Fatal Fury Team's backstory in The King of Fighters XIV that he got rejected due to his incident with a drag queen at the end of KOF XIII. His official nickname is The Young Champ of Muay Thai. (SNK Wiki)",
@@ -117,7 +117,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Joe"
   },
   {
-    "Character": ["k'", "kdash", "k_dash"],
+    "Character": "k'",
     "Name": "K'",
     "Image": "https://dreamcancel.com/wiki/images/2/26/K%27xiii.jpg",
     "Bio": "K', (pronounced as \"K Dash\"), sometimes known as \"K Prime\", is a character who debuted as the leader of the Hero Team in The King of Fighters '99. He stars as the reluctant hero in the NESTS saga of the series, often letting his partner Maxima handle any social necessities in his stead. He is the protagonist of the NESTS Saga (KOF 99-KOF 2001). To contrast the previous protagonist of the series, K' was made to be the \"dark hero\".",
@@ -126,7 +126,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/K%27"
   },
   {
-    "Character": ["kim_kaphwan", "kaphwan_kim"],
+    "Character": "kim",
     "Name": "Kim Kaphwan",
     "Image": "https://dreamcancel.com/wiki/images/b/b7/Kimxiii.jpg",
     "Bio": "Kaphwan Kim, usually written surname first as Kim Kaphwan, is a character in both the Fatal Fury and The King of Fighters series by SNK. Kim is a master of Taekwondo and considers himself a fighter of justice. Kim's original teammates, Chang Koehan and Choi Bounge, were to be teamed up with another dangerous criminal character to form the \"Fugitive Team\", but Kim was added to the team instead. His official nickname is The Crown Jewel of Taekwondo.",
@@ -135,7 +135,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kim"
   },
   {
-    "Character": ["king"],
+    "Character": "king",
     "Name": "King",
     "Image": "https://dreamcancel.com/wiki/images/0/00/Kingxiii.jpg",
     "Bio": "King is a character in both Art of Fighting and The King of Fighters series. She debuted in the original Art of Fighting as the sole playable female character. Her official nickname is The Beautiful Kick's Illusion. (SNK Wiki)",
@@ -144,7 +144,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/King"
   },
   {
-    "Character": ["kula_diamond"],
+    "Character": "kula",
     "Name": "Kula Diamond",
     "Image": "https://dreamcancel.com/wiki/images/7/7b/Kula_XIII.jpg",
     "Bio": "Kula Diamond first appeared as the sub-boss in The King of Fighters 2000. She enters as a normal participant in subsequent appearances. Her original hair color is strawberry blonde (confirmed after the game's release), but changes to a light blue when she activates her powers. She's often seen with her companions, Diana, Foxy and Candy Diamond. Her official nickname is Ice Doll. (SNK Wiki)",
@@ -153,7 +153,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kula"
   },
   {
-    "Character": ["leona_heidern"],
+    "Character": "leona",
     "Name": "Leona Heidern",
     "Image": "https://dreamcancel.com/wiki/images/f/fb/Leonaxiii.jpg",
     "Bio": "Leona, also known under her codename Leona Heidern, is a character introduced in The King of Fighters '96 as the new member to the Ikari Team. Her official nickname is The Silent Soldier. (SNK Wiki)",
@@ -162,7 +162,7 @@
     "Shoryuken": ""
   },
   {
-    "Character": ["mai_shiranui"],
+    "Character": "mai",
     "Name": "Mai Shiranui",
     "Image": "https://dreamcancel.com/wiki/images/4/4a/Maixiii.jpg",
     "Bio": "Mai Shiranui is a character from both the Fatal Fury and The King of Fighters series. Her official nickname is The Alluring Ninja Girl. (SNK Wiki)",
@@ -171,7 +171,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Mai"
   },
   {
-    "Character": ["mature"],
+    "Character": "mature",
     "Name": "Mature",
     "Image": "https://dreamcancel.com/wiki/images/4/48/Maturexiii.jpg",
     "Bio": "Mature appears as a member of Iori's Team in The King of Fighters '96. Her official nickname is The Speedy Cruel Beauty. (SNK Wiki)",
@@ -180,7 +180,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Mature"
   },
   {
-    "Character": ["maxima"],
+    "Character": "maxima",
     "Name": "Maxima",
     "Image": "https://dreamcancel.com/wiki/images/0/00/MaximaXIII.jpg",
     "Bio": "Maxima was a normal Canadian soldier that decided to get augmented who acts as a cyborg elder figure for the impetuous Kula and K'. Maxima's known for the large amount of Autoguard on his attacks and in KOFXIII this is no different. His normals are slow, but powerful, his jumping attacks are improved as compared to previous KOF games, and he has an instant command grab. With meter Maxima can deal heavy damage from simple combos and has access to powerful utility tools that can shut down many of the enemy's options.",
@@ -189,7 +189,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Maxima"
   },
   {
-    "Character": ["raiden"],
+    "Character": "raiden",
     "Name": "Raiden",
     "Image": "https://dreamcancel.com/wiki/images/1/11/Raiden.jpg",
     "Bio": "Raiden is a character from the Fatal Fury series who originally appeared in the first Fatal Fury. He was long considered for The King of Fighters series and he finally made his debut in The King of Fighters XII. Developers wanted to add him as the big burly guy for the cast. The reason they didn't choose his face counterpart was due to the overall insistence to add a giant, evil character. His official nickname is The Out-of-Control Giant. He is based on the late professional wrestler Big Van Vader, who was quite popular in Japan in the 1990s. (SNK Wiki)",
@@ -198,7 +198,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Raiden"
   },
   {
-    "Character": ["ralf_jones"],
+    "Character": "ralf",
     "Name": "Ralf Jones",
     "Image": "https://dreamcancel.com/wiki/images/8/88/RalfXIII.jpg",
     "Bio": "Ralf Jones is a character from the Ikari Warriors, Metal Slug, and The King of Fighters video game series. He also starred as the player character in the shooting games T.N.K. III and Iron Tank. His official nickname is The One-man Army.",
@@ -207,7 +207,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Ralf"
   },
   {
-    "Character": ["robert_garcia"],
+    "Character": "robert",
     "Name": "Robert Garcia",
     "Image": "https://dreamcancel.com/wiki/images/9/94/Robertxiii.jpg",
     "Bio": "Robert Garcia debuted as the deuteragonist in the Art of Fighting series, forming the second half of the Japanese's series namesake as \"The Raging Tiger\" or \"The Mightiest Tiger\". He is the first known foreign practitioner of Kyokugenryu Karate. (SNK Wiki)",
@@ -216,7 +216,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Robert"
   },
   {
-    "Character": ["ryo_sakazaki"],
+    "Character": "ryo",
     "Name": "Ryo Sakazaki",
     "Image": "https://dreamcancel.com/wiki/images/e/e7/Ryoxiii.jpg",
     "Bio": "Ryo Sakazaki is the main protagonist in Art of Fighting, forming the first half of the Japanese series's namesake as the The Invincible Dragon. His name is frequently written in katakana; earlier games used to write his name in kanji. (SNK Wiki)",
@@ -225,7 +225,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Ryo"
   },
   {
-    "Character": ["shen_woo"],
+    "Character": "shen",
     "Name": "Shen Woo",
     "Image": "https://dreamcancel.com/wiki/images/9/9d/Shenxiii.jpg",
     "Bio": "Shen Woo is a character from The King of Fighters series who makes his first playable appearance in The King of Fighters 2003. His official nickname is \"Shanghai's God of War.\" (SNK Wiki)",
@@ -234,7 +234,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Shen"
   },
   {
-    "Character": ["sie_kensou", "kensou_sie"],
+    "Character": "kensou",
     "Name": "Sie Kensou",
     "Image": "https://dreamcancel.com/wiki/images/8/81/Kensouxiii.jpg",
     "Bio": "Sie Kensou is a character who first appeared in the SNK video game Psycho Soldier. He appears in The King of Fighters series as an active member of the Psycho Soldiers Team. Ever since his first appearance, he has always served as a comic relief character. At one point, developers described his psychic powers being similar to Koichi's powers in Babel II. His official nickname is The Young Rising Dragon.",
@@ -243,7 +243,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Kensou"
   },
   {
-    "Character": ["takuma_sakazaki"],
+    "Character": "takuma",
     "Name": "Takuma Sakazaki",
     "Image": "https://dreamcancel.com/wiki/images/3/34/Takuma.jpg",
     "Bio": "Takuma Sakazaki is a character from both the Art of Fighting and The King of Fighters fighting game series. His distinguishing feature is an X-shaped scar on his right pectoral. He is also somewhat eccentric, donning his tengu mask and insisting he's Mr. Karate, and delivering speeches that are supposed to rally morale, but often make him look silly. Takuma is the most established known Kyokugenryu Karate practitioner, and he is the only one in the discipline who can make full use of the discipline's most difficult moves. (SNK Wiki)",
@@ -252,7 +252,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Takuma"
   },
   {
-    "Character": ["terry_bogard"],
+    "Character": "terry",
     "Name": "Terry Bogard",
     "Image": "https://dreamcancel.com/wiki/images/2/25/Terryxiii.jpg",
     "Bio": "Terry Bogard is the main protagonist of the Fatal Fury series. He has appeared in every Fatal Fury and King of Fighters game, and is one of the characters of choice to symbolize the company in crossover games, merchandise and publicity. He appears to fit many Japanese stereotypes for an American character in appearance, personality and speech (his in-game vocabulary is usually limited to American colloquialisms, such as \"Okay!\" and \"Hey, c'mon, c'mon.\"). (SNK Wiki)",
@@ -261,7 +261,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Terry"
   },
   {
-    "Character": ["vice"],
+    "Character": "vice",
     "Name": "Vice",
     "Image": "https://dreamcancel.com/wiki/images/c/c8/Vicexiii.jpg",
     "Bio": "Vice is a character who debuted as a member of the Iori Team in The King of Fighters '96. Her official nickname is Throbbing Brutal Sadic (SNK Wiki).",
@@ -270,7 +270,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Vice"
   },
   {
-    "Character": ["Yuri_Sakazaki"],
+    "Character": "yuri",
     "Name": "Yuri Sakazaki",
     "Image": "https://dreamcancel.com/wiki/images/4/4b/Yuri_XIII.jpg",
     "Bio": "Yuri Sakazaki is a character introduced in the Art of Fighting series as a damsel in distress and eventually as a playable character. Since then, she has appeared in many SNK fighting games, alongside her older brother, Ryo Sakazaki. She is the first female practitioner of Kyokugenryu Karate. Her official nickname is Wild Flying Swallow. (SNK Wiki)",
@@ -279,7 +279,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Yuri"
   },
   {
-    "Character": ["billy_kane"],
+    "Character": "billy",
     "Name": "Billy Kane",
     "Image": "https://dreamcancel.com/wiki/images/0/05/Kof13billylong.jpg",
     "Bio": "Billy Kane is a character in both the Fatal Fury and The King of Fighters series. His family name, Kane, is meant to be pronounced like \"Kon\" or \"Kaan\" (as in James Caan, an American actor), rather than the word \"cane\". His official nickname is Emperor's Right-Hand Man. (SNK Wiki)",
@@ -288,7 +288,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Billy"
   },
   {
-    "Character": ["saiki"],
+    "Character": "saiki",
     "Name": "Saiki",
     "Image": "https://dreamcancel.com/wiki/images/e/ed/Saikikof13long.jpg",
     "Bio": "Saiki is the main antagonist and sub-boss of The King of Fighters XIII. His official nickname is The One who Rules Time Although his boss form is unplayable, his normal form is included as an unlockable character in the console versions. (SNK Wiki)",
@@ -297,7 +297,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Saiki"
   },
   {
-    "Character": ["ex_iori", "flame_iori", "iori_ex", "iori_flame", "exiori", "flameiori"],
+    "Character": "ex_iori",
     "Name": "Iori with the Power of Flames",
     "Image": "https://dreamcancel.com/wiki/images/b/be/Exiorikoflongpic.jpg",
     "Bio": "Iori Yagami is a character who made his first appearance in The King of Fighters '95. He is a central recurring character, and the initial enemy (and eventual rival) of Kyo Kusanagi. (SNK Wiki)",
@@ -306,7 +306,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/EX_Iori"
   },
   {
-    "Character": ["mr_karate", "karate", "mrkarate"],
+    "Character": "mr_karate",
     "Name": "Mr. Karate",
     "Image": "https://dreamcancel.com/wiki/images/0/04/Mrkaratelongpic.png",
     "Bio": "Mr. Karate is the alter ego of Takuma Sakazaki that has appeared in a handful of SNK games. His first appearances was in Art of Fighting as the final boss. He wears a Tengu mask to hide his true identity. His name wasn't originally stated in-game, though the announcer did refer to him as \"Mr. Karate\" in versus mode. He was officially named as such in later games. (SNK Wiki)",
@@ -315,7 +315,7 @@
     "Shoryuken": "http://wiki.shoryuken.com/The_King_of_Fighters_XIII/Mr._Karate"
   },
   {
-    "Character": ["ex_kyo", "nests_kyo", "nestskyo", "exkyo", "kyo_nests", "kyo_ex", "kyonests", "kyoex"],
+    "Character": "ex_kyo",
     "Name": "NESTS Style Kyo",
     "Image": "https://dreamcancel.com/wiki/images/2/2b/Nestskyokoflong.jpg",
     "Bio": "Kyo Kusanagi is the main protagonist in SNK's The King of Fighters video game series. He was first introduced in The King of Fighters '94 as the leader of the Japan team. He is the rival of Iori Yagami. (SNK Wiki)",
