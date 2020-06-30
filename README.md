@@ -26,7 +26,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 ## Authors
 * **Tatsu Eliason** - *Initial work, frame data integration, backend development* - [SigSigSigurd](https://github.com/SigSigSigurd)
 * **Jay Russell** - *AniList, VNDB, openingsmoe API integration* - [Jay-Russell](https://github.com/Jay-Russell)
-* **TomiLahren** - *Making the JS version of the UW-Madison esports club bot*
+* **Sam Olson** - *Making the JS version of the UW-Madison esports club bot* - [PhysicsSamOlson](https://github.com/physicssamolson)
 
 See also the list of [contributors](https://github.com/SigSigSigurd/kotori-san-bot/contributors) who participated in this project.
 
