@@ -1377,5 +1377,80 @@
     "Alias": ["j.x", "j.0", "j", "jX"],
     "Command": "jX",
     "KOF": "j.x"
+  },
+  {
+    "Alias": ["f.AA", "f+AA", "6AA"],
+    "Command": "6AA",
+    "KOF": "f+AA"
+  },
+  {
+    "Alias": ["f.AA.x", "f+AA.x", "6AA.x"],
+    "Command": "6AA.x",
+    "KOF": "f+AA.x"
+  },
+  {
+    "Alias": ["tqcb.A", "tqcb+A", "tqcbA", "qcbqcbqcb+A", "qcbqcbqcb.A", "qcbqcbqcbA", "qcb,qcb,qcb.A", "qcb,qcb,qcb+A", "qcb,qcb,qcbA",
+    "qcb~qcb~qcb.A", "qcb~qcb~qcb+A", "qcb~qcb~qcbA", "214214214A"],
+    "Command": "214214214A",
+    "KOF": "tqcb+A"
+  },
+  {
+    "Alias": ["tqcb.C", "tqcb+C", "tqcbC", "qcbqcbqcb+C", "qcbqcbqcb.C", "qcbqcbqcbC", "qcb,qcb,qcb.C", "qcb,qcb,qcb+C", "qcb,qcb,qcbC",
+    "qcb~qcb~qcb.C", "qcb~qcb~qcb+C", "qcb~qcb~qcbC", "214214214C"],
+    "Command": "214214214C",
+    "KOF": "tqcb+C"
+  },
+  {
+    "Alias": ["tqcb.AC", "tqcb+AC", "tqcbAC", "qcbqcbqcb+AC", "qcbqcbqcb.AC", "qcbqcbqcbAC", "qcb,qcb,qcb.AC", "qcb,qcb,qcb+AC", "qcb,qcb,qcbAC",
+    "qcb~qcb~qcb.AC", "qcb~qcb~qcb+AC", "qcb~qcb~qcbAC", "214214214AC"],
+    "Command": "214214214AC",
+    "KOF": "tqcb+AC"
+  },
+  {
+    "Alias": ["23624A~236236236236A", "23624C~236236236236C", "23624P~236236236236P",
+    "23624C~236236236236A", "23624A~236236236236C",
+    "qcf~hcb+A~qcf~qcf~qcf~qcf+A", "qcf~hcb+C~qcf~qcf~qcf~qcf+C", "qcf~hcb+P~qcf~qcf~qcf~qcf+P"],
+    "Command": "23624P~236236236236P",
+    "KOF": "qcf~hcb+P, qcf+Px4"
+  },
+  {
+    "Alias": ["66A", "ff+A", "ff.A", "ffA"],
+    "Command": "66A",
+    "KOF": "ff+A"
+  },
+  {
+    "Alias": ["66B", "ff+B", "ff.B", "ffB"],
+    "Command": "66B",
+    "KOF": "ff+B"
+  },
+  {
+    "Alias": ["66C", "ff+C", "ff.C", "ffC"],
+    "Command": "66C",
+    "KOF": "ff+C"
+  },
+  {
+    "Alias": ["66D", "ff+D", "ff.D", "ffD"],
+    "Command": "66D",
+    "KOF": "ff+D"
+  },
+  {
+    "Alias": ["66A.x", "ff+A.x", "ff.A.x", "ffA.x"],
+    "Command": "66A.x",
+    "KOF": "ff+A.x"
+  },
+  {
+    "Alias": ["66B.x", "ff+B.x", "ff.B.x", "ffB.x"],
+    "Command": "66B.x",
+    "KOF": "ff+B.x"
+  },
+  {
+    "Alias": ["66C.x", "ff+C.x", "ff.C.x", "ffC.x"],
+    "Command": "66C.x",
+    "KOF": "ff+C.x"
+  },
+  {
+    "Alias": ["66D.x", "ff+D.x", "ff.D.x", "ffD.x"],
+    "Command": "66D.x",
+    "KOF": "ff+D.x"
   }
 ]

@@ -324,7 +324,7 @@
     "Blockstun": "13"
   },
   {
-    "Command": ["j.C", "j.5C"],
+    "Command": "jC",
     "Startup": "8",
     "Active": "6",
     "Recovery": "Until landing+1",
