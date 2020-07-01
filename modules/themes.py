@@ -3,6 +3,7 @@ import requests
 import praw
 import random
 import re
+from .anilist import Anilist
 
 class Themes():
     def openingsMoe():
@@ -10,7 +11,7 @@ class Themes():
         songs = requests.get('https://openings.moe/api/list.php').json()
         return songs
     
-    def search(english, romaji, show, select, songs):
+    def search(english, romaji, sId, show, select, songs):
         found = True
         for i in range(2):
             for song in songs:
@@ -18,7 +19,8 @@ class Themes():
                 ltitle = title.lower()
                 opening = song['title']
                 if (english in ltitle or romaji in ltitle) and select in opening:
-                    # TODO: compare anilist titles
+                    if Anilist.aniSearch(title)['data']['Media']['id'] != sId:
+                        continue
                     #print('\n' + english + '\n' + romaji + '\n' + ltitle + '\n' + str(english.lower() in ltitle or romaji.lower() in ltitle) + '\n\n')
                     video = 'https://openings.moe/video/' + song['file'] + '.mp4'
                     try:
