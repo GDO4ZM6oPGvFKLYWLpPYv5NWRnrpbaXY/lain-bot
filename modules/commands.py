@@ -377,7 +377,7 @@ class Commands:
 	async def skip(ctx):
 		voice = get(bot.voice_clients, guild=ctx.guild)
 
-		if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused()):
+		if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused):
 			voice.stop()
 			await ctx.send('Skipped')
 		else:
@@ -415,7 +415,6 @@ class Commands:
 			showPic = anime['data']['Media']['coverImage']['extraLarge']
 			year = anime['data']['Media']['startDate']['year']
 			mal = str(anime['data']['Media']['idMal'])
-			Id = anime['data']['Media']['id']
 		except:
 			await ctx.send('Invalid show')
 
@@ -425,7 +424,7 @@ class Commands:
 		elif romaji == 'None':
 			romaji == english
 
-		parts = Themes.search(show, Id, select, songs)
+		parts = Themes.search(english.lower(), romaji.lower(), show, select, songs)
 		found = False
 		try:
 			embed = discord.Embed(
@@ -493,7 +492,6 @@ class Commands:
 			showPic = anime['data']['Media']['coverImage']['extraLarge']
 			year = anime['data']['Media']['startDate']['year']
 			mal = str(anime['data']['Media']['idMal'])
-			Id = anime['data']['Media']['id']
 		except:
 			await ctx.send('Invalid show')
 
@@ -503,7 +501,7 @@ class Commands:
 		elif romaji == 'None':
 			romaji == english
 
-		parts = Themes.search(show, Id, select, songs)
+		parts = Themes.search(english, romaji, show, select, songs)
 		found = False
 		try:
 			embed = discord.Embed(

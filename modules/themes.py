@@ -3,7 +3,6 @@ import requests
 import praw
 import random
 import re
-from .anilist import Anilist
 
 class Themes():
     def openingsMoe():
@@ -11,23 +10,25 @@ class Themes():
         songs = requests.get('https://openings.moe/api/list.php').json()
         return songs
     
-    def search(show, Id, select, songs):
-        for song in songs:
-            title = song['source']
-            opening = song['title']
-            cId = Anilist.aniSearch(title)
-            if Id == cId and select in opening:
-                # TODO: compare anilist titles
-                #print('\n' + english + '\n' + romaji + '\n' + ltitle + '\n' + str(english.lower() in ltitle or romaji.lower() in ltitle) + '\n\n')
-                video = 'https://openings.moe/video/' + song['file'] + '.mp4'
-                try:
-                    big = song['song']['artist'] + ' - ' + song['song']['title']
-                except Exception as e:
-                    print(e)
-                    big = 'Video'
-                    #await ctx.send('Playing **' + opening + '** of *' + title + '*')
-                return {'big' : big, 'video' : video, 'found' : True, 'title': title, 'op/ed': opening}
-            
+    def search(english, romaji, show, select, songs):
+        found = True
+        for i in range(2):
+            for song in songs:
+                title = song['source']
+                ltitle = title.lower()
+                opening = song['title']
+                if (english in ltitle or romaji in ltitle) and select in opening:
+                    # TODO: compare anilist titles
+                    #print('\n' + english + '\n' + romaji + '\n' + ltitle + '\n' + str(english.lower() in ltitle or romaji.lower() in ltitle) + '\n\n')
+                    video = 'https://openings.moe/video/' + song['file'] + '.mp4'
+                    try:
+                        big = song['song']['artist'] + ' - ' + song['song']['title']
+                    except Exception as e:
+                        print(e)
+                        big = 'Video'
+                        #await ctx.send('Playing **' + opening + '** of *' + title + '*')
+                    return {'big' : big, 'video' : video, 'found' : True, 'title': title, 'op/ed': opening}
+            english = show
         
         return {'found': False}
     
