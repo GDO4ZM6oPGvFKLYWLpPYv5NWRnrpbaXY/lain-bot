@@ -379,8 +379,9 @@ class Commands:
 
 		if voice and voice.is_connected():
 			voice.stop()
+			await ctx.send('Skipped')
 		else:
-			ctx.send('Nothing to skip')
+			await ctx.send('Nothing to skip')
 	
 	@bot.command(pass_context=True)
 	async def op(ctx, num):
