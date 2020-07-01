@@ -372,7 +372,16 @@ class Commands:
 			await ctx.send('Resumed')
 		else:
 			await ctx.send('Nothing is paused')
+	
+	@bot.command(pass_context=True)
+	async def skip(ctx):
+		voice = get(bot.voice_clients, guild=ctx.guild)
 
+		if voice and voice.is_connected():
+			voice.stop()
+		else:
+			ctx.send('Nothing to skip')
+	
 	@bot.command(pass_context=True)
 	async def op(ctx, num):
 		# 1 = opening
@@ -526,7 +535,7 @@ class Commands:
 			except Exception as e:
 				print(e)
 				await ctx.send('Show not found in database')
-
+	
 	@bot.group()
 	async def xiii(ctx):
 		if ctx.invoked_subcommand is None:
