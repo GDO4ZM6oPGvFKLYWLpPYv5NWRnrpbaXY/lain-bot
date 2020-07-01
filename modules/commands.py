@@ -319,7 +319,7 @@ class Commands:
 					url = 'https://r-a-d.io/'
 				)
 
-			embed.set_author(name=djname, icon_url=djimage)
+			embed.set_author(name=djname, url='https://r-a-d.io/staff', icon_url=djimage)
 
 			# now playing
 			embed.add_field(name='Now Playing', value=song, inline=False)
