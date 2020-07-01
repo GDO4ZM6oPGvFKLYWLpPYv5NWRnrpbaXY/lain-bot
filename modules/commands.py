@@ -377,7 +377,7 @@ class Commands:
 	async def skip(ctx):
 		voice = get(bot.voice_clients, guild=ctx.guild)
 
-		if voice and voice.is_connected():
+		if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused()):
 			voice.stop()
 			await ctx.send('Skipped')
 		else:
