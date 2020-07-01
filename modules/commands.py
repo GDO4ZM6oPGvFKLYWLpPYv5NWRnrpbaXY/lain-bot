@@ -343,6 +343,7 @@ class Commands:
 
 			if voice and voice.is_connected():
 				await voice.disconnect()
+				queues.clear()
 			else:
 				await ctx.send('Not connected to a voice channel')
 		except AttributeError as a:
@@ -352,6 +353,25 @@ class Commands:
 			print(e)
 			await ctx.send('Unexpected error')
 
+	@bot.command(pass_context=True)
+	async def pause(ctx):
+		voice = get(bot.voice_clients, guild=ctx.guild)
+
+		if voice and voice.is_playing():
+			voice.pause()
+			await ctx.send('Paused')
+		else:
+			await ctx.send('Nothing is not playing')
+	
+	@bot.command(pass_context=True)
+	async def resume(ctx):
+		voice = get(bot.voice_clients, guild=ctx.guild)
+
+		if voice and voice.is_paused():
+			voice.resume()
+			await ctx.send('Resumed')
+		else:
+			await ctx.send('Nothing is paused')
 
 	@bot.command(pass_context=True)
 	async def op(ctx, num):
@@ -645,13 +665,34 @@ async def join(ctx, url):
 			else:
 				voice = await channel.connect()
 
-			voice.play(discord.FFmpegPCMAudio(url), after=lambda e: print('Player error: %s' % e) if e else None)
+			await play(ctx, voice, url)
 	except AttributeError as a:
 		print(a)
 		await ctx.send('User is not in a channel.')
 	except Exception as e:
 		print(e)
 		await ctx.send('Unexpected error')
+
+async def play(ctx, voice, url):
+	def check_queue():
+		qnum = len(queues)
+		if qnum != 0:
+			next = queues.pop()
+			voice.play(discord.FFmpegPCMAudio(next), after=lambda e: check_queue())
+		else:
+			queues.clear()
+		
+	if voice.is_playing():
+		await add(ctx, url)
+	else:
+		voice.play(discord.FFmpegPCMAudio(url), after=lambda e: check_queue())
+
+queues = []
+
+async def add(ctx, url):
+	queues.insert(0, url)
+
+	await ctx.send('**{0}** in queue'.format(len(queues)))
 
 # helper functions for vn and anilist search
 def parse(ctx, num):
