@@ -385,6 +385,14 @@ class Commands:
 			await ctx.send('Skipped')
 		else:
 			await ctx.send('Nothing to skip')
+
+	@bot.command(pass_context=True)
+	async def clear(ctx):
+		if len(queues) == 0:
+			await ctx.send('Nothing in queue')
+		else:
+			queues.clear()
+			await ctx.send('Queue cleared')
 	
 	@bot.command(pass_context=True)
 	async def op(ctx, num):
