@@ -332,7 +332,7 @@ class Commands:
 				i += 1
 			embed.add_field(name='Queue', value=out, inline=False)
 
-			embed.set_footer(text='Listeners: {1}, Bitrate: {2}'.format(listeners, bitrate), icon_url='https://r-a-d.io/assets/logo_image_small.png')
+			embed.set_footer(text='Listeners: {0}, Bitrate: {1}'.format(listeners, bitrate), icon_url='https://r-a-d.io/assets/logo_image_small.png')
 
 			await ctx.send(embed=embed)
 		except:
