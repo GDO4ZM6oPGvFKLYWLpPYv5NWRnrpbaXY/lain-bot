@@ -309,6 +309,7 @@ class Commands:
 			song = main['np']
 			q = main['queue']
 			djname = main['dj']['djname']
+			djimage = 'https://r-a-d.io/api/dj-image/' + str(main['dj']['djimage']) 
 			bitrate = str(main['bitrate'])
 			listeners = str(main['listeners'])
 
@@ -317,6 +318,8 @@ class Commands:
 					color = discord.Color.red(),
 					url = 'https://r-a-d.io/'
 				)
+
+			embed.set_author(name=djname, icon_url=djimage)
 
 			# now playing
 			embed.add_field(name='Now Playing', value=song, inline=False)
@@ -329,7 +332,7 @@ class Commands:
 				i += 1
 			embed.add_field(name='Queue', value=out, inline=False)
 
-			embed.set_footer(text='DJ: {0}, Listeners: {1}, Bitrate: {2}'.format(djname, listeners, bitrate))
+			embed.set_footer(text='Listeners: {1}, Bitrate: {2}'.format(listeners, bitrate), icon_url='https://r-a-d.io/assets/logo_image_small.png')
 
 			await ctx.send(embed=embed)
 		except:
