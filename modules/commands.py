@@ -459,7 +459,7 @@ class Commands:
 				await join(ctx, parts['video'])
 			except Exception as e:
 				print(e)
-				await ctx.send('Show not found in database')
+				await ctx.send('*' + english + '* not found in database')
 
 	@bot.command(pass_context=True)
 	async def ed(ctx, num):
@@ -503,7 +503,7 @@ class Commands:
 		elif romaji == 'None':
 			romaji == english
 
-		parts = Themes.search(english, romaji, show, sId, select, songs)
+		parts = Themes.search(english, romaji, sId, show, select, songs)
 		found = False
 		try:
 			embed = discord.Embed(
@@ -537,7 +537,7 @@ class Commands:
 				await join(ctx, parts['video'])
 			except Exception as e:
 				print(e)
-				await ctx.send('Show not found in database')
+				await ctx.send('*' + english + '* not found in database')
 	
 	@bot.group()
 	async def xiii(ctx):
