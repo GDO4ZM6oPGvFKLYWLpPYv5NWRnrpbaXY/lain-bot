@@ -55,7 +55,7 @@ class Themes():
         
         md = contains.content_md.split('\n')
         
-        first = '/anime/' + mal
+        first = '/anime/' + mal + '/'
         second = str(which) + str(num)
         search = first
         info = ''
