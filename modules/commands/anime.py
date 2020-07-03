@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import random
 
 from modules.core.client import Client
 from modules.anime.safebooru import Safebooru
