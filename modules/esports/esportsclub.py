@@ -84,3 +84,21 @@ class EsportsClub:
 
         else:
             await ctx.send("Error, command not found!")
+
+    @bot.command(pass_context=True)
+    async def percentage(ctx, per):
+        if per==25:
+            open(os.getcwd()+"/assets/arai25.jpg", "rb") as av
+            await bot.edit(avatar=av.read())
+        elif per==50:
+            open(os.getcwd()+"/assets/arai50.jpg", "rb") as av
+            await bot.edit(avatar=av.read())
+        elif per==75:
+            open(os.getcwd()+"/assets/arai75.jpg", "rb") as av
+            await bot.edit(avatar=av.read())
+        elif per==100:
+            open(os.getcwd()+"/assets/arai100.jpg", "rb") as av
+            await bot.edit(avatar=av.read())
+        else:
+            open(os.getcwd()+"/assets/esports.png", "rb") as av
+            await bot.edit(avatar=av.read())
