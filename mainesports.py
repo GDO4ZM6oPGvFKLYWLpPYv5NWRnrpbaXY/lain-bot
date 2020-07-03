@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from modules.core.client import Client
 from modules.core.command import Command
 from modules.core.events import Events
-#from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
+from modules.esports.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 #currently SMTP doesn't work
 
 bot = Client.bot
