@@ -6,10 +6,10 @@ import json
 import os
 from os import path
 
-from .client import Client
-from .config import Config
-from .safebooru import Safebooru
-from .user import User
+from modules.core.client import Client
+from modules.config.config import Config
+from modules.config.user import User
+from modules.anime.safebooru import Safebooru
 
 bot = Client.bot
 status = discord.Game("on Wired") #sets the game the bot is currently playing
