@@ -1452,5 +1452,21 @@
     "Alias": ["66D.x", "ff+D.x", "ff.D.x", "ffD.x"],
     "Command": "66D.x",
     "KOF": "ff+D.x"
+  },
+  {
+    "Alias": ["236A236A~A", "236A236C~A", "236A236C~A", "236A236C~C",
+    "qcfA~qcfA~A", "qcfA~qcfC~qcfC", "qcfA~qcfC~A", "qcfA~qcfA~C",
+    "qcfA~qcfA~A", "qcfA,qcfC,qcfC", "qcfA,qcfC,A", "qcfA,qcfA,C",
+    "qcfAqcfAA", "qcfAqcfAC", "qcfAqcfCA", "qcfAqcfCC"],
+    "Command": "236A236AA",
+    "KOF": "236A~236A~A"
+  },
+  {
+    "Alias": ["236A236A~B", "236A236C~B", "236A236A~D", "236A236C~D",
+    "qcfA~qcfA~B", "qcfA~qcfC~qcfD", "qcfA~qcfC~B", "qcfA~qcfA~D",
+    "qcfA~qcfA~B", "qcfA,qcfC,qcfD", "qcfA,qcfC,B", "qcfA,qcfA,D",
+    "qcfAqcfAB", "qcfAqcfAD", "qcfAqcfCB", "qcfAqcfCD"],
+    "Command": "236A236AB",
+    "KOF": "236A~236A~B"
   }
 ]
