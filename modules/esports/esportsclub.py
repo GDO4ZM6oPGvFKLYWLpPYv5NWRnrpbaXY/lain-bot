@@ -6,8 +6,8 @@ import os
 import smtplib
 from dotenv import load_dotenv
 
-from .client import Client
-from .user import User
+from modules.core.client import Client
+from modules.config.user import User
 
 bot = Client.bot
 load_dotenv()

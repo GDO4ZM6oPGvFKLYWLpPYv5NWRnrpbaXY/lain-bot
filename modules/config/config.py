@@ -2,7 +2,7 @@ import discord
 import json
 import os
 
-from .client import Client
+from modules.core.client import Client
 
 bot = Client.bot
 

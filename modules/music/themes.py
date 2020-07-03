@@ -3,14 +3,15 @@ import requests
 import praw
 import random
 import re
-from .anilist import Anilist
+
+from modules.anime.anilist import Anilist
 
 class Themes():
     def openingsMoe():
         # get all openings & info
         songs = requests.get('https://openings.moe/api/list.php').json()
         return songs
-    
+
     def search(english, romaji, sId, show, select, songs):
         found = True
         for i in range(2):
@@ -31,9 +32,9 @@ class Themes():
                         #await ctx.send('Playing **' + opening + '** of *' + title + '*')
                     return {'big' : big, 'video' : video, 'found' : True, 'title': title, 'op/ed': opening}
             english = show
-        
+
         return {'found': False}
-    
+
     def themesMoe(year, mal, which, num):
         config = json.load(open('themes.json', 'r'))
         reddit = praw.Reddit(client_id=config['id'], client_secret=config['secret'], user_agent='Snans')
@@ -52,9 +53,9 @@ class Themes():
             if str(wikipage.name) == str(year):
                 contains = wikipage
                 break
-        
+
         md = contains.content_md.split('\n')
-        
+
         first = '/anime/' + mal + '/'
         second = str(which) + str(num)
         search = first
@@ -66,7 +67,7 @@ class Themes():
                 else:
                     info = line.split('|')
                     break
-        
+
         if '\"' in info[0]:
             name = info[0].split('\"')[1]
         else:
@@ -75,4 +76,3 @@ class Themes():
         video = re.search("(?P<url>https?://[^\s]+)", info[1]).group("url").replace(')', '')
 
         return {'video' : video, 'name' : name, 'info': info}
-        

@@ -1,13 +1,9 @@
 import os
 from dotenv import load_dotenv
-import discord
-from discord.ext import commands
 
-from modules.client import Client
-from modules.config import Config
-from modules.commands import Commands
-from modules.events import Events
-from modules.safebooru import Safebooru
+from modules.core.client import Client
+from modules.core.command import Command
+from modules.core.events import Events
 #from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
 bot = Client.bot
