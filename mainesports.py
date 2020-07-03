@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
 
-from modules.client import Client
-from modules.command import Command
-from modules.events import Events
+from modules.core.client import Client
+from modules.core.command import Command
+from modules.core.events import Events
 #from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 #currently SMTP doesn't work
 
