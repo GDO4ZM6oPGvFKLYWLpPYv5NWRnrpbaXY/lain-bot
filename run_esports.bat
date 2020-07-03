@@ -1,2 +1,2 @@
-py -m main_esports.py
+py -m mainesports.py
 pause
