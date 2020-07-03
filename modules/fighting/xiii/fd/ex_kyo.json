@@ -1,0 +1,154 @@
+[
+  {
+    "Command": "5A",
+    "Startup": "4",
+    "Active": "4",
+    "Recovery": "7",
+    "Hit": "+4",
+    "Block": "+2"
+  },
+  {
+    "Command": "5B",
+    "Startup": "7",
+    "Active": "3",
+    "Recovery": "11",
+    "Hit": "+1",
+    "Block": "-1"
+  },
+  {
+    "Command": "2A",
+    "Startup": "5",
+    "Active": "4",
+    "Recovery": "8",
+    "Hit": "+3",
+    "Block": "+1"
+  },
+  {
+    "Command": "2B",
+    "Startup": "4",
+    "Active": "4",
+    "Recovery": "7",
+    "Hit": "+4",
+    "Block": "+2"
+  },
+  {
+    "Command": "clC",
+    "Startup": "3",
+    "Active": "8",
+    "Recovery": "11",
+    "Hit": "+2",
+    "Block": "0"
+  },
+  {
+    "Command": "5C",
+    "Startup": "10",
+    "Active": "5",
+    "Recovery": "23",
+    "Hit": "-7",
+    "Block": "-9"
+  },
+  {
+    "Command": "2C",
+    "Startup": "5",
+    "Active": "5",
+    "Recovery": "22",
+    "Hit": "-6",
+    "Block": "-8"
+  },
+  {
+    "Command": "5D",
+    "Startup": "8",
+    "Active": "5",
+    "Recovery": "17",
+    "Hit": "-1",
+    "Block": "-3"
+  },
+  {
+    "Command": "2D",
+    "Startup": "8",
+    "Active": "5",
+    "Recovery": "22",
+    "Hit": "Knockdown",
+    "Block": "-8"
+  },
+  {
+    "Command": "3D",
+    "Startup": "9",
+    "Active": "2,(6),3",
+    "Recovery": "27",
+    "Hit": "-9",
+    "Block": "-11"
+  },
+  {
+    "Command": "3D.x",
+    "Startup": "9",
+    "Active": "2,(6),3",
+    "Recovery": "27",
+    "Hit": "-9",
+    "Block": "-11"
+  },
+  {
+    "Command": "6B",
+    "Startup": "19",
+    "Active": "2",
+    "Recovery": "19",
+    "Hit": "0",
+    "Block": "-2"
+  },
+  {
+    "Command": "6B.x",
+    "Startup": "17",
+    "Active": "2",
+    "Recovery": "19",
+    "Hit": "0",
+    "Block": "-2"
+  },
+  {
+    "Command": "5CD",
+    "Startup": "14",
+    "Active": "6",
+    "Recovery": "16",
+    "Hit": "Knockdown",
+    "Block": "+1"
+  },
+  {
+    "Command": "236A",
+    "Startup": "11",
+    "Active": "6",
+    "Recovery": "19",
+    "Hit": "-4",
+    "Block": "-7"
+  },
+  {
+    "Command": "236236A",
+    "Startup": "10",
+    "Active": "8",
+    "Recovery": "26",
+    "Hit": "Knockdown",
+    "Block": "-16"
+  },
+  {
+    "Command": "236236A",
+    "Startup": "10",
+    "Active": "8",
+    "Recovery": "26",
+    "Hit": "Knockdown",
+    "Block": "-16"
+  },
+  {
+    "Command": "236A236AA",
+    "Startup": "10",
+    "Active": "4",
+    "Recovery": "28",
+    "Hit": "Knockdown",
+    "Block": "-14"
+  },
+  {
+    "Command": "236A236AB",
+    "Startup": "13",
+    "Active": "6",
+    "Recovery": "23",
+    "Hit": "Knockdown",
+    "Block": "-11"
+  }
+]
