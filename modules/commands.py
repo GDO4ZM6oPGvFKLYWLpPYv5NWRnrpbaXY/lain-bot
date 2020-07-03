@@ -309,7 +309,7 @@ class Commands:
 			song = main['np']
 			q = main['queue']
 			djname = main['dj']['djname']
-			djimage = 'https://r-a-d.io/api/dj-image/' + str(main['dj']['djimage']) 
+			djimage = 'https://r-a-d.io/api/dj-image/' + str(main['dj']['djimage'])
 			bitrate = str(main['bitrate'])
 			listeners = str(main['listeners'])
 
@@ -365,7 +365,7 @@ class Commands:
 			await ctx.send('Paused')
 		else:
 			await ctx.send('Nothing is not playing')
-	
+
 	@bot.command(pass_context=True)
 	async def resume(ctx):
 		voice = get(bot.voice_clients, guild=ctx.guild)
@@ -375,7 +375,7 @@ class Commands:
 			await ctx.send('Resumed')
 		else:
 			await ctx.send('Nothing is paused')
-	
+
 	@bot.command(pass_context=True)
 	async def skip(ctx):
 		voice = get(bot.voice_clients, guild=ctx.guild)
@@ -393,7 +393,7 @@ class Commands:
 		else:
 			queues.clear()
 			await ctx.send('Queue cleared')
-	
+
 	@bot.command(pass_context=True)
 	async def op(ctx, num):
 		# 1 = opening
@@ -549,7 +549,7 @@ class Commands:
 			except Exception as e:
 				print(e)
 				await ctx.send('*' + english + '* not found in database')
-	
+
 	@bot.group()
 	async def xiii(ctx):
 		if ctx.invoked_subcommand is None:
@@ -558,11 +558,15 @@ class Commands:
 	@xiii.command(pass_context=True)
 	async def fd(ctx, char, move):
 		channel = ctx.message.channel
+		error = 0
+		try:
+			frames = FgInfo.searchFd("xiii", char, move)
 
-		frames = FgInfo.searchFd("xiii", char, move)
-
-		name = FgAlias.char("xiii", char, "Name")
-		moveName = FgAlias.move(move, "KOF")
+			name = FgAlias.char("xiii", char, "Name")
+			nameString = FgAlias.char("xiii", char, "String")
+			moveName = FgAlias.move("xiii", nameString, move, "KOF")
+		except:
+			error+=1
 		try:
 			startup = frames["Startup"]
 			active = frames["Active"]
@@ -608,6 +612,8 @@ class Commands:
 
 			await channel.send(embed=embed)
 		except:
+			error+=1
+		if error!=0:
 			await channel.send("An error has occured! Make sure you're spelling everything correctly!")
 
 	@xiii.command(pass_context=True)
@@ -704,7 +710,7 @@ async def play(ctx, voice, url):
 			voice.play(discord.FFmpegPCMAudio(next), after=lambda e: check_queue())
 		else:
 			queues.clear()
-		
+
 	if voice.is_playing():
 		await add(ctx, url)
 	else:
