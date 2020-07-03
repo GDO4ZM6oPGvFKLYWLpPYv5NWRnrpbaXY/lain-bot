@@ -591,6 +591,10 @@ class Commands:
 				hitstun = frames["Hitstun"]
 			except:
 				hitstun = "null"
+			try:
+				moveName = frames["Name"][0]
+			except:
+				pass
 
 			embed = discord.Embed(
 				title = "Frame data for "+moveName+" of "+name
