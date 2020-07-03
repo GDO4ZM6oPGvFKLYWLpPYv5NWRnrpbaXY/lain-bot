@@ -109,7 +109,8 @@
     "Active": "-",
     "Recovery": "29",
     "Hit": "+2",
-    "Block": "-1"
+    "Block": "-1",
+    "Name": ["Light Psycho Ball", "A_psychoball", "LP_psychoball", "apsychoball", "lppsychoball"]
   },
   {
     "Command": "214C",
