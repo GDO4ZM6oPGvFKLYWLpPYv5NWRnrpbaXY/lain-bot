@@ -3,10 +3,12 @@ from discord.ext import commands
 from discord.utils import get
 import youtube_dl
 import ffmpeg
+import random
 
 from modules.core.client import Client
 from modules.music.radio import Radio
 from modules.music.themes import Themes
+from modules.anime.anilist import Anilist
 
 bot = Client.bot
 
