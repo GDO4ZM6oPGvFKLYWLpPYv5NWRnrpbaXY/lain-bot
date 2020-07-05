@@ -181,6 +181,7 @@ class Anilist(graphene.ObjectType):
 			MediaList (userId: $userId, mediaId: $mediaId) {
 				mediaId
 				score
+				status
 			}
 		}
 		'''

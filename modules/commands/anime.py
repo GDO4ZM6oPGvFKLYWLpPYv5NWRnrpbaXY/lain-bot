@@ -88,7 +88,8 @@ class Anime(commands.Cog):
 				alName = User.userRead(str(user.id), "alName")
 				if alID!=0:
 					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					embed.add_field(name=alName, value=str(scoreResults)+"/10", inline=True)
+					statusResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"]
+					embed.add_field(name=alName, value=str(scoreResults)+"/10 ("+statusResults[0]+")", inline=True)
 			except:
 				pass
 
@@ -104,7 +105,7 @@ class Anime(commands.Cog):
 				# make sure season is valid
 				if str(anilistResults['data']['Media']['seasonYear']) != 'None' and str(anilistResults['data']['Media']['season']) != 'None':
 					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
-				
+
 				# find difference in year month and days of show's air time
 				try:
 					air = True
@@ -124,7 +125,7 @@ class Anime(commands.Cog):
 						tyme += ', ' + str(years) + ' years'
 
 					embed.add_field(name='Aired', value=tyme, inline=True)
-				
+
 
 		await ctx.send(embed=embed)
 
