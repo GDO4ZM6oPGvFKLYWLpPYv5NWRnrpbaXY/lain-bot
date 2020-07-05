@@ -58,3 +58,7 @@ class Events:
 					role = discord.utils.get(guild.roles, name='RecWell')
 					await discord.Member.add_roles(member, role)
 					break
+		if Config.cfgRead(str(member.guild.id), "welcomeOn")==True:
+			welcomeMsg = Config.cfgRead(str(member.guild.id), "welcomeMsg")
+			welcomeMsgFormatted = welcomeMsg.format(member=member.mention)
+			await bot.get_channel(Config.cfgRead(str(member.guild.id), "welcomeChannel")).send(welcomeMsgFormatted)
