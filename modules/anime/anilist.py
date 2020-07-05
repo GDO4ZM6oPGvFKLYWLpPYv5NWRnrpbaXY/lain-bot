@@ -110,3 +110,54 @@ class Anilist(graphene.ObjectType):
 		else:
 			print('Character response code: ' + str(response.status_code) + '\n\n' + str(result))
 			return None
+
+	def userSearch(user):
+		#implement query/statistics later
+		query = '''
+		query ($name: String) {
+			User (name: $name) {
+				id
+				name
+				about
+				avatar {
+					medium
+					large
+				}
+				bannerImage
+				options {
+					profileColor
+				}
+				siteUrl
+				updatedAt
+				statistics {
+					anime {
+						count
+						meanScore
+						genres(limit: 5, sort: COUNT_DESC){
+							genre
+							count
+							meanScore
+						}
+					}
+				}
+			}
+		}
+		'''
+
+		variables = {
+			'name': user,
+			'limit': 5
+		}
+
+		url = 'https://graphql.anilist.co'
+
+		response = requests.post(url, json={'query': query, 'variables': variables})
+		result = response.json()
+
+		print(result)
+
+		if response.status_code == 200:
+			return result
+		else:
+			print('User response code: ' + str(response.status_code) + '\n\n' + str(result))
+			return None
