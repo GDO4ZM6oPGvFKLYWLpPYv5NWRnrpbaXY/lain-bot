@@ -146,6 +146,54 @@ class Anime(commands.Cog):
 
 		await ctx.send(embed=embed)
 
+	@al.group(pass_context=True)
+	async def user(ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid Anilist user command passed...')
+
+	# al user
+	@user.command()
+	async def profile(ctx, user):
+		anilistResults = Anilist.userSearch(user)["data"]["User"]
+
+		color = colorConversion(anilistResults["options"]["profileColor"])
+
+		embed = discord.Embed(
+			title = anilistResults["name"],
+			color = color,
+			url = anilistResults["siteUrl"]
+		)
+
+		animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
+
+
+		# core user fields
+		embed.set_image(url=anilistResults["bannerImage"])
+		embed.set_thumbnail(url=anilistResults["avatar"]["large"])
+		embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
+		embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
+
+		# anime fields
+		embed.add_field(name="Anime count:", value=str(anilistResults["statistics"]["anime"]["count"]), inline=True)
+		embed.add_field(name="Mean anime score:", value=str(anilistResults["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
+		embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+
+		await ctx.send(embed=embed)
+
+	@bot.group()
+	async def mal(ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid MAL command passed...')
+
+	@mal.group(pass_context=True)
+	async def user(ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid MAL user command passed...')
+
+	@user.command()
+	async def search(ctx):
+		await ctx.send("MAL WIP")
+
 	@bot.group()
 	async def vn(ctx):
 		if ctx.invoked_subcommand is None:
@@ -298,3 +346,15 @@ def shorten(desc):
 
 def findSentences(s):
 	return [i for i, letter in enumerate(s) if letter == '.' or letter == '?' or letter == '!']
+
+def colorConversion(arg):
+	colors = {
+		"blue": discord.Color.blue(),
+		"purple": discord.Color.purple(),
+		"pink": discord.Color.magenta(),
+		"orange": discord.Color.orange(),
+		"red": discord.Color.red(),
+		"green": discord.Color.green(),
+		"gray": discord.Color.light_grey()
+	}
+	return colors.get(arg, discord.Color.teal())
