@@ -114,7 +114,7 @@ class Anilist(graphene.ObjectType):
 	def userSearch(user):
 		#implement query/statistics later
 		query = '''
-		query ($name: String) {
+		query ($name: String, $limit: Int, $page: Int, $perPage: Int) {
 			User (name: $name) {
 				id
 				name
@@ -133,10 +133,20 @@ class Anilist(graphene.ObjectType):
 					anime {
 						count
 						meanScore
-						genres(limit: 5, sort: COUNT_DESC){
+						genres(limit: $limit, sort: COUNT_DESC){
 							genre
 							count
 							meanScore
+						}
+					}
+				}
+				favourites{
+					anime(page: $page, perPage: $perPage){
+						nodes{
+							title {
+								romaji
+								english
+							}
 						}
 					}
 				}
@@ -146,7 +156,9 @@ class Anilist(graphene.ObjectType):
 
 		variables = {
 			'name': user,
-			'limit': 5
+			'limit': 5,
+			'page': 1,
+			'perPage': 5
 		}
 
 		url = 'https://graphql.anilist.co'

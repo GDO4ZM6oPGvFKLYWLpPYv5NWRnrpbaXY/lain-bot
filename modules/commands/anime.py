@@ -3,6 +3,7 @@ from discord.ext import commands
 import random
 
 from modules.core.client import Client
+from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
 from modules.anime.vndb import Vndb
@@ -153,8 +154,41 @@ class Anime(commands.Cog):
 
 	# al user
 	@user.command()
-	async def profile(ctx, user):
-		anilistResults = Anilist.userSearch(user)["data"]["User"]
+	async def set(ctx, user):
+		#try:
+		User.userUpdate(str(ctx.message.author.id), "alName", user)
+		await ctx.send("Updated AL username!")
+		#except:
+			#await ctx.send("Failed to update AL username!")
+
+	# al user
+	@user.command()
+	async def profile(ctx):
+		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
+		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
+		if user == "":
+			try:
+				user = User.userRead(str(ctx.message.author.id), "alName")
+			except:
+				user = None
+		if user.startswith("<@!"):
+			userLen = len(user)-1
+			atUser = user[3:userLen]
+			print(userLen)
+			print(atUser)
+
+			try:
+				user = User.userRead(str(atUser), "alName")
+			except:
+				user = None
+		try:
+			anilistResults = Anilist.userSearch(user)["data"]["User"]
+		except:
+			print(user)
+			if user == None:
+				await ctx.send("Error! Make sure you've set your profile using ``>al user set``!")
+			else:
+				await ctx.send("Error! Make sure you're spelling everything correctly!")
 
 		color = colorConversion(anilistResults["options"]["profileColor"])
 
