@@ -82,20 +82,6 @@ class Anime(commands.Cog):
 		except IndexError:
 			print('empty studio name or URL\n')
 
-		for user in ctx.guild.members:
-			try:
-				alID = User.userRead(str(user.id), "alID")
-				alName = User.userRead(str(user.id), "alName")
-				if alID!=0:
-					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
-					if scoreResults==0:
-						embed.add_field(name=alName, value="No Score ("+statusResults+")", inline=True)
-					else:
-						embed.add_field(name=alName, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
-			except:
-				pass
-
 		# if show is airing, cancelled, finished, or not released
 		status = anilistResults['data']['Media']['status']
 
@@ -127,8 +113,25 @@ class Anime(commands.Cog):
 					if years != 0:
 						tyme += ', ' + str(years) + ' years'
 
-					embed.add_field(name='Aired', value=tyme, inline=True)
+					embed.add_field(name='Aired', value=tyme, inline=False)
 
+		users = 0
+		for user in ctx.guild.members:
+			try:
+				alID = User.userRead(str(user.id), "alID")
+				if users>=9:
+					break
+				if alID!=0:
+					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
+					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
+					if scoreResults==0:
+						embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
+						users+=1
+					else:
+						embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
+						users+=1
+			except:
+				pass
 
 		await ctx.send(embed=embed)
 

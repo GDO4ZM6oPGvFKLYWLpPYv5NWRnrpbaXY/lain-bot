@@ -166,8 +166,6 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		print(result)
-
 		if response.status_code == 200:
 			return result
 		else:
