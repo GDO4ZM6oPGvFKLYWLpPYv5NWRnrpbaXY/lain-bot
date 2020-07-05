@@ -173,3 +173,32 @@ class Anilist(graphene.ObjectType):
 		else:
 			print('User response code: ' + str(response.status_code) + '\n\n' + str(result))
 			return None
+
+	def scoreSearch(user, media):
+		#implement query/statistics later
+		query = '''
+		query ($userId: Int, $mediaId: Int) {
+			MediaList (userId: $userId, mediaId: $mediaId) {
+				mediaId
+				score
+			}
+		}
+		'''
+
+		variables = {
+			'userId': user,
+			'mediaId': media
+		}
+
+		url = 'https://graphql.anilist.co'
+
+		response = requests.post(url, json={'query': query, 'variables': variables})
+		result = response.json()
+
+		print(result)
+
+		if response.status_code == 200:
+			return result
+		else:
+			print('User response code: ' + str(response.status_code) + '\n\n' + str(result))
+			return None

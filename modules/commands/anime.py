@@ -48,6 +48,7 @@ class Anime(commands.Cog):
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
+		showID = anilistResults["data"]["Media"]["id"]
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['Media']['description']))
@@ -81,6 +82,15 @@ class Anime(commands.Cog):
 		except IndexError:
 			print('empty studio name or URL\n')
 
+		for user in ctx.guild.members:
+			try:
+				alID = User.userRead(str(user.id), "alID")
+				alName = User.userRead(str(user.id), "alName")
+				if alID!=0:
+					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
+					embed.add_field(name=alName, value=str(scoreResults)+"/10", inline=True)
+			except:
+				pass
 
 		# if show is airing, cancelled, finished, or not released
 		status = anilistResults['data']['Media']['status']
@@ -157,15 +167,19 @@ class Anime(commands.Cog):
 	async def set(ctx, user):
 		#try:
 		User.userUpdate(str(ctx.message.author.id), "alName", user)
-		await ctx.send("Updated AL username!")
-		#except:
-			#await ctx.send("Failed to update AL username!")
+		try:
+			userID = Anilist.userSearch(user)["data"]["User"]["id"]
+			User.userUpdate(str(ctx.message.author.id), "alID", userID)
+			await ctx.send("Updated AL username!")
+		except:
+			await ctx.send("Failed to update AL username!")
 
 	# al user
 	@user.command()
 	async def profile(ctx):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
 		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
+
 		atLen = len(user)-5
 		if user == "":
 			try:
@@ -187,7 +201,8 @@ class Anime(commands.Cog):
 					try:
 						user = User.userRead(str(users.id), "alName")
 					except:
-						await ctx.send("Error! Make sure you're spelling everything correctly!")
+						return None
+
 		try:
 			anilistResults = Anilist.userSearch(user)["data"]["User"]
 		except:
@@ -206,7 +221,6 @@ class Anime(commands.Cog):
 		)
 
 		animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
-
 
 		# core user fields
 		embed.set_image(url=anilistResults["bannerImage"])
