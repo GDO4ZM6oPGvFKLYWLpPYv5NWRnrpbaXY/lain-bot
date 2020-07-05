@@ -94,8 +94,7 @@ class Anime(commands.Cog):
 				# make sure season is valid
 				if str(anilistResults['data']['Media']['seasonYear']) != 'None' and str(anilistResults['data']['Media']['season']) != 'None':
 					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
-
-				'''
+				
 				# find difference in year month and days of show's air time
 				try:
 					air = True
@@ -115,7 +114,7 @@ class Anime(commands.Cog):
 						tyme += ', ' + str(years) + ' years'
 
 					embed.add_field(name='Aired', value=tyme, inline=True)
-				'''
+				
 
 		await ctx.send(embed=embed)
 
