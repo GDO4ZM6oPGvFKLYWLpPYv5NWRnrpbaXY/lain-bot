@@ -166,21 +166,28 @@ class Anime(commands.Cog):
 	async def profile(ctx):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
 		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
+		atLen = len(user)-5
 		if user == "":
 			try:
 				user = User.userRead(str(ctx.message.author.id), "alName")
 			except:
 				user = None
-		if user.startswith("<@!"):
+		elif user.startswith("<@!"):
 			userLen = len(user)-1
 			atUser = user[3:userLen]
-			print(userLen)
-			print(atUser)
-
 			try:
 				user = User.userRead(str(atUser), "alName")
 			except:
 				user = None
+		# re.findall(".+#[0-9]{4}", txt)
+		elif user[atLen]=="#":
+			for users in bot.users:
+				usersSearch = users.name+"#"+users.discriminator
+				if usersSearch == user:
+					try:
+						user = User.userRead(str(users.id), "alName")
+					except:
+						await ctx.send("Error! Make sure you're spelling everything correctly!")
 		try:
 			anilistResults = Anilist.userSearch(user)["data"]["User"]
 		except:
