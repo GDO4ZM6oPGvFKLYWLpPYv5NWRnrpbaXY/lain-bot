@@ -88,8 +88,11 @@ class Anime(commands.Cog):
 				alName = User.userRead(str(user.id), "alName")
 				if alID!=0:
 					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					statusResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"]
-					embed.add_field(name=alName, value=str(scoreResults)+"/10 ("+statusResults[0]+")", inline=True)
+					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
+					if scoreResults==0:
+						embed.add_field(name=alName, value="No Score ("+statusResults+")", inline=True)
+					else:
+						embed.add_field(name=alName, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
 			except:
 				pass
 
@@ -415,3 +418,14 @@ def colorConversion(arg):
 		"gray": discord.Color.light_grey()
 	}
 	return colors.get(arg, discord.Color.teal())
+
+def statusConversion(arg):
+	colors = {
+		"CURRENT": "W",
+		"PLANNING": "P",
+		"COMPLETED": "C",
+		"DROPPED": "D",
+		"PAUSED": "H",
+		"REPEATING": "R"
+	}
+	return colors.get(arg, "X")
