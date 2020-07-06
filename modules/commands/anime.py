@@ -382,7 +382,7 @@ class Anime(commands.Cog):
 			await ctx.send(embed=embed)
 		except Exception as e:
 			print(e)
-			await ctx.send('VN no found')
+			await ctx.send('VN not found (title usually has to be exact)')
 
 def shorten(desc):
 	# italic
