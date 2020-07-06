@@ -283,7 +283,7 @@ class Music(commands.Cog):
                 await join(ctx, parts['video'])
             except Exception as e:
                 print(e)
-                await ctx.send('*' + english + '* ' + select + ' not found in database')
+                await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
 # join a voice channel and play link
 async def join(ctx, url):
