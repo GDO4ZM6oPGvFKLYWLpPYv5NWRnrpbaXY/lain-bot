@@ -66,6 +66,9 @@ class Music(commands.Cog):
 
     @bot.command(pass_context=True)
     async def yt(ctx, url):
+        if 'youtube.com/' not in url:
+            url = str(ctx.message.content)[(len(ctx.prefix) + len('yt')):]
+
         YTDL_OPTS = {
             "default_search": "ytsearch",
             "format": "bestaudio/best",
