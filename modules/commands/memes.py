@@ -1,0 +1,19 @@
+import discord
+from discord.ext import commands
+import os
+
+from modules.core.client import Client
+
+bot = Client.bot
+
+class Memes:
+
+    @bot.group()
+    async def memes(ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('Invalid xiii command passed...')
+
+    @memes.command(pass_context=True)
+    async def momoko(ctx):
+        with open(os.getcwd()+"/assets/memes/momoko.jpg", 'rb') as fp:
+            await ctx.send(file=discord.File(fp, 'momoko.jpg'))
