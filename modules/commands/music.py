@@ -83,43 +83,51 @@ class Music(commands.Cog):
 
     @bot.command(pass_context=True)
     async def pause(ctx):
-        voice = get(bot.voice_clients, guild=ctx.guild)
+        try:
+            channel = ctx.author.voice.channel
+            voice = get(bot.voice_clients, guild=ctx.guild)
 
-        connected = voice.is_connected()
-
-        if voice and connected and voice.is_playing():
-            voice.pause()
-            await ctx.send('Paused')
-        else:
-            if connected:
-                await ctx.send('Nothing to pause')
-            else:
-                await ctx.send('Not in a voice channel')
+            if voice and voice.is_connected() and voice.is_playing():
+                voice.pause()
+                await ctx.send('Paused')
+        except AttributeError as a:
+            print(a)
+            await ctx.send('Not in a voice channel')
+        except Exception as e:
+            print(e)
+            await ctx.send('Unexpected error')
 
     @bot.command(pass_context=True)
     async def resume(ctx):
-        voice = get(bot.voice_clients, guild=ctx.guild)
+        try:
+            channel = ctx.author.voice.channel
+            voice = get(bot.voice_clients, guild=ctx.guild)
 
-        connected = voice.is_connected()
-
-        if voice and connected and voice.is_paused():
-            voice.resume()
-            await ctx.send('Resumed')
-        else:
-            if connected:
-                await ctx.send('Nothing is paused')
-            else:
-                await ctx.send('Not in a voice channel')
+            if voice and voice.is_connected() and voice.is_paused():
+                voice.resume()
+                await ctx.send('Resumed')
+        except AttributeError as a:
+            print(a)
+            await ctx.send('Not in a voice channel')
+        except Exception as e:
+            print(e)
+            await ctx.send('Unexpected error')
 
     @bot.command(pass_context=True)
     async def skip(ctx):
-        voice = get(bot.voice_clients, guild=ctx.guild)
+        try:
+            channel = ctx.author.voice.channel
+            voice = get(bot.voice_clients, guild=ctx.guild)
 
-        if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused):
-            voice.stop()
-            await ctx.send('Skipped')
-        else:
-            await ctx.send('Nothing to skip')
+            if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused):
+                voice.stop()
+                await ctx.send('Skipped')
+        except AttributeError as a:
+            print(a)
+            await ctx.send('Not in a voice channel')
+        except Exception as e:
+            print(e)
+            await ctx.send('Unexpected error')
 
     @bot.command(pass_context=True)
     async def clear(ctx):
