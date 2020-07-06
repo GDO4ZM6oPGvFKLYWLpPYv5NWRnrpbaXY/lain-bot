@@ -66,6 +66,9 @@ class Music(commands.Cog):
 
     @bot.command(pass_context=True)
     async def yt(ctx, url):
+        if 'youtube.com/' not in url:
+            url = str(ctx.message.content)[(len(ctx.prefix) + len('yt ')):]
+
         YTDL_OPTS = {
             "default_search": "ytsearch",
             "format": "bestaudio/best",
@@ -77,21 +80,21 @@ class Music(commands.Cog):
                 info = ydl.extract_info(url, download=False)
 
                 if '_type' in info and info['_type'] == 'playlist':
-                    await ctx.send('playlist not currently supported, playing first video...')
-                    await Music.yt(ctx, info['entries']['url'])
-                else:
-                    embed = discord.Embed(
-                        title = info['title'],
-                        color = discord.Color.red(),
-                        url = info['webpage_url']
-                    )
+                    #await ctx.send('playlist not currently supported, playing first video...')
+                    info = ydl.extract_info(info['entries']['url'], download=False)
+                
+                embed = discord.Embed(
+                    title = info['title'],
+                    color = discord.Color.red(),
+                    url = info['webpage_url']
+                )
 
-                    embed.set_author(name=info['uploader'], url=info['channel_url'])
-                    embed.set_thumbnail(url=info['thumbnails'][0]['url'])
-                    embed.set_footer(text='YouTube', icon_url='https://www.thermalwoodcanada.com/images/youtube-play-button-transparent-background-4.png')
-                    await ctx.send(embed=embed)
+                embed.set_author(name=info['uploader'], url=info['channel_url'])
+                embed.set_thumbnail(url=info['thumbnails'][0]['url'])
+                embed.set_footer(text='YouTube', icon_url='https://www.thermalwoodcanada.com/images/youtube-play-button-transparent-background-4.png')
+                await ctx.send(embed=embed)
 
-                    await join(ctx, info['formats'][3]['url'])
+                await join(ctx, info['formats'][3]['url'])
         except Exception as e:
             await ctx.send(str(e))
     
