@@ -78,7 +78,7 @@ class Music(commands.Cog):
 
                 if '_type' in info and info['_type'] == 'playlist':
                     await ctx.send('playlist not currently supported, playing first video...')
-                    await join(ctx, info['entries'][0]['url'])
+                    await Music.yt(ctx, info['entries']['url'])
                 else:
                     embed = discord.Embed(
                         title = info['title'],
