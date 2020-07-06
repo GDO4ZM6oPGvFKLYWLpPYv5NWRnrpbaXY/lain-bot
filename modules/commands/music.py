@@ -21,6 +21,7 @@ class Music(commands.Cog):
 
     @radio.command(pass_context=True)
     async def start(ctx):
+        await ctx.send('Starting radio')
         # r/a/dio link
         url = 'https://stream.r-a-d.io/main.mp3'
         await join(ctx, url)
@@ -63,7 +64,7 @@ class Music(commands.Cog):
         except:
             await ctx.send('Error retrieving data')
 
-    @bot.command(pass_context=True)
+    @bot.command(pass_context=True, aliases=['leave', 'radio stop', 'radio leave'])
     async def stop(ctx):
         try:
             channel = ctx.author.voice.channel
@@ -113,7 +114,7 @@ class Music(commands.Cog):
             print(e)
             await ctx.send('Unexpected error')
 
-    @bot.command(pass_context=True)
+    @bot.command(pass_context=True, aliases=['next'])
     async def skip(ctx):
         try:
             channel = ctx.author.voice.channel
