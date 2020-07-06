@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
-import youtube_dl
+import youtube_dl as ytdl
 import ffmpeg
 import random
 
@@ -64,6 +64,37 @@ class Music(commands.Cog):
         except:
             await ctx.send('Error retrieving data')
 
+    @bot.command(pass_context=True)
+    async def yt(ctx, url):
+        YTDL_OPTS = {
+            "default_search": "ytsearch",
+            "format": "bestaudio/best",
+            "quiet": True,
+            "extract_flat": "in_playlist"
+        }
+        try:
+            with ytdl.YoutubeDL(YTDL_OPTS) as ydl:
+                info = ydl.extract_info(url, download=False)
+
+                if '_type' in info and info['_type'] == 'playlist':
+                    await ctx.send('playlist not currently supported, playing first video...')
+                    await join(ctx, info['entries'][0]['url'])
+                else:
+                    embed = discord.Embed(
+                        title = info['title'],
+                        color = discord.Color.red(),
+                        url = info['webpage_url']
+                    )
+
+                    embed.set_author(name=info['uploader'], url=info['channel_url'])
+                    embed.set_thumbnail(url=info['thumbnails'][0]['url'])
+                    embed.set_footer(text='YouTube', icon_url='https://www.thermalwoodcanada.com/images/youtube-play-button-transparent-background-4.png')
+                    await ctx.send(embed=embed)
+
+                    await join(ctx, info['formats'][0]['url'])
+        except Exception as e:
+            await ctx.send(str(e))
+    
     @bot.command(pass_context=True, aliases=['leave', 'radio stop', 'radio leave'])
     async def stop(ctx):
         try:
