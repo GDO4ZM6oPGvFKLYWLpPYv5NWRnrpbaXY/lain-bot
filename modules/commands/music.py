@@ -81,7 +81,7 @@ class Music(commands.Cog):
 
                 if '_type' in info and info['_type'] == 'playlist':
                     #await ctx.send('playlist not currently supported, playing first video...')
-                    info = ydl.extract_info(info['entries']['url'], download=False)
+                    info = ydl.extract_info(info['entries'][0]['url'], download=False)
                 
                 embed = discord.Embed(
                     title = info['title'],
