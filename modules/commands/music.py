@@ -85,21 +85,31 @@ class Music(commands.Cog):
     async def pause(ctx):
         voice = get(bot.voice_clients, guild=ctx.guild)
 
-        if voice and voice.is_playing():
+        connected = voice.is_connected()
+
+        if voice and connected and voice.is_playing():
             voice.pause()
             await ctx.send('Paused')
         else:
-            await ctx.send('Nothing is not playing')
+            if connected:
+                await ctx.send('Nothing to pause')
+            else:
+                await ctx.send('Not in a voice channel')
 
     @bot.command(pass_context=True)
     async def resume(ctx):
         voice = get(bot.voice_clients, guild=ctx.guild)
 
-        if voice and voice.is_paused():
+        connected = voice.is_connected()
+
+        if voice and connected and voice.is_paused():
             voice.resume()
             await ctx.send('Resumed')
         else:
-            await ctx.send('Nothing is paused')
+            if connected:
+                await ctx.send('Nothing is paused')
+            else:
+                await ctx.send('Not in a voice channel')
 
     @bot.command(pass_context=True)
     async def skip(ctx):
@@ -195,7 +205,7 @@ class Music(commands.Cog):
                 await join(ctx, parts['video'])
             except Exception as e:
                 print(e)
-                await ctx.send('*' + english + '* not found in database')
+                await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
     @bot.command(pass_context=True)
     async def ed(ctx, num):
@@ -273,7 +283,7 @@ class Music(commands.Cog):
                 await join(ctx, parts['video'])
             except Exception as e:
                 print(e)
-                await ctx.send('*' + english + '* not found in database')
+                await ctx.send('*' + english + '* ' + select + ' not found in database')
 
 # join a voice channel and play link
 async def join(ctx, url):
