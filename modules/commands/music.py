@@ -91,7 +91,7 @@ class Music(commands.Cog):
                     embed.set_footer(text='YouTube', icon_url='https://www.thermalwoodcanada.com/images/youtube-play-button-transparent-background-4.png')
                     await ctx.send(embed=embed)
 
-                    await join(ctx, info['formats'][len(info['formats']) - 9]['url'])
+                    await join(ctx, info['formats'][0]['url'])
         except Exception as e:
             await ctx.send(str(e))
     
