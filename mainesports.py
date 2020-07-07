@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import logging
 
 from modules.core.client import Client
 from modules.core.command import Command
