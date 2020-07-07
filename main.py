@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import logging
 
 from modules.core.client import Client
 from modules.core.command import Command
@@ -9,6 +10,8 @@ from modules.core.events import Events
 bot = Client.bot
 
 class Main:
+
+	logging.basicConfig(filename='main.log', filemode='w', level=logging.DEBUG)
 
 	esports = "FALSE"
 

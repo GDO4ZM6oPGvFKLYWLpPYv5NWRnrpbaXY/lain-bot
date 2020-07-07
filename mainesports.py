@@ -11,6 +11,8 @@ bot = Client.bot
 
 class MainEsports:
 
+	logging.basicConfig(filename='esports.log', filemode='w', level=logging.DEBUG)
+
 	os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project root
 
 	load_dotenv()
