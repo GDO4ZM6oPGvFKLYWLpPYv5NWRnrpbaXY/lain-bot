@@ -17,3 +17,8 @@ class Memes:
     async def momoko(ctx):
         with open(os.getcwd()+"/assets/memes/momoko.jpg", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'momoko.jpg'))
+
+    @bot.command(pass_context=True)
+    async def simp(ctx):
+        with open(os.getcwd()+"/assets/memes/simp.png", 'rb') as fp:
+            await ctx.send(file=discord.File(fp, 'simp.png'))
