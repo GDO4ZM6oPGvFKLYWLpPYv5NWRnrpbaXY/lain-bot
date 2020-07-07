@@ -37,3 +37,8 @@ class Memes:
     async def nagai(ctx):
         with open(os.getcwd()+"/assets/memes/nagai.png", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'nagai.png'))
+
+    @bot.command(pass_context=True)
+    async def anno(ctx):
+        with open(os.getcwd()+"/assets/memes/anno.jpg", 'rb') as fp:
+            await ctx.send(file=discord.File(fp, 'anno.jpg'))
