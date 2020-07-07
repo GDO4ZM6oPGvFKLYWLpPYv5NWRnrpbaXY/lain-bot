@@ -353,21 +353,19 @@ async def join(ctx, url):
 		print(e)
 		await ctx.send('Unexpected error')
 
-FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-
 async def play(ctx, voice, url):
 	def check_queue():
 		qnum = len(queues)
 		if qnum != 0:
 			next = queues.pop()
-			voice.play(discord.FFmpegPCMAudio(next, **FFMPEG_OPTIONS), after=lambda e: check_queue())
+			voice.play(discord.FFmpegPCMAudio(next, **{'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}), after=lambda e: check_queue())
 		else:
 			queues.clear()
 
 	if voice.is_playing():
 		await add(ctx, url)
 	else:
-		voice.play(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS), after=lambda e: check_queue())
+		voice.play(discord.FFmpegPCMAudio(url, **{'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}), after=lambda e: check_queue())
 
 queues = []
 
