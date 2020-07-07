@@ -342,7 +342,7 @@ class Music(commands.Cog):
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
 # join a voice channel and play link
-async def join(ctx, url):
+async def join(self, ctx, url):
     global voice
     try:
         # get voice channel
@@ -366,7 +366,7 @@ async def join(ctx, url):
         print(e)
         await ctx.send('Unexpected error')
 
-async def play(ctx, voice, url):
+async def play(self, ctx, voice, url):
     def check_queue():
         qnum = len(queues)
         if qnum != 0:
@@ -387,13 +387,13 @@ async def play(ctx, voice, url):
 
 queues = []
 
-async def add(ctx, url):
+async def add(self, ctx, url):
     queues.insert(0, url)
 
     await ctx.send('**{0}** in queue'.format(len(queues)))
 
 # helper functions for vn and anilist search
-def parse(ctx, num):
+def parse(self, ctx, num):
     # determine which op/ed should be played
     show = ''
     try:
