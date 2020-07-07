@@ -2,6 +2,8 @@ import graphene
 import requests
 import json
 
+from modules.core.client import Client
+
 class Anilist(graphene.ObjectType):
 
 	def aniSearch(show):
@@ -194,10 +196,57 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		print(result)
-
 		if response.status_code == 200:
 			return result
 		else:
 			print('User response code: ' + str(response.status_code) + '\n\n' + str(result))
 			return None
+
+	def activitySearch(user, time):
+		#implement query/statistics later
+		query = '''
+		query ($userId: Int, $createdAt_greater: Int, $sort: [ActivitySort], $type_in: [ActivityType]) {
+			Activity (userId: $userId, createdAt_greater: $createdAt_greater, sort: $sort, type_in: $type_in) {
+				... on ListActivity {
+					userId
+					createdAt
+					type
+					user {
+						name
+						avatar {
+							large
+						}
+						options {
+							profileColor
+						}
+					}
+					status
+					progress
+					media {
+						title {
+							romaji
+							english
+						}
+						bannerImage
+					}
+					createdAt
+					siteUrl
+				}
+			}
+		}
+		'''
+
+		variables = {
+			'userId': user,
+			'createdAt_greater': time,
+			'sort': ["ID_DESC"],
+			'type': ["ANIME_LIST", "MANGA_LIST", "MEDIA_LIST"]
+		}
+
+		url = 'https://graphql.anilist.co'
+
+		response = requests.post(url, json={'query': query, 'variables': variables})
+		result = response.json()
+
+		if response.status_code == 200:
+			return result

@@ -184,7 +184,7 @@ class Anime(commands.Cog):
 
 	# al user
 	@user.command()
-	async def show(self, ctx):
+	async def profile(self, ctx):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
 		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
 

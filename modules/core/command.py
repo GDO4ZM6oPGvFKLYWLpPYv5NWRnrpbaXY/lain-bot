@@ -9,12 +9,6 @@ import json
 from modules.core.client import Client
 from modules.config.config import Config
 
-from modules.commands.anime import Anime
-from modules.commands.music import Music
-from modules.commands.fighting import Fighting
-from modules.commands.configuration import Configuration
-from modules.commands.memes import Memes
-
 bot = Client.bot
 
 class Command:
@@ -22,9 +16,3 @@ class Command:
 	@bot.command(pass_context=True)
 	async def serverID(ctx): #returns the serverID, mainly for debug purposes
 		await ctx.send('Server ID: '+str(Client.serverID))
-
-	bot.add_cog(Memes(bot))
-	bot.add_cog(Fighting(bot))
-	bot.add_cog(Anime(bot))
-	bot.add_cog(Configuration(bot))
-	bot.add_cog(Music(bot))
