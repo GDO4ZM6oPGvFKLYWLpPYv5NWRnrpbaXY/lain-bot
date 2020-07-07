@@ -13,7 +13,7 @@ from modules.anime.safebooru import Safebooru
 
 bot = Client.bot
 status = discord.Game("on Wired") #sets the game the bot is currently playing
-esportsStatus = discord.Game("Fortnite with Bucky")
+esportsStatus = discord.Game("Change with b!status!")
 
 class Events:
 
@@ -23,6 +23,11 @@ class Events:
 		if bot.user.id == 727537208235524178:
 			print('Esports Club is ready to go!')
 			bot.command_prefix = "b!"
+			try:
+				esportsStatus = discord.Game(Config.cfgRead("147255790078656513", "status"))
+			except:
+				print("Error with changing status on Esports Club")
+				pass
 			await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
 		else:
 			print('Lain is online')
