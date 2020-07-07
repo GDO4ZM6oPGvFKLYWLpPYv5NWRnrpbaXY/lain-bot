@@ -4,41 +4,42 @@ import os
 
 from modules.core.client import Client
 
-bot = Client.bot
+class Memes(commands.Cog):
 
-class Memes:
+    def __init__(self, bot):
+        self.bot = bot
 
-    # @bot.group()
+    # @commands.group()
     # async def memes(ctx):
         # if ctx.invoked_subcommand is None:
             # await ctx.send('Invalid xiii command passed...')
 
-    @bot.command(pass_context=True)
-    async def momoko(ctx):
+    @commands.command(pass_context=True)
+    async def momoko(self, ctx):
         with open(os.getcwd()+"/assets/memes/momoko.jpg", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'momoko.jpg'))
 
-    @bot.command(pass_context=True)
-    async def simp(ctx):
+    @commands.command(pass_context=True)
+    async def simp(self, ctx):
         with open(os.getcwd()+"/assets/memes/simp.png", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'simp.png'))
 
-    @bot.command(pass_context=True)
-    async def kawamori(ctx):
+    @commands.command(pass_context=True)
+    async def kawamori(self, ctx):
         with open(os.getcwd()+"/assets/memes/kawamori.png", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'kawamori.png'))
 
-    @bot.command(pass_context=True)
-    async def tomino(ctx):
+    @commands.command(pass_context=True)
+    async def tomino(self, ctx):
         with open(os.getcwd()+"/assets/memes/tomino.png", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'tomino.png'))
 
-    @bot.command(pass_context=True)
-    async def nagai(ctx):
+    @commands.command(pass_context=True)
+    async def nagai(self, ctx):
         with open(os.getcwd()+"/assets/memes/nagai.png", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'nagai.png'))
 
-    @bot.command(pass_context=True)
-    async def anno(ctx):
+    @commands.command(pass_context=True)
+    async def anno(self, ctx):
         with open(os.getcwd()+"/assets/memes/anno.jpg", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'anno.jpg'))

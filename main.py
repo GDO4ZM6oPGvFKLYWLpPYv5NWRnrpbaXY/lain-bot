@@ -5,6 +5,7 @@ import logging
 from modules.core.client import Client
 from modules.core.command import Command
 from modules.core.events import Events
+from modules.core.loop import Loop
 #from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
 bot = Client.bot

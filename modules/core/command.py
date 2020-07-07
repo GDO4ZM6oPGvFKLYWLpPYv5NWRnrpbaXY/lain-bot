@@ -22,3 +22,9 @@ class Command:
 	@bot.command(pass_context=True)
 	async def serverID(ctx): #returns the serverID, mainly for debug purposes
 		await ctx.send('Server ID: '+str(Client.serverID))
+
+	bot.add_cog(Memes(bot))
+	bot.add_cog(Fighting(bot))
+	bot.add_cog(Anime(bot))
+	bot.add_cog(Configuration(bot))
+	bot.add_cog(Music(bot))

@@ -5,16 +5,18 @@ from modules.fighting.fginfo import FgInfo
 from modules.fighting.fgalias import FgAlias
 from modules.core.client import Client
 
-bot = Client.bot
-
 class Fighting(commands.Cog):
-    @bot.group()
-    async def xiii(ctx):
+
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.group()
+    async def xiii(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid xiii command passed...')
 
     @xiii.command(pass_context=True)
-    async def fd(ctx, char, move):
+    async def fd(self, ctx, char, move):
         channel = ctx.message.channel
         error = 0
         try:
@@ -79,7 +81,7 @@ class Fighting(commands.Cog):
             await channel.send("An error has occured! Make sure you're spelling everything correctly!")
 
     @xiii.command(pass_context=True)
-    async def char(ctx, char):
+    async def char(self, ctx, char):
         channel = ctx.message.channel
         info = FgInfo.searchChar("xiii", char)
 
@@ -103,7 +105,7 @@ class Fighting(commands.Cog):
         await channel.send(embed=embed)
 
     @xiii.command(pass_context=True)
-    async def game(ctx):
+    async def game(self, ctx):
         channel = ctx.message.channel
 
         embed = discord.Embed(

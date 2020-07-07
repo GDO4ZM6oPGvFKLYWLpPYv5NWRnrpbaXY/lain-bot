@@ -9,24 +9,25 @@ from modules.music.radio import Radio
 from modules.music.themes import Themes
 from modules.anime.anilist import Anilist
 
-bot = Client.bot
-
 class Music(commands.Cog):
 
-    @bot.group()
-    async def radio(ctx):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.group()
+    async def radio(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid radio command passed...')
 
     @radio.command(pass_context=True)
-    async def start(ctx):
+    async def start(self, ctx):
         await ctx.send('Starting radio')
         # r/a/dio link
         url = 'https://stream.r-a-d.io/main.mp3'
         await join(ctx, url)
 
     @radio.command(pass_context=True)
-    async def info(ctx):
+    async def info(self, ctx):
         r = Radio.information()
         try:
             # variables
@@ -66,8 +67,8 @@ class Music(commands.Cog):
         except:
             await ctx.send('Error retrieving data')
 
-    @bot.command(pass_context=True)
-    async def yt(ctx, url):
+    @commands.command(pass_context=True)
+    async def yt(self, ctx, url):
         if 'youtube.com/' not in url:
             url = str(ctx.message.content)[(len(ctx.prefix) + len('yt ')):]
 
@@ -103,8 +104,8 @@ class Music(commands.Cog):
         except Exception as e:
             await ctx.send(str(e))
 
-    @bot.command(pass_context=True, aliases=['leave', 'radio stop', 'radio leave'])
-    async def stop(ctx):
+    @commands.command(pass_context=True, aliases=['leave', 'radio stop', 'radio leave'])
+    async def stop(self, ctx):
         try:
             channel = ctx.author.voice.channel
             voice = get(bot.voice_clients, guild=ctx.guild)
@@ -121,8 +122,8 @@ class Music(commands.Cog):
             print(e)
             await ctx.send('Unexpected error')
 
-    @bot.command(pass_context=True)
-    async def pause(ctx):
+    @commands.command(pass_context=True)
+    async def pause(self, ctx):
         try:
             channel = ctx.author.voice.channel
             voice = get(bot.voice_clients, guild=ctx.guild)
@@ -137,8 +138,8 @@ class Music(commands.Cog):
             print(e)
             await ctx.send('Unexpected error')
 
-    @bot.command(pass_context=True)
-    async def resume(ctx):
+    @commands.command(pass_context=True)
+    async def resume(self, ctx):
         try:
             channel = ctx.author.voice.channel
             voice = get(bot.voice_clients, guild=ctx.guild)
@@ -153,8 +154,8 @@ class Music(commands.Cog):
             print(e)
             await ctx.send('Unexpected error')
 
-    @bot.command(pass_context=True, aliases=['next'])
-    async def skip(ctx):
+    @commands.command(pass_context=True, aliases=['next'])
+    async def skip(self, ctx):
         try:
             channel = ctx.author.voice.channel
             voice = get(bot.voice_clients, guild=ctx.guild)
@@ -169,16 +170,16 @@ class Music(commands.Cog):
             print(e)
             await ctx.send('Unexpected error')
 
-    @bot.command(pass_context=True)
-    async def clear(ctx):
+    @commands.command(pass_context=True)
+    async def clear(self, ctx):
         if len(queues) == 0:
             await ctx.send('Nothing in queue')
         else:
             queues.clear()
             await ctx.send('Queue cleared')
 
-    @bot.command(pass_context=True)
-    async def op(ctx, num):
+    @commands.command(pass_context=True)
+    async def op(self, ctx, num):
         # 1 = opening
         t = 1
         build = parse(ctx, num)
@@ -259,8 +260,8 @@ class Music(commands.Cog):
                 print(e)
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
-    @bot.command(pass_context=True)
-    async def ed(ctx, num):
+    @commands.command(pass_context=True)
+    async def ed(self, ctx, num):
         # 2 = ending
         t = 2
         build = parse(ctx, num)
