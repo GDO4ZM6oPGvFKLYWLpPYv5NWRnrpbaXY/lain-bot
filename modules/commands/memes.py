@@ -27,3 +27,13 @@ class Memes:
     async def kawamori(ctx):
         with open(os.getcwd()+"/assets/memes/kawamori.png", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'kawamori.png'))
+
+    @bot.command(pass_context=True)
+    async def tomino(ctx):
+        with open(os.getcwd()+"/assets/memes/tomino.png", 'rb') as fp:
+            await ctx.send(file=discord.File(fp, 'tomino.png'))
+
+    @bot.command(pass_context=True)
+    async def nagai(ctx):
+        with open(os.getcwd()+"/assets/memes/nagai.png", 'rb') as fp:
+            await ctx.send(file=discord.File(fp, 'nagai.png'))
