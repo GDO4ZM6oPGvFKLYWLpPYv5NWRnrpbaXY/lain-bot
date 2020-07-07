@@ -371,7 +371,7 @@ async def play(ctx, voice, url):
         if qnum != 0:
             next = queues.pop()
             voice.play(discord.FFmpegPCMAudio(
-                next, **{'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}), after=lambda e: check_queue())
+                next, before_options='-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', options='-vn'), after=lambda e: check_queue())
         else:
             queues.clear()
 
@@ -380,7 +380,7 @@ async def play(ctx, voice, url):
     else:
         try:
             voice.play(discord.FFmpegPCMAudio(
-                url, **{'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}), after=lambda e: check_queue())
+                url, before_options='-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', options='-vn'), after=lambda e: check_queue())
         except Exception as e:
             await ctx.send(e)
 
