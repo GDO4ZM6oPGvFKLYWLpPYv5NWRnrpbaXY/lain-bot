@@ -14,7 +14,7 @@ from modules.anime.safebooru import Safebooru
 bot = Client.bot
 
 status = discord.Game("on Wired") #sets the game the bot is currently playing
-esportsStatus = discord.Game("Showers before Smash!")
+esportsStatus = discord.Game("King of Fighters XIII")
 
 class Events:
 
@@ -48,8 +48,6 @@ class Events:
 				with open(os.getcwd()+"/user/"+userID+".json", "x") as user_json:
 					json_data = {"Name": userName}
 					json.dump(json_data, user_json)
-
-
 
 	@bot.event
 	async def on_member_join(member):
