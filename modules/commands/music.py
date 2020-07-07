@@ -358,7 +358,7 @@ async def play(ctx, voice, url):
 		qnum = len(queues)
 		if qnum != 0:
 			next = queues.pop()
-			voice.play(discord.FFmpegPCMAudio(next), after=lambda e: check_queue())
+			voice.play(discord.FFmpegPCMAudio(next, **{'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}), after=lambda e: check_queue())
 		else:
 			queues.clear()
 
