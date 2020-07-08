@@ -9,12 +9,6 @@ import json
 from modules.core.client import Client
 from modules.config.config import Config
 
-from modules.commands.anime import Anime
-from modules.commands.music import Music
-from modules.commands.fighting import Fighting
-from modules.commands.configuration import Configuration
-from modules.commands.memes import Memes
-
 bot = Client.bot
 
 class Command:
