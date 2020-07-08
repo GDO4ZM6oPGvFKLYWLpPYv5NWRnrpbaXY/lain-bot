@@ -228,21 +228,42 @@ class Anime(commands.Cog):
 			url = anilistResults["siteUrl"]
 		)
 
-		animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
+		try:
+			animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
+		except:
+			pass
 
 		# core user fields
 		try:
 			embed.set_image(url=anilistResults["bannerImage"])
 		except:
 			pass
-		embed.set_thumbnail(url=anilistResults["avatar"]["large"])
-		embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
-		embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
+		try:
+			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
+		except:
+			pass
+		try:
+			embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
+		except:
+			pass
+		try:
+			embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
+		except:
+			pass
 
 		# anime fields
-		embed.add_field(name="Anime count:", value=str(anilistResults["statistics"]["anime"]["count"]), inline=True)
-		embed.add_field(name="Mean anime score:", value=str(anilistResults["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
-		embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+		try:
+			embed.add_field(name="Anime count:", value=str(anilistResults["statistics"]["anime"]["count"]), inline=True)
+		except:
+			pass
+		try:
+			embed.add_field(name="Mean anime score:", value=str(anilistResults["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
+		except:
+			pass
+		try:
+			embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+		except:
+			pass
 
 		await ctx.send(embed=embed)
 
