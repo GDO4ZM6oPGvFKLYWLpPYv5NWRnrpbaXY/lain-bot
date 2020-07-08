@@ -19,4 +19,4 @@ class Cogs:
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
 
-    bot.add_cog(Loop(bot, 305))
+    bot.add_cog(Loop(bot, 300))
