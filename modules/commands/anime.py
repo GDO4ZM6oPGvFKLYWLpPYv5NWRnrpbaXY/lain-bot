@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import random
+import os
+from os import path
+import json
 
 from modules.core.client import Client
 from modules.config.user import User
@@ -9,6 +12,8 @@ from modules.anime.anilist import Anilist
 from modules.anime.vndb import Vndb
 
 class Anime(commands.Cog):
+
+	al_json = json.load(open(os.getcwd()+"/modules/anime/config/alID.json", 'r'))
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -238,7 +243,7 @@ class Anime(commands.Cog):
 
 		# core user fields
 
-		
+
 		if anilistResults["bannerImage"]!=None:
 			try:
 				embed.set_image(url=anilistResults["bannerImage"])
