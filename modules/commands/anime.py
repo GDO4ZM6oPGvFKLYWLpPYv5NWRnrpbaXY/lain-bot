@@ -219,8 +219,10 @@ class Anime(commands.Cog):
 				await ctx.send("Error! Make sure you've set your profile using ``>al user set``!")
 			else:
 				await ctx.send("Error! Make sure you're spelling everything correctly!")
-
-		color = colorConversion(anilistResults["options"]["profileColor"])
+		try:
+			color = colorConversion(anilistResults["options"]["profileColor"])
+		except:
+			color = discord.Color.teal()
 
 		embed = discord.Embed(
 			title = anilistResults["name"],
@@ -231,7 +233,7 @@ class Anime(commands.Cog):
 		try:
 			animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
 		except:
-			pass
+			animeGenres = "None"
 
 		# core user fields
 		try:
