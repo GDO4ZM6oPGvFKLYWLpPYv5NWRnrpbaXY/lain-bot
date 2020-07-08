@@ -199,7 +199,6 @@ class Anilist(graphene.ObjectType):
 		if response.status_code == 200:
 			return result
 		else:
-			print('User response code: ' + str(response.status_code) + '\n\n' + str(result))
 			return None
 
 	def activitySearch(user, time):

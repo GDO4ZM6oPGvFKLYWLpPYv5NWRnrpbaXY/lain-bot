@@ -275,6 +275,9 @@ class Anime(commands.Cog):
 			await ctx.send(embed=embed)
 		except Exception as e:
 			print(e)
+			print(anilistResults["bannerImage"])
+			print(anilistResults["avatar"]["large"])
+			print(anilistResults["siteUrl"])
 			await ctx.send("Error ")
 
 	@commands.group()
