@@ -226,6 +226,7 @@ class Anime(commands.Cog):
 		try:
 			userUrl = anilistResults["siteUrl"]
 		except Exception as e:
+			print(e)
 			userUrl = "https://anilist.co/home"
 
 		embed = discord.Embed(
@@ -273,6 +274,7 @@ class Anime(commands.Cog):
 		try:
 			await ctx.send(embed=embed)
 		except Exception as e:
+			print(e)
 			await ctx.send("Error ")
 
 	@commands.group()
