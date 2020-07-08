@@ -24,7 +24,7 @@ class Cogs:
 
     load_dotenv()
 
-    al_json_path = os.getenv("OS_PATH")+"modules/anime/config/alID.json"
+    al_json_path = os.getenv("OS_PATH")+"/modules/anime/config/alID.json"
     al_json = json.load(open(al_json_path, 'r'))
 
     bot.add_cog(Loop(bot, 300, al_json))
