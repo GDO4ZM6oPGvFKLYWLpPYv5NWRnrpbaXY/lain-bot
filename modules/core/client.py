@@ -12,9 +12,6 @@ class Client:
 	prefix = ">"
 	bot = commands.Bot(command_prefix=prefix, description=description) #sets up the bot
 
-	al_json_path = str(os.getcwd())+"/modules/anime/config/alID.json"
-	al_json = json.load(open(al_json_path, 'r'))
-
 	# @bot.check
 	# async def check_serverID(ctx):
 		# global serverID
