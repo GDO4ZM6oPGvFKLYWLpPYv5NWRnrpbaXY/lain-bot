@@ -18,6 +18,9 @@ esportsStatus = discord.Game("King of Fighters XIII")
 
 class Events:
 
+	al_json_path = os.getcwd()+"/modules/anime/config/alID.json"
+	al_json = json.load(open(al_json_path, 'r'))
+
 	@bot.event
 	async def on_ready(): #bot startup event
 
