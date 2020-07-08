@@ -223,11 +223,7 @@ class Anime(commands.Cog):
 			color = colorConversion(anilistResults["options"]["profileColor"])
 		except:
 			color = discord.Color.teal()
-		try:
-			userUrl = anilistResults["siteUrl"]
-		except Exception as e:
-			print(e)
-			userUrl = "https://anilist.co/home"
+		userUrl = anilistResults["siteUrl"]
 
 		embed = discord.Embed(
 			title = anilistResults["name"],
@@ -241,10 +237,15 @@ class Anime(commands.Cog):
 			animeGenres = "None"
 
 		# core user fields
+
+		bannerUrl = "https://raw.githubusercontent.com/SigSigSigurd/lain-bot/master/assets/search.jpg"
+		if anilistResults["bannerImage"]!=None:
+			bannerUrl = anilistResults["bannerImage"]
+
 		try:
-			embed.set_image(url=anilistResults["bannerImage"])
+			embed.set_image(url=bannerUrl)
 		except:
-			embed.set_image(url=anilistResults["avatar"]["large"])
+			pass
 		try:
 			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
 		except:
