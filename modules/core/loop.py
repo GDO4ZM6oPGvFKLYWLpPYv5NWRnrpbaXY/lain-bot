@@ -22,7 +22,7 @@ class Loop(commands.Cog):
 
 
 
-    @tasks.loop(seconds=10.0)
+    @tasks.loop(seconds=300.0)
     async def al_update(self):
         print("Checking AL for List Updates")
 
@@ -41,7 +41,6 @@ class Loop(commands.Cog):
                         except:
                             result = None
 
-                        print(result)
                         try:
                             embed = discord.Embed(
                                 title = str(member.name),
@@ -61,7 +60,5 @@ class Loop(commands.Cog):
                             except:
                                 pass
                         except Exception as e:
-                            print(e)
                             pass
-                print("Successfully updated lists on AL!")
         print("Successfully updated lists on AL!")
