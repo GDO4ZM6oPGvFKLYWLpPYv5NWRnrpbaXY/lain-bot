@@ -3,8 +3,6 @@ from discord.ext import commands
 from discord.utils import get
 import random
 import sqlite3
-import os
-import json
 
 from modules.core.client import Client
 from modules.config.config import Config
