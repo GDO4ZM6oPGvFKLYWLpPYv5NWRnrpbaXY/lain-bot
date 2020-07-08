@@ -12,7 +12,7 @@ from modules.commands.configuration import Configuration
 from modules.commands.memes import Memes
 
 bot = Client.bot
-al_json = Client.al_json
+al_json = Anime.al_json
 class Cogs:
     bot.add_cog(Memes(bot))
     bot.add_cog(Fighting(bot))
