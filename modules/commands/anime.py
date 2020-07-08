@@ -4,6 +4,7 @@ import random
 import os
 from os import path
 import json
+from dotenv import load_dotenv
 
 from modules.core.client import Client
 from modules.config.user import User
@@ -12,6 +13,11 @@ from modules.anime.anilist import Anilist
 from modules.anime.vndb import Vndb
 
 class Anime(commands.Cog):
+
+	load_dotenv()
+
+	al_json_path = os.getenv("OS_PATH")+"/modules/anime/config/alID.json"
+	al_json = json.load(open(al_json_path, 'r'))
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -182,6 +188,11 @@ class Anime(commands.Cog):
 			userID = Anilist.userSearch(user)["data"]["User"]["id"]
 			User.userUpdate(str(ctx.message.author.id), "alID", userID)
 			await ctx.send("Updated AL username!")
+			with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
+				json_data = json.load(al_json)
+				json_data[str(user.id)] = userID
+			with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
+				al_json.write(json.dumps(json_data))
 		except:
 			await ctx.send("Failed to update AL username!")
 
