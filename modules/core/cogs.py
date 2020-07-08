@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import time
 import os
-from dotenv import load_dotenv
+
 import json
 
 from modules.core.loop import Loop
@@ -15,6 +15,7 @@ from modules.commands.configuration import Configuration
 from modules.commands.memes import Memes
 
 bot = Client.bot
+
 class Cogs:
     bot.add_cog(Memes(bot))
     bot.add_cog(Fighting(bot))
@@ -22,9 +23,4 @@ class Cogs:
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
 
-    load_dotenv()
-
-    al_json_path = os.getenv("OS_PATH")+"/modules/anime/config/alID.json"
-    al_json = json.load(open(al_json_path, 'r'))
-
-    bot.add_cog(Loop(bot, 300, al_json))
+    bot.add_cog(Loop(bot, 300, Anime.al_json))
