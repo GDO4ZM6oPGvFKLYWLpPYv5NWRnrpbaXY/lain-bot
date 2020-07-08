@@ -203,7 +203,7 @@ class Anime(commands.Cog):
 				user = None
 		# re.findall(".+#[0-9]{4}", txt)
 		elif user[atLen]=="#":
-			for users in bot.users:
+			for users in self.bot.users:
 				usersSearch = users.name+"#"+users.discriminator
 				if usersSearch == user:
 					try:
@@ -266,8 +266,10 @@ class Anime(commands.Cog):
 			embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
 		except:
 			pass
-
-		await ctx.send(embed=embed)
+		try:
+			await ctx.send(embed=embed)
+		except:
+			await ctx.send("Error ")
 
 	@commands.group()
 	async def vn(self, ctx):
