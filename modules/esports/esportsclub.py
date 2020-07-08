@@ -1,6 +1,7 @@
 import random
 import string
 import discord
+from discord.ext.commands import has_permissions, CheckFailure
 
 import os
 import smtplib
@@ -8,6 +9,8 @@ from dotenv import load_dotenv
 
 from modules.core.client import Client
 from modules.config.user import User
+from modules.commands.configuration import Configuration
+from modules.config.config import Config
 
 bot = Client.bot
 load_dotenv()
@@ -84,3 +87,19 @@ class EsportsClub:
 
         else:
             await ctx.send("Error, command not found!")
+
+    @bot.command(pass_context=True)
+    @has_permissions(administrator=True)
+    async def status(ctx):
+        status = str(ctx.message.content)[(len(ctx.prefix) + len('config status ')):]
+        try:
+            Config.cfgUpdate(str(ctx.guild.id), "status", status)
+        except:
+            print("Error with changing status on Esports Club")
+            pass
+        try:
+            esportsStatus = discord.Game(Config.cfgRead("147255790078656513", "status"))
+        except:
+            print("Error with changing status on Esports Club")
+            pass
+        await bot.change_presence(status=discord.Status.online, activity=esportsStatus)

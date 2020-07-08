@@ -8,12 +8,13 @@ from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
 from modules.anime.vndb import Vndb
 
-bot = Client.bot
-
 class Anime(commands.Cog):
 
-	@bot.command(pass_context=True)
-	async def safebooru(ctx, tags): #looks up images on safebooru
+	def __init__(self, bot):
+		self.bot = bot
+
+	@commands.command(pass_context=True)
+	async def safebooru(self, ctx, tags): #looks up images on safebooru
 
 		channel = ctx.message.channel
 
@@ -36,15 +37,14 @@ class Anime(commands.Cog):
 
 		await channel.send(embed=embed)
 
-	@bot.group()
-	async def al(ctx):
+	@commands.group()
+	async def al(self, ctx):
 		# anilist command group
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid anilist command passed...')
 
-
 	@al.command(pass_context=True)
-	async def search(ctx):
+	async def search(self, ctx):
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
@@ -136,7 +136,7 @@ class Anime(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@al.command(pass_context=True)
-	async def char(ctx):
+	async def char(self, ctx):
 		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
 		anilistResults = Anilist.charSearch(c)
 
@@ -166,13 +166,13 @@ class Anime(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@al.group(pass_context=True)
-	async def user(ctx):
+	async def user(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid Anilist user command passed...')
 
 	# al user
 	@user.command()
-	async def set(ctx, user):
+	async def set(self, ctx, user):
 		#try:
 		User.userUpdate(str(ctx.message.author.id), "alName", user)
 		try:
@@ -184,7 +184,7 @@ class Anime(commands.Cog):
 
 	# al user
 	@user.command()
-	async def profile(ctx):
+	async def profile(self, ctx):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
 		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
 
@@ -228,42 +228,52 @@ class Anime(commands.Cog):
 			url = anilistResults["siteUrl"]
 		)
 
-		animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
+		try:
+			animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
+		except:
+			pass
 
 		# core user fields
-		embed.set_image(url=anilistResults["bannerImage"])
-		embed.set_thumbnail(url=anilistResults["avatar"]["large"])
-		embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
-		embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
+		try:
+			embed.set_image(url=anilistResults["bannerImage"])
+		except:
+			pass
+		try:
+			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
+		except:
+			pass
+		try:
+			embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
+		except:
+			pass
+		try:
+			embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
+		except:
+			pass
 
 		# anime fields
-		embed.add_field(name="Anime count:", value=str(anilistResults["statistics"]["anime"]["count"]), inline=True)
-		embed.add_field(name="Mean anime score:", value=str(anilistResults["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
-		embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+		try:
+			embed.add_field(name="Anime count:", value=str(anilistResults["statistics"]["anime"]["count"]), inline=True)
+		except:
+			pass
+		try:
+			embed.add_field(name="Mean anime score:", value=str(anilistResults["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
+		except:
+			pass
+		try:
+			embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+		except:
+			pass
 
 		await ctx.send(embed=embed)
 
-	@bot.group()
-	async def mal(ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid MAL command passed...')
-
-	@mal.group(pass_context=True)
-	async def user(ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid MAL user command passed...')
-
-	@user.command()
-	async def search(ctx):
-		await ctx.send("MAL WIP")
-
-	@bot.group()
-	async def vn(ctx):
+	@commands.group()
+	async def vn(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid vndb command passed...')
 
 	@vn.command(pass_context=True)
-	async def get(ctx):
+	async def get(self, ctx):
 		# name of vn
 		arg = str(ctx.message.content)[(len(ctx.prefix) + len('vn get ')):]
 		try:
