@@ -231,7 +231,10 @@ class Anime(commands.Cog):
 		animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
 
 		# core user fields
-		embed.set_image(url=anilistResults["bannerImage"])
+		try:
+			embed.set_image(url=anilistResults["bannerImage"])
+		except:
+			pass
 		embed.set_thumbnail(url=anilistResults["avatar"]["large"])
 		embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
 		embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
