@@ -239,23 +239,26 @@ class Anime(commands.Cog):
 		# core user fields
 
 		
-		if anilistResults["bannerImage"]!=None:
-			try:
-				embed.set_image(url=anilistResults["bannerImage"])
-			except:
-				pass
-		try:
+		if anilistResults["bannerImage"] != None:
+			embed.set_image(url=anilistResults["bannerImage"])
+
+		if anilistResults["avatar"]["large"] != None:
 			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
-		except:
-			pass
-		try:
+		
+		if anilistResults["about"] != None:
 			embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
-		except:
-			pass
-		try:
+
+		if len(anilistResults["favorites"]["anime"]["nodes"]) > 0:
+			l = ''
+			i = 1
+			for anime in anilistResults["favorites"]["anime"]["nodes"]:
+				l += str(i) + '. ' + anime['title']['english'] + '\n'
+				i += 1
+
+			embed.add_field(name="Favorites:", value=l, inline=False)
+
+		if anilistResults["updatedAt"] != None:
 			embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
-		except:
-			pass
 
 		# anime fields
 		try:
