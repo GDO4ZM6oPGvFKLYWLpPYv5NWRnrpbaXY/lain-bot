@@ -162,6 +162,8 @@ class Music(commands.Cog):
             if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused):
                 voice.stop()
                 await ctx.send('Skipped')
+            else:
+                await ctx.send('Nothing to skip')
         except AttributeError as a:
             print(a)
             await ctx.send('Not in a voice channel')
