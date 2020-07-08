@@ -278,7 +278,7 @@ class Anime(commands.Cog):
 			print(anilistResults["bannerImage"])
 			print(anilistResults["avatar"]["large"])
 			print(anilistResults["siteUrl"])
-			await ctx.send("Error ")
+			await ctx.send(e)
 
 	@commands.group()
 	async def vn(self, ctx):
