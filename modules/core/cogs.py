@@ -14,7 +14,6 @@ from modules.commands.memes import Memes
 from dotenv import load_dotenv
 
 bot = Client.bot
-al_json = Client.al_json
 class Cogs:
     bot.add_cog(Memes(bot))
     bot.add_cog(Fighting(bot))
@@ -22,4 +21,4 @@ class Cogs:
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
 
-    bot.add_cog(Loop(bot, 300, al_json))
+    bot.add_cog(Loop(bot, 300))

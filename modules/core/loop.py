@@ -9,10 +9,9 @@ from modules.anime.anilist import Anilist
 
 class Loop(commands.Cog):
 
-    def __init__(self, bot, al_update_rate, al_json):
+    def __init__(self, bot, al_update_rate):
         self.bot = bot
         self.al_update_rate = al_update_rate
-        self.al_json = al_json
         self.al_update.start()
 
     def cog_unload(self):
@@ -21,14 +20,16 @@ class Loop(commands.Cog):
     @tasks.loop(seconds=300.0)
     async def al_update(self):
         print("Checking AL for List Updates")
+        al_json_path = str(os.getcwd())+"/modules/anime/config/alID.json"
+        al_json = json.load(open(al_json_path, 'r'))
         for guild in self.bot.guilds:
             if Config.cfgRead(str(guild.id), "alOn") == True:
                 channel = guild.get_channel(int(Config.cfgRead(str(guild.id), "alChannel")))
                 for member in guild.members:
 
                     #alID = User.userRead(str(member.id), "alID")
-                    if self.al_json[str(member.id)]!=0 or None:
-                        alID = self.al_json[str(member.id)]
+                    if al_json[str(member.id)]!=0 or None:
+                        alID = al_json[str(member.id)]
                         print(alID)
                         timeInt = int(time.time())
                         try:
