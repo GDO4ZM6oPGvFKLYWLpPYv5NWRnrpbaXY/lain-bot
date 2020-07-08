@@ -223,11 +223,15 @@ class Anime(commands.Cog):
 			color = colorConversion(anilistResults["options"]["profileColor"])
 		except:
 			color = discord.Color.teal()
+		try:
+			userUrl = anilistResults["siteUrl"]
+		except Exception as e:
+			userUrl = "https://anilist.co/home"
 
 		embed = discord.Embed(
 			title = anilistResults["name"],
 			color = color,
-			url = anilistResults["siteUrl"]
+			url = userUrl
 		)
 
 		try:
@@ -268,7 +272,7 @@ class Anime(commands.Cog):
 			pass
 		try:
 			await ctx.send(embed=embed)
-		except:
+		except Exception as e:
 			await ctx.send("Error ")
 
 	@commands.group()
