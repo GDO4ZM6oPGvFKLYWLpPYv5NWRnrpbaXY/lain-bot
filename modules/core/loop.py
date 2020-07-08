@@ -9,9 +9,10 @@ from modules.anime.anilist import Anilist
 
 class Loop(commands.Cog):
 
-    def __init__(self, bot, al_update_rate):
+    def __init__(self, bot, al_update_rate, al_json):
         self.bot = bot
         self.al_update_rate = al_update_rate
+        self.al_json = al_json
         self.al_update.start()
 
     def cog_unload(self):
@@ -24,32 +25,34 @@ class Loop(commands.Cog):
             if Config.cfgRead(str(guild.id), "alOn") == True:
                 channel = guild.get_channel(int(Config.cfgRead(str(guild.id), "alChannel")))
                 for member in guild.members:
-                    alID = User.userRead(str(member.id), "alID")
-                    if alID!=None:
+
+                    #alID = User.userRead(str(member.id), "alID")
+                    if self.al_json[str(member.id)]!=0 or None:
+                        alID = self.al_json[str(member.id)]
+                        print(alID)
                         timeInt = int(time.time())
                         try:
                             result = Anilist.activitySearch(alID, timeInt-self.al_update_rate)["data"]["Activity"]
                         except:
                             result = None
-                        try:
-                            embed = discord.Embed(
-                                title = str(member.name),
-                                url = result["siteUrl"]
-                            )
-                            try:
-                                embed.set_image(url=result["media"]["bannerImage"])
-                            except:
-                                pass
 
-                            embed.set_footer(text="Posted at: "+str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result["createdAt"]))))
-                            if result["status"] == "watched episode":
-                                embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+str(result["progress"])+" of "+result["media"]["title"]["romaji"], inline=True)
-                            else:
-                                embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
-                            try:
-                                await channel.send(embed=embed)
-                                print("Posting list updates of "+member.name)
-                            except:
-                                pass
+                        print(result)
+                        embed = discord.Embed(
+                            title = str(member.name),
+                            url = result["siteUrl"]
+                        )
+                        if result["media"]["bannerImage"]!=0 or None:
+                            embed.set_image(url=result["media"]["bannerImage"])
+
+                        embed.set_footer(text="Posted at: "+str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result["createdAt"]))))
+                        if result["status"] == "watched episode":
+                            embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+str(result["progress"])+" of "+result["media"]["title"]["romaji"], inline=True)
+                        else:
+                            embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
+                        try:
+                            await channel.send(embed=embed)
+                            print("Posting list updates of "+member.name)
                         except:
                             pass
+
+        print("Successfully updated lists on AL!")

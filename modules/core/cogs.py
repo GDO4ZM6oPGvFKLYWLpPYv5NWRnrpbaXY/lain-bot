@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import time
+import json
+import os
 
 from modules.core.loop import Loop
 from modules.core.client import Client
@@ -19,4 +21,6 @@ class Cogs:
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
 
-    bot.add_cog(Loop(bot, 300))
+    al_json = json.load(open(os.getcwd()+"/modules/anime/config/alID.json", 'r'))
+
+    bot.add_cog(Loop(bot, 300, al_json))

@@ -39,6 +39,12 @@ class Events:
 					json_data = {"Name": serverName}
 					json.dump(json_data, server_json)
 
+		if not path.exists(os.getcwd()+"/modules/anime/config/alID.json"):
+			with open(os.getcwd()+"/modules/anime/config/alID.json", "x") as al_json:
+				json_data = {0: 0}
+				json.dump(json_data, al_json)
+
+
 		for user in bot.users:
 			userID = str(user.id)
 			userName = str(user.name)
@@ -48,6 +54,15 @@ class Events:
 				with open(os.getcwd()+"/user/"+userID+".json", "x") as user_json:
 					json_data = {"Name": userName}
 					json.dump(json_data, user_json)
+
+			# for AL Auto-updates
+			alID = User.userRead(str(user.id), "alID")
+			if alID!=0 or None:
+				with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
+					json_data = json.load(al_json)
+					json_data[str(user.id)] = alID
+				with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
+					al_json.write(json.dumps(json_data))
 
 	@bot.event
 	async def on_member_join(member):

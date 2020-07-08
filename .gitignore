@@ -134,3 +134,4 @@ config/*
 !config/.gitkeep
 user/*
 !user/.gitkeep
+modules/anime/config/alID.json
