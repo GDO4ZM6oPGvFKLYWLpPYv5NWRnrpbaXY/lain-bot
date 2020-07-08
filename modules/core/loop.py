@@ -27,10 +27,11 @@ class Loop(commands.Cog):
                     alID = User.userRead(str(member.id), "alID")
                     if alID!=None:
                         timeInt = int(time.time())
-                        result = Anilist.activitySearch(alID, timeInt-self.al_update_rate)["data"]["Activity"]
-                        if result!=None:
-                            print("wow!")
-
+                        try:
+                            result = Anilist.activitySearch(alID, timeInt-self.al_update_rate)["data"]["Activity"]
+                        except:
+                            result = None
+                        try:
                             embed = discord.Embed(
                                 title = str(member.name),
                                 url = result["siteUrl"]
@@ -45,4 +46,10 @@ class Loop(commands.Cog):
                                 embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+str(result["progress"])+" of "+result["media"]["title"]["romaji"], inline=True)
                             else:
                                 embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
-                            await channel.send(embed=embed)
+                            try:
+                                await channel.send(embed=embed)
+                                print("Posting list updates of "+member.name)
+                            except:
+                                pass
+                        except:
+                            pass
