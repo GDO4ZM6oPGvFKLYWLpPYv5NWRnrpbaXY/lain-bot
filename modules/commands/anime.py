@@ -244,7 +244,7 @@ class Anime(commands.Cog):
 		try:
 			embed.set_image(url=anilistResults["bannerImage"])
 		except:
-			pass
+			embed.set_image(url=anilistResults["avatar"]["large"])
 		try:
 			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
 		except:
