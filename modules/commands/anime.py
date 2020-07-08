@@ -238,14 +238,12 @@ class Anime(commands.Cog):
 
 		# core user fields
 
-		bannerUrl = "https://raw.githubusercontent.com/SigSigSigurd/lain-bot/master/assets/search.jpg"
+		
 		if anilistResults["bannerImage"]!=None:
-			bannerUrl = anilistResults["bannerImage"]
-
-		try:
-			embed.set_image(url=bannerUrl)
-		except:
-			pass
+			try:
+				embed.set_image(url=anilistResults["bannerImage"])
+			except:
+				pass
 		try:
 			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
 		except:
