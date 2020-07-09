@@ -20,13 +20,9 @@ class Loop(commands.Cog):
     def cog_unload(self):
         self.al_update.cancel()
 
-
-
-    @tasks.loop(seconds=300.0)
+    @tasks.loop(seconds=150.0)
     async def al_update(self):
-        print("Checking AL for List Updates")
-
-        print("Loaded AL JSON")
+        print("["+time.strftime("%H:%M:%S", time.gmtime())+"] Checking AL for List Updates")
         for guild in self.bot.guilds:
             if Config.cfgRead(str(guild.id), "alOn") == True:
                 channel = guild.get_channel(int(Config.cfgRead(str(guild.id), "alChannel")))
@@ -63,4 +59,4 @@ class Loop(commands.Cog):
                                 pass
                     except Exception as e:
                         pass
-        print("Successfully updated lists on AL!")
+        print("["+time.strftime("%H:%M:%S", time.gmtime())+"] Successfully updated lists on AL!")
