@@ -203,7 +203,8 @@ class Anime(commands.Cog):
 		atLen = len(user)-5
 		if user == "":
 			try:
-				User.userUpdate(str(ctx.message.author.id), "alName", 0)
+				User.userUpdate(str(ctx.message.author.id), "alName", None)
+				User.userUpdate(str(ctx.message.author.id), "alID", 0)
 				with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
 					json_data = json.load(al_json)
 					json_data[str(ctx.message.author.id)] = 0
@@ -219,7 +220,8 @@ class Anime(commands.Cog):
 					userLen = len(user)-1
 					atUser = user[3:userLen]
 					try:
-						User.userUpdate(str(atUser), "alName", 0)
+						User.userUpdate(str(atUser), "alName", None)
+						User.userUpdate(str(atUser), "alID", 0)
 						with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
 							json_data = json.load(al_json)
 							json_data[str(atUser)] = 0
@@ -239,7 +241,8 @@ class Anime(commands.Cog):
 									json_data[str(users.id)] = 0
 								with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
 									al_json.write(json.dumps(json_data))
-								User.userUpdate(str(users.id), "alName", 0)
+								User.userUpdate(str(users.id), "alName", None)
+								User.userUpdate(str(users.id), "alID", 0)
 								await ctx.send("Removed AL account from "+user+".")
 							except:
 								await ctx.send("Error removing AL account from "+user+".")
