@@ -23,4 +23,4 @@ class Cogs:
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
 
-    bot.add_cog(Loop(bot, 300, Anime.al_json))
+    bot.add_cog(Loop(bot, 150, Anime.al_json))
