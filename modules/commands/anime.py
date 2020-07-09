@@ -190,11 +190,63 @@ class Anime(commands.Cog):
 			await ctx.send("Updated AL username!")
 			with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
 				json_data = json.load(al_json)
-				json_data[str(user.id)] = userID
+				json_data[str(ctx.message.author.id)] = userID
 			with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
 				al_json.write(json.dumps(json_data))
-		except:
+		except Exception as e:
+			print(e)
 			await ctx.send("Failed to update AL username!")
+
+	@user.command()
+	async def remove(self, ctx):
+		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user remove ')):]
+		atLen = len(user)-5
+		if user == "":
+			try:
+				User.userUpdate(str(ctx.message.author.id), "alName", 0)
+				with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
+					json_data = json.load(al_json)
+					json_data[str(ctx.message.author.id)] = 0
+				with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
+					al_json.write(json.dumps(json_data))
+				await ctx.send("Removed AL account from your profile!")
+			except:
+				user = None
+				await ctx.send("Failed to remove AL account from your profile!")
+		try:
+			if ctx.message.author.guild_permissions.administrator:
+				if user.startswith("<@!"):
+					userLen = len(user)-1
+					atUser = user[3:userLen]
+					try:
+						User.userUpdate(str(atUser), "alName", 0)
+						with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
+							json_data = json.load(al_json)
+							json_data[str(atUser)] = 0
+						with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
+							al_json.write(json.dumps(json_data))
+						await ctx.send("Removed AL account from "+user+".")
+					except:
+						await ctx.send("Error removing AL account from "+user+".")
+				# re.findall(".+#[0-9]{4}", txt)
+				elif user[atLen]=="#":
+					for users in self.bot.users:
+						usersSearch = users.name+"#"+users.discriminator
+						if usersSearch == user:
+							try:
+								with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
+									json_data = json.load(al_json)
+									json_data[str(users.id)] = 0
+								with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
+									al_json.write(json.dumps(json_data))
+								User.userUpdate(str(users.id), "alName", 0)
+								await ctx.send("Removed AL account from "+user+".")
+							except:
+								await ctx.send("Error removing AL account from "+user+".")
+			else:
+				await ctx.send("You do not have permissions to remove AL from others!")
+		except:
+			pass
 
 	# al user
 	@user.command()
