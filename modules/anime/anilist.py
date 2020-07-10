@@ -177,7 +177,7 @@ class Anilist(graphene.ObjectType):
 	def scoreSearch(user, media):
 		#implement query/statistics later
 		query = '''
-		query ($userId: Int, $mediaId: Int) {
+		query ($userId: Int, $mediaId: Int, $format: ScoreFormat) {
 			MediaList (userId: $userId, mediaId: $mediaId) {
 				mediaId
 				score
@@ -188,7 +188,8 @@ class Anilist(graphene.ObjectType):
 
 		variables = {
 			'userId': user,
-			'mediaId': media
+			'mediaId': media,
+			'format': "POINT_10"
 		}
 
 		url = 'https://graphql.anilist.co'
