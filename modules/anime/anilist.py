@@ -189,7 +189,7 @@ class Anilist(graphene.ObjectType):
 		variables = {
 			'userId': user,
 			'mediaId': media,
-			'format': "POINT_10"
+			'format': "POINT_10_DECIMAL"
 		}
 
 		url = 'https://graphql.anilist.co'
