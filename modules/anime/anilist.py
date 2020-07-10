@@ -180,7 +180,7 @@ class Anilist(graphene.ObjectType):
 		query ($userId: Int, $mediaId: Int, $format: ScoreFormat) {
 			MediaList (userId: $userId, mediaId: $mediaId) {
 				mediaId
-				score
+				score(format:$format)
 				status
 			}
 		}
