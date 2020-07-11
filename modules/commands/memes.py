@@ -43,3 +43,8 @@ class Memes(commands.Cog):
     async def anno(self, ctx):
         with open(os.getcwd()+"/assets/memes/anno.jpg", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'anno.jpg'))
+
+    @commands.command(pass_context=True)
+    async def gtab(self, ctx):
+        with open(os.getcwd()+"/assets/memes/gtab.mp4", 'rb') as fp:
+            await ctx.send(file=discord.File(fp, 'gtab.mp4'))
