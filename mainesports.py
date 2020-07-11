@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import logging
 
 from modules.core.client import Client
-from modules.core.command import Command
 from modules.core.events import Events
 from modules.core.cogs import Cogs
 from modules.esports.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
