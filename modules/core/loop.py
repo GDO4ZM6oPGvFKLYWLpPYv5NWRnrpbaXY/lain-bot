@@ -20,9 +20,10 @@ class Loop(commands.Cog):
     def cog_unload(self):
         self.al_update.cancel()
 
+    # loop for updating user AniList; optimize later
     @tasks.loop(seconds=150.0)
     async def al_update(self):
-        print("["+time.strftime("%H:%M:%S", time.gmtime())+"] Checking AL for List Updates")
+        print(time.strftime("[%H:%M", time.gmtime())+"] Checking AL for List Updates")
         for guild in self.bot.guilds:
             if Config.cfgRead(str(guild.id), "alOn") == True:
                 channel = guild.get_channel(int(Config.cfgRead(str(guild.id), "alChannel")))
@@ -52,11 +53,11 @@ class Loop(commands.Cog):
                                     embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
                                 try:
                                     await channel.send(embed=embed)
-                                    print("Posting list updates of "+member.name)
+                                    print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+member.name)
                                 except:
                                     pass
                             except Exception as e:
                                 pass
                     except Exception as e:
                         pass
-        print("["+time.strftime("%H:%M:%S", time.gmtime())+"] Successfully updated lists on AL!")
+        print(time.strftime("[%H:%M", time.gmtime())+"] Successfully updated lists on AL!")
