@@ -1,10 +1,12 @@
 import random
+import re
 import string
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
 import requests
 from requests_html import HTMLSession
+import json
 
 import os
 import smtplib
@@ -115,7 +117,8 @@ class EsportsClub(commands.Cog):
 
     @uw.command(pass_context=True)
     async def search(self, ctx, subj, num):
-        subjURL = getSubj(subj)
+        subject = re.sub(r'[\s\-\_]', '', getAlias(subj))
+        subjURL = getSubj(subject)
         course = getCourse(subjURL, num)
         if course==None:
             await ctx.send("No course with that ID found!")
@@ -132,9 +135,9 @@ class EsportsClub(commands.Cog):
             )
 
             embed.add_field(name="Description:", value=desc, inline=False)
-            embed.add_field(name="Requisites:", value=extra[0].text, inline=True)
             embed.add_field(name="Repeatable:", value=extra[2].text, inline=True)
             embed.add_field(name="Last Taught:", value=extra[3].text, inline=True)
+            embed.add_field(name="Requisites:", value=extra[0].text, inline=False)
             embed.add_field(name="Course Designation:", value=extra[1].text, inline=False)
             await ctx.send(embed=embed)
 
@@ -145,7 +148,8 @@ def getSubj(subj):
     links = r.html.absolute_links
     for link in links:
         #I feel like I need to apologize to God for this
-        if "/courses/"+subj in link:
+        linkText=re.sub(r'_', '', str(link))
+        if "/courses/"+subj in linkText:
             return link
     return None
 
@@ -162,3 +166,13 @@ def getCourse(url, num :int):
         if numStr in course.html:
             return course
     return None
+
+def getAlias(subj):
+    with open(os.getcwd()+"/modules/esports/subjAlias.json", "r") as alias_json:
+        json_data = json.load(alias_json)
+
+    for subject in json_data:
+        for alias in subject["Alias"]:
+            if alias.lower().startswith(subj):
+                return subject["Course"]
+    return subj
