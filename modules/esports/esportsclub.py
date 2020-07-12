@@ -127,14 +127,30 @@ class EsportsClub(commands.Cog):
             credits = course.find('.courseblockcredits', first=True).text
             desc = course.find('.courseblockdesc', first=True).text
             extra = course.find('.cbextra-data', first=False)
+            req = extra[0].text
 
+            enroll = desc[desc.find('Enroll Info:')+12:len(desc)]
+            desc = desc[0:desc.find('Enroll Info:')]
+
+            if len(desc) > 512:
+                length = 0
+                periods = 0
+                for char in desc:
+                    length+=1
+                    if char==".":
+                        periods+=1
+                        if periods==5:
+                            break
+                desc = desc[0:length]+" (Read more on course website)"
 
             embed = discord.Embed(
                 title=title+" ("+credits[0]+"cr.)",
+                url=subjURL,
                 color=discord.Color(12911884)
             )
 
             embed.add_field(name="Description:", value=desc, inline=False)
+            embed.add_field(name="Enroll info:", value=enroll, inline=False)
             embed.add_field(name="Repeatable:", value=extra[2].text, inline=True)
             embed.add_field(name="Last Taught:", value=extra[3].text, inline=True)
             embed.add_field(name="Requisites:", value=extra[0].text, inline=False)
