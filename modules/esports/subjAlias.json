@@ -2,5 +2,9 @@
   {
     "Alias": ["comp_sci", "compsci", "cs"],
     "Course": "comp_sci"
+  },
+  {
+    "Alias": ["atm_ocn", "aos"],
+    "Course": "atm_ocn"
   }
 ]
