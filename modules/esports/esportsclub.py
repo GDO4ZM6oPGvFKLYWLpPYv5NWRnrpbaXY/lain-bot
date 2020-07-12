@@ -114,11 +114,29 @@ class EsportsClub(commands.Cog):
             await ctx.send('Invalid UW command passed...')
 
     @uw.command(pass_context=True)
-    async def course(self, ctx, subj, num):
+    async def search(self, ctx, subj, num):
         subjURL = getSubj(subj)
-        print(subjURL)
         course = getCourse(subjURL, num)
-        await ctx.send(course.text)
+        if course==None:
+            await ctx.send("No course with that ID found!")
+        else:
+            title = course.find('.courseblocktitle ', first=True).text
+            credits = course.find('.courseblockcredits', first=True).text
+            desc = course.find('.courseblockdesc', first=True).text
+            extra = course.find('.cbextra-data', first=False)
+
+
+            embed = discord.Embed(
+                title=title+" ("+credits[0]+"cr.)",
+                color=discord.Color(12911884)
+            )
+
+            embed.add_field(name="Description:", value=desc, inline=False)
+            embed.add_field(name="Requisites:", value=extra[0].text, inline=True)
+            embed.add_field(name="Repeatable:", value=extra[2].text, inline=True)
+            embed.add_field(name="Last Taught:", value=extra[3].text, inline=True)
+            embed.add_field(name="Course Designation:", value=extra[1].text, inline=False)
+            await ctx.send(embed=embed)
 
 #super WIP code
 def getSubj(subj):
@@ -126,17 +144,21 @@ def getSubj(subj):
     r = session.get('https://guide.wisc.edu/courses/#text')
     links = r.html.absolute_links
     for link in links:
-        if subj in link:
+        #I feel like I need to apologize to God for this
+        if "/courses/"+subj in link:
             return link
     return None
 
 def getCourse(url, num :int):
     session = HTMLSession()
     r = session.get(url)
-    courses = r.html.find('.courseblock ', first=False)
-    print(courses[0].html)
-
+    try:
+        courses = r.html.find('.courseblock ', first=False)
+    except Exception as e:
+        print(e)
+        return None
     numStr = str(num)+"</span>"
     for course in courses:
         if numStr in course.html:
             return course
+    return None
