@@ -121,8 +121,6 @@ class EsportsClub(commands.Cog):
         contentsReplaced = re.sub(r'\d', '#', contents)
         subj = contents[0:contentsReplaced.find('#')-1]
         num = int(contents[contentsReplaced.find('#'):len(contents)])
-        print(subj)
-        print(num)
 
         subject = re.sub(r'[\s\-\_]', '', getAlias(subj))
         subjURL = getSubj(subject)
@@ -150,9 +148,14 @@ class EsportsClub(commands.Cog):
                             break
                 desc = desc[0:length]+" (Read more on course website)"
 
+            titleShort = title[0:title.find("—")-1]
+            subtitle = title[title.find("—")+2:len(title)]
+            courseURL = "https://guide.wisc.edu/search/?P="+re.sub(r'\s', '%20', titleShort)
+
             embed = discord.Embed(
-                title=title+" ("+credits[0]+"cr.)",
-                url=subjURL,
+                title=subtitle,
+                description=titleShort+" ("+credits[0]+"cr.)",
+                url=courseURL,
                 color=discord.Color(12911884)
             )
 
