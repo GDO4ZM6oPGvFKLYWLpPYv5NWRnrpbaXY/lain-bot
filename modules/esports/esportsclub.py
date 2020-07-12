@@ -1,7 +1,10 @@
 import random
 import string
 import discord
+from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
+import requests
+from requests_html import AsyncHTMLSession
 
 import os
 import smtplib
@@ -9,18 +12,19 @@ from dotenv import load_dotenv
 
 from modules.core.client import Client
 from modules.config.user import User
-from modules.commands.configuration import Configuration
+from modules.cogs.configuration import Configuration
 from modules.config.config import Config
 
-bot = Client.bot
 load_dotenv()
 
 gmail_user = os.getenv("GMAILUSER")
 gmail_pass = os.getenv("GMAILPASS")
 
-class EsportsClub:
+class EsportsClub(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
 
-    @bot.command(pass_context=True)
+    @commands.command(pass_context=True)
     async def verify(ctx):
         asciiChars = string.ascii_lowercase + string.digits
         user = ctx.message.author
@@ -75,7 +79,7 @@ class EsportsClub:
             print(userCode)
             if content.lower() == userCode.lower():
                 try:
-                    for guild in bot.guilds:
+                    for guild in self.bot.guilds:
                         if str(guild.id) == "147255790078656513":
                             role = discord.utils.get(guild.roles, name='Verified')
                             await discord.Member.add_roles(member, role)
@@ -88,7 +92,7 @@ class EsportsClub:
         else:
             await ctx.send("Error, command not found!")
 
-    @bot.command(pass_context=True)
+    @commands.command(pass_context=True)
     @has_permissions(administrator=True)
     async def status(ctx):
         status = str(ctx.message.content)[(len(ctx.prefix) + len('config status ')):]
@@ -103,3 +107,8 @@ class EsportsClub:
             print("Error with changing status on Esports Club")
             pass
         await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
+
+async def getClasses():
+    asession = AsyncHTMLSession()
+    r = await assession.get('https://guide.wisc.edu/courses/')
+    print(r.html)
