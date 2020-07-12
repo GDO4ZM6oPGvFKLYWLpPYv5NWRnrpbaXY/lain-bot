@@ -14,13 +14,17 @@ from modules.cogs.fighting import Fighting
 from modules.cogs.configuration import Configuration
 from modules.cogs.memes import Memes
 
+from modules.esports.esportsclub import EsportsClub
+
 bot = Client.bot
 
-class Cogs:
+class EsportsCogs:
     bot.add_cog(Memes(bot))
     bot.add_cog(Fighting(bot))
     bot.add_cog(Anime(bot))
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
+
+    bot.add_cog(EsportsClub(bot))
 
     bot.add_cog(Loop(bot, 150, Anime.al_json))

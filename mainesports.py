@@ -4,8 +4,7 @@ import logging
 
 from modules.core.client import Client
 from modules.core.events import Events
-from modules.core.cogs import Cogs
-from modules.esports.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
+from modules.esports.esportscogs import EsportsCogs # for commands / features for UW-Madison Esports Club
 #currently SMTP doesn't work
 
 bot = Client.bot

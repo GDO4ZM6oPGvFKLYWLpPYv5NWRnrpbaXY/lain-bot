@@ -9,3 +9,4 @@ graphene==2.1.8
 python-dotenv==0.13.0
 praw==7.1.0
 asyncpg==0.20.1
+requests-html==0.3.4
