@@ -116,7 +116,14 @@ class EsportsClub(commands.Cog):
             await ctx.send('Invalid UW command passed...')
 
     @uw.command(pass_context=True)
-    async def search(self, ctx, subj, num):
+    async def search(self, ctx):
+        contents = str(ctx.message.content)[(len(ctx.prefix) + len('uw search ')):]
+        contentsReplaced = re.sub(r'\d', '#', contents)
+        subj = contents[0:contentsReplaced.find('#')-1]
+        num = int(contents[contentsReplaced.find('#'):len(contents)])
+        print(subj)
+        print(num)
+
         subject = re.sub(r'[\s\-\_]', '', getAlias(subj))
         subjURL = getSubj(subject)
         course = getCourse(subjURL, num)
