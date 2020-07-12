@@ -14,6 +14,8 @@ from modules.cogs.fighting import Fighting
 from modules.cogs.configuration import Configuration
 from modules.cogs.memes import Memes
 
+from modules.esports.esportsclub import EsportsClub
+
 bot = Client.bot
 
 class Cogs:
