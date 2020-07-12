@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
 import requests
-from requests_html import AsyncHTMLSession
+from requests_html import HTMLSession
 
 import os
 import smtplib
@@ -114,11 +114,29 @@ class EsportsClub(commands.Cog):
             await ctx.send('Invalid UW command passed...')
 
     @uw.command(pass_context=True)
-    async def classes(self, ctx):
-        await getClasses()
-        await ctx.send("B")
+    async def course(self, ctx, subj, num):
+        subjURL = getSubj(subj)
+        print(subjURL)
+        course = getCourse(subjURL, num)
+        await ctx.send(course.text)
 
-async def getClasses():
-    asession = AsyncHTMLSession()
-    r = await asession.get('https://guide.wisc.edu/courses/')
-    print(r.html)
+#super WIP code
+def getSubj(subj):
+    session = HTMLSession()
+    r = session.get('https://guide.wisc.edu/courses/#text')
+    links = r.html.absolute_links
+    for link in links:
+        if subj in link:
+            return link
+    return None
+
+def getCourse(url, num :int):
+    session = HTMLSession()
+    r = session.get(url)
+    courses = r.html.find('.courseblock ', first=False)
+    print(courses[0].html)
+
+    numStr = str(num)+"</span>"
+    for course in courses:
+        if numStr in course.html:
+            return course
