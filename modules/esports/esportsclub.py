@@ -25,7 +25,7 @@ class EsportsClub(commands.Cog):
         self.bot = bot
 
     @commands.command(pass_context=True)
-    async def verify(ctx):
+    async def verify(self, ctx):
         asciiChars = string.ascii_lowercase + string.digits
         user = ctx.message.author
 
@@ -94,7 +94,7 @@ class EsportsClub(commands.Cog):
 
     @commands.command(pass_context=True)
     @has_permissions(administrator=True)
-    async def status(ctx):
+    async def status(self, ctx):
         status = str(ctx.message.content)[(len(ctx.prefix) + len('config status ')):]
         try:
             Config.cfgUpdate(str(ctx.guild.id), "status", status)
@@ -108,7 +108,17 @@ class EsportsClub(commands.Cog):
             pass
         await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
 
+    @commands.group()
+    async def uw(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('Invalid UW command passed...')
+
+    @uw.command(pass_context=True)
+    async def classes(self, ctx):
+        await getClasses()
+        await ctx.send("B")
+
 async def getClasses():
     asession = AsyncHTMLSession()
-    r = await assession.get('https://guide.wisc.edu/courses/')
+    r = await asession.get('https://guide.wisc.edu/courses/')
     print(r.html)
