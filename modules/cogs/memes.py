@@ -49,14 +49,3 @@ class Memes(commands.Cog):
     async def gtab(self, ctx):
         with open(os.getcwd()+"/assets/memes/gtab.mp4", 'rb') as fp:
             await ctx.send(file=discord.File(fp, 'gtab.mp4'))
-
-    @commands.command(pass_context=True)
-    @has_permissions(administrator=True)
-    async def rename_all_users_do_it(self, ctx):
-        nickname = str(ctx.message.content)[(len(ctx.prefix) + len('rename_all_users_do_it ')):]
-        for user in ctx.guild.members:
-            try:
-                await user.edit(nick=nickname)
-            except:
-                pass
-        await ctx.send("Changed nicknames!")
