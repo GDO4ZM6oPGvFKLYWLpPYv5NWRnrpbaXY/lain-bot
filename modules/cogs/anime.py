@@ -35,13 +35,12 @@ class Anime(commands.Cog):
 
 		embed = discord.Embed(
 			title = tags,
-			description = 'Is this what you were looking for, producer?',
+			description = 'Here\'s the picture you were looking for',
 			color = discord.Color.green(),
 			url = safebooruPageURL
 		)
 
 		embed.set_image(url=safebooruImageURL)
-		embed.set_author(name='音無小鳥', url='https://www.project-imas.com/wiki/Kotori_Otonashi', icon_url='https://raw.githubusercontent.com/SigSigSigurd/kotori-san-bot/master/assets/search.jpg')
 		embed.set_footer(text=safebooruTagsTogether)
 
 		await channel.send(embed=embed)
