@@ -7,6 +7,7 @@ from discord.ext.commands import has_permissions, CheckFailure
 import requests
 from requests_html import HTMLSession
 import json
+import time
 
 import os
 import smtplib
@@ -167,6 +168,26 @@ class EsportsClub(commands.Cog):
             embed.add_field(name="Course Designation:", value=extra[1].text, inline=False)
             await ctx.send(embed=embed)
 
+    @commands.command(pass_context=True)
+    async def name(self, ctx):
+        if time.time() > User.userRead(str(ctx.message.author.id), "Cooldown")+3600:
+            contents = str(ctx.message.content)[(len(ctx.prefix) + len('name ')):]
+            x = re.search(r'\<\@\!.*\>', contents)
+            y = re.sub(r'[\<\@\!\>]', '', x.group())
+            z = re.sub(r'\<\@\!.*\>', '', contents)
+            user = None
+            user = ctx.guild.get_member(int(y))
+            try:
+                await user.edit(nick=z)
+                await ctx.send("Successfully changed "+user.name+"\'s nickname to "+z)
+                User.userUpdate(str(ctx.message.author.id), "Cooldown", time.time())
+            except:
+                await ctx.send("Error changing user's name! Be sure the bot has permissions!")
+        else:
+            timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+3600-time.time())
+            await ctx.send("On cooldown! Wait another "+timeleft)
+
+
 #super WIP code
 def getSubj(subj):
     session = HTMLSession()
@@ -202,3 +223,12 @@ def getAlias(subj):
             if alias.lower().startswith(subj):
                 return subject["Course"]
     return subj
+
+def convert(seconds): #geeksforgeeks
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+
+    return "%d:%02d:%02d" % (hour, minutes, seconds)

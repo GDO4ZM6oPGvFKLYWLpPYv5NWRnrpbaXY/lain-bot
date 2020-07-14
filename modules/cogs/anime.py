@@ -35,7 +35,7 @@ class Anime(commands.Cog):
 
 		embed = discord.Embed(
 			title = tags,
-			description = 'Here\'s the picture you were looking for',
+			description = 'Here\'s the picture you were looking for:',
 			color = discord.Color.green(),
 			url = safebooruPageURL
 		)
