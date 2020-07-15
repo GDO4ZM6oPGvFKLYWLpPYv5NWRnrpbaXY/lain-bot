@@ -170,21 +170,26 @@ class EsportsClub(commands.Cog):
 
     @commands.command(pass_context=True)
     async def name(self, ctx):
-        if time.time() > User.userRead(str(ctx.message.author.id), "Cooldown")+3600:
+        print(User.userRead(str(ctx.message.author.id), "Cooldown"))
+        if time.time() > User.userRead(str(ctx.message.author.id), "Cooldown")+86400:
             contents = str(ctx.message.content)[(len(ctx.prefix) + len('name ')):]
             x = re.search(r'\<\@\!.*\>', contents)
             y = re.sub(r'[\<\@\!\>]', '', x.group())
             z = re.sub(r'\<\@\!.*\>', '', contents)
             user = None
             user = ctx.guild.get_member(int(y))
-            try:
-                await user.edit(nick=z)
-                await ctx.send("Successfully changed "+user.name+"\'s nickname to "+z)
-                User.userUpdate(str(ctx.message.author.id), "Cooldown", time.time())
-            except:
-                await ctx.send("Error changing user's name! Be sure the bot has permissions!")
+            if contents=="":
+                timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+86400-time.time())
+                await ctx.send("Cooldown: "+timeleft)
+            else:
+                try:
+                    await user.edit(nick=z)
+                    await ctx.send("Successfully changed "+user.name+"\'s nickname to "+z)
+                    User.userUpdate(str(ctx.message.author.id), "Cooldown", time.time())
+                except:
+                    await ctx.send("Error changing user's name! Be sure the bot has permissions!")
         else:
-            timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+3600-time.time())
+            timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+86400-time.time())
             await ctx.send("On cooldown! Wait another "+timeleft)
 
 
