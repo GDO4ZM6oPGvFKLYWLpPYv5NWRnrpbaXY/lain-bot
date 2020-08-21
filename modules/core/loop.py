@@ -32,7 +32,6 @@ class Loop(commands.Cog):
                     try:
                         if self.al_json[str(member.id)]!=0 or None:
                             alID = self.al_json[str(member.id)]
-                            print(alID)
                             timeInt = int(time.time())
                             try:
                                 result = Anilist.activitySearch(alID, timeInt-self.al_update_rate)["data"]["Activity"]
