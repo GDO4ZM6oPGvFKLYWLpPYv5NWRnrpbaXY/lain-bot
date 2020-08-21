@@ -33,12 +33,12 @@ class EsportsClub(commands.Cog):
         user = ctx.message.author
 
         s = ctx.message.content
-        subcommand = s[9:14]
+        subcommand = s[8:13]
 
         if subcommand == "":
             await user.send("Type ``>verify email [your @wisc.edu email]`` to verify your Discord account on the Esports Club Discord")
         elif subcommand == "email":
-            content = s[15:]
+            content = s[14:]
             if "@wisc.edu" in content:
                 verificationCode = ''.join((random.choice(asciiChars) for i in range(4)))
                 print('Verification Code:'+verificationCode)
@@ -57,13 +57,15 @@ class EsportsClub(commands.Cog):
 
                 try:
                     #server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
                     server.ehlo()
-                    server.starttls()
+                except Exception as e:
+                    print(e)
+                try:
                     server.login(gmail_user, gmail_pass)
-                except:
+                except Exception as e:
                     await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
-                    print("Error with gmail login!")
+                    print(e)
                 try:
                     server.sendmail(gmail_user, content, message)
                     server.close()
@@ -77,7 +79,7 @@ class EsportsClub(commands.Cog):
             else:
                 await user.send("Be sure to use your ``@wisc.edu`` email address!")
         elif subcommand == "code ":
-            content = s[14:]
+            content = s[13:]
             userCode = User.userRead(str(user.id), "VerificationCode")
             print(userCode)
             if content.lower() == userCode.lower():
