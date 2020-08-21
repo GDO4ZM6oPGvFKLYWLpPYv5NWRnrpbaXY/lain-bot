@@ -23,7 +23,7 @@ class Events:
 
 		if bot.user.id == 727537208235524178:
 			print('Esports Club is ready to go!')
-			bot.command_prefix = "b!"
+			bot.command_prefix = ">"
 			await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
 		else:
 			print('Lain is online')
