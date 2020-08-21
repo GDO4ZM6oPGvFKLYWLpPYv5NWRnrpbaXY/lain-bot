@@ -36,7 +36,7 @@ class EsportsClub(commands.Cog):
         subcommand = s[9:14]
 
         if subcommand == "":
-            await user.send("Type ``k!verify email [your @wisc.edu email]`` to verify your Discord account on the Esports Club Discord")
+            await user.send("Type ``>verify email [your @wisc.edu email]`` to verify your Discord account on the Esports Club Discord")
         elif subcommand == "email":
             content = s[15:]
             if "@wisc.edu" in content:
