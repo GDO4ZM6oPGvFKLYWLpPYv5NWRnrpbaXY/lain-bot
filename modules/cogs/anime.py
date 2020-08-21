@@ -189,7 +189,7 @@ class Anime(commands.Cog):
 			await ctx.send("Updated AL username!")
 			with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
 				json_data = json.load(al_json)
-				json_data[str(ctx.message.author.id)] = userID
+				json_data[str(ctx.message.author.id)] = str(userID)
 			with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
 				al_json.write(json.dumps(json_data))
 		except Exception as e:
