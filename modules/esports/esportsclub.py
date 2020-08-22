@@ -60,15 +60,21 @@ class EsportsClub(commands.Cog):
                     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
                     server.ehlo()
                 except Exception as e:
+                    print("Exception authenticating mail server")
                     print(e)
                 try:
                     server.login(gmail_user, gmail_pass)
                 except Exception as e:
                     await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
+                    print("Email login error")
+                    print(e)
+                try:
+                    server.close()
+                except Exception as e:
                     print(e)
                 try:
                     server.sendmail(gmail_user, content, message)
-                    server.close()
+
 
                     await user.send("An email has been sent to "+content+" with additional instructions!")
                     User.userUpdate(str(user.id), "Email", content)
