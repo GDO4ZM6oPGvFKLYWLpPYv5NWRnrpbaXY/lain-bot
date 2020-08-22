@@ -43,6 +43,7 @@ class EsportsClub(commands.Cog):
                 verificationCode = ''.join((random.choice(asciiChars) for i in range(4)))
                 print('Verification Code:'+verificationCode)
                 User.userUpdate(str(user.id), "VerificationCode", verificationCode)
+                #content = re.sub(r'\s*', "", content)
                 print(content)
 
                 subject = "Esports Club Verification Code"
@@ -53,7 +54,7 @@ class EsportsClub(commands.Cog):
                 Subject: %s
 
                 %s
-                """ % (gmail_user, ", ".join(content), subject, body)
+                """ % (gmail_user, content, subject, body)
 
                 try:
                     #server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
@@ -65,23 +66,20 @@ class EsportsClub(commands.Cog):
                 try:
                     server.login(gmail_user, gmail_pass)
                 except Exception as e:
-                    await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
                     print("Email login error")
                     print(e)
                 try:
-                    server.close()
-                except Exception as e:
-                    print(e)
-                try:
                     server.sendmail(gmail_user, content, message)
-
-
                     await user.send("An email has been sent to "+content+" with additional instructions!")
                     User.userUpdate(str(user.id), "Email", content)
                     print("Email sent to "+content)
                 except:
                     await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
                     print("Error with sending the email!")
+                try:
+                    server.close()
+                except Exception as e:
+                    print(e)
             else:
                 await user.send("Be sure to use your ``@wisc.edu`` email address!")
         elif subcommand == "code ":
