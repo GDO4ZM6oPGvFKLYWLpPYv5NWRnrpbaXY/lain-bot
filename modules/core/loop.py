@@ -11,9 +11,8 @@ from modules.anime.anilist import Anilist
 
 class Loop(commands.Cog):
 
-    def __init__(self, bot, al_update_rate, al_json):
+    def __init__(self, bot, al_json):
         self.bot = bot
-        self.al_update_rate = al_update_rate
         self.al_json = al_json
         self.al_update.start()
 
@@ -32,12 +31,10 @@ class Loop(commands.Cog):
                     try:
                         if self.al_json[str(member.id)]!=0 or None:
                             alID = self.al_json[str(member.id)]
+                            print(time.strftime("[%H:%M", time.gmtime())+"] Checking user "+member.name+" ("+str(alID)+") for list updates.")
                             timeInt = int(time.time())
-                            try:
-                                result = Anilist.activitySearch(alID, timeInt-self.al_update_rate)["data"]["Activity"]
-                            except:
-                                result = None
-                            if results != None:
+                            result = Anilist.activitySearch(alID, timeInt-150.0)["data"]["Activity"]
+                            if result != None:
                                 print(result)
 
                             try:
@@ -45,7 +42,9 @@ class Loop(commands.Cog):
                                     title = str(member.name),
                                     url = result["siteUrl"]
                                 )
-                                if result["media"]["bannerImage"]!=0 or None:
+
+                                #custom random banners in next update
+                                if result["media"]["bannerImage"]!=None:
                                     embed.set_image(url=result["media"]["bannerImage"])
 
                                 embed.set_footer(text="Posted at: "+str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result["createdAt"]))))
@@ -56,10 +55,10 @@ class Loop(commands.Cog):
                                 try:
                                     await channel.send(embed=embed)
                                     print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+member.name)
-                                except:
-                                    pass
+                                except Exception as e:
+                                    print(e)
                             except Exception as e:
-                                pass
+                                print(e)
                     except Exception as e:
-                        pass
-        print(time.strftime("[%H:%M", time.gmtime())+"] Successfully updated lists on AL!")
+                        print(e)
+        print(time.strftime("[%H:%M", time.gmtime())+"] Successfully check AL for list updates!")
