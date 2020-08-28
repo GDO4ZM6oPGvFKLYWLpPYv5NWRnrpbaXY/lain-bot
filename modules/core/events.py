@@ -26,7 +26,7 @@ class Events:
 			bot.command_prefix = ">"
 			await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
 		else:
-			print('Lain is online')
+			print('Lain is online!')
 			await bot.change_presence(status=discord.Status.online, activity=status)
 
 		for guild in bot.guilds:
