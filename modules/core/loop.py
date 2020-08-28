@@ -37,6 +37,8 @@ class Loop(commands.Cog):
                                 result = Anilist.activitySearch(alID, timeInt-self.al_update_rate)["data"]["Activity"]
                             except:
                                 result = None
+                            if results != None:
+                                print(result)
 
                             try:
                                 embed = discord.Embed(
