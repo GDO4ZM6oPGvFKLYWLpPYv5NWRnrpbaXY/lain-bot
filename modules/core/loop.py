@@ -28,15 +28,13 @@ class Loop(commands.Cog):
                 channel = guild.get_channel(int(Config.cfgRead(str(guild.id), "alChannel")))
                 for member in guild.members:
                     #alID = User.userRead(str(member.id), "alID")
-                    try:
-                        if self.al_json[str(member.id)]!=0 or None:
-                            alID = self.al_json[str(member.id)]
-                            print(time.strftime("[%H:%M", time.gmtime())+"] Checking user "+member.name+" ("+str(alID)+") for list updates.")
-                            timeInt = int(time.time())
-                            result = Anilist.activitySearch(alID, timeInt-150.0)["data"]["Activity"]
-                            if result != None:
-                                print(result)
-
+                    if str(member.id) in self.al_json:
+                        alID = self.al_json[str(member.id)]
+                        print(time.strftime("[%H:%M", time.gmtime())+"] Checking user "+member.name+" (AL ID:"+str(alID)+") for list updates.")
+                        timeInt = int(time.time())
+                        result = Anilist.activitySearch(alID, timeInt-150.0)
+                        if result != None:
+                            result = result["data"]["Activity"]
                             try:
                                 embed = discord.Embed(
                                     title = str(member.name),
@@ -54,11 +52,9 @@ class Loop(commands.Cog):
                                     embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
                                 try:
                                     await channel.send(embed=embed)
-                                    print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+member.name)
+                                    print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+str(member.name))
                                 except Exception as e:
                                     print(e)
                             except Exception as e:
                                 print(e)
-                    except Exception as e:
-                        print(e)
-        print(time.strftime("[%H:%M", time.gmtime())+"] Successfully check AL for list updates!")
+        print(time.strftime("[%H:%M", time.gmtime())+"] Successfully checked AL for list updates!")
