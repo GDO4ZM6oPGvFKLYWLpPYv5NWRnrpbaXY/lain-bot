@@ -27,4 +27,4 @@ class EsportsCogs:
 
     bot.add_cog(EsportsClub(bot))
 
-    bot.add_cog(Loop(bot, 150, Anime.al_json))
+    bot.add_cog(Loop(bot, Anime.al_json))
