@@ -228,6 +228,9 @@ class Anilist(graphene.ObjectType):
 							english
 						}
 						bannerImage
+						coverImage {
+							medium
+						}
 					}
 					createdAt
 					siteUrl
