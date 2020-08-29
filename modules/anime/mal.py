@@ -2,12 +2,12 @@ import requests
 import json
 
 class Mal():
+
 	def aniSearch(show):
-		token = json.load(open('mal.json', 'r'))['token']
 		
         # authentication token
 		headers = {
-			'Authorization': token
+			'Authorization': 'Bearer ' + json.load(open('mal.json', 'r'))['token']
 		}
 
 		print(show)

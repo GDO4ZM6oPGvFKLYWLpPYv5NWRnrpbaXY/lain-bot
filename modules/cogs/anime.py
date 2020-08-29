@@ -10,6 +10,7 @@ from modules.core.client import Client
 from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
+from module.anime.mal import Mal
 from modules.anime.vndb import Vndb
 
 class Anime(commands.Cog):
@@ -346,6 +347,40 @@ class Anime(commands.Cog):
 			print(anilistResults["avatar"]["large"])
 			print(anilistResults["siteUrl"])
 			await ctx.send(e)
+	
+	@commands.group()
+	async def mal(self, ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid MAL command passed...')
+
+	@mal.command(pass_context=True)
+	async def search(self, ctx):
+		show = str(ctx.message.content)[(len(ctx.prefix) + len('mal search ')):]
+		results = Mal.aniSearch(show)
+
+		# description of media
+		desc = shorten(results['synopsis'])
+
+		# get all genres and turn into string
+		genres = ''
+		i = 0
+		for genre in results['genres']:
+			genres += genre['name']
+			i += 1
+
+			if i != len(results['genres']):
+				genres += ', '
+
+		embed = discord.Embed(
+			title = str(results['title']),
+			description = desc,
+			color = discord.Color.blue(),
+			url = 'https://myanimelist.net/anime/' + str(results['id'])
+		)
+
+		embed.set_thumbnail(url=str(results['main_picture']['large']))
+
+		embed.set_footer(text=genres)
 
 	@commands.group()
 	async def vn(self, ctx):
