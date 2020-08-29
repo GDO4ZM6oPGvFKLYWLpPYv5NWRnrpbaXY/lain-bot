@@ -230,6 +230,7 @@ class Anilist(graphene.ObjectType):
 						bannerImage
 						coverImage {
 							medium
+							extraLarge
 						}
 					}
 					createdAt
