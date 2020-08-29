@@ -51,6 +51,8 @@ class Loop(commands.Cog):
                                     #custom random banners in next update
                                     if result["media"]["bannerImage"]!=None:
                                         embed.set_image(url=result["media"]["bannerImage"])
+                                    elif result["media"]["coverImage"]["extraLarge"]!=None:
+                                        embed.set_image(url=result["media"]["coverImage"]["extraLarge"])
                                     elif result["media"]["coverImage"]["medium"]!=None:
                                         embed.set_image(url=result["media"]["coverImage"]["medium"])
 
