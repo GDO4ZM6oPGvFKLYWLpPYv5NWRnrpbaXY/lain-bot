@@ -10,7 +10,7 @@ from modules.core.client import Client
 from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
-from module.anime.mal import Mal
+from modules.anime.mal import Mal
 from modules.anime.vndb import Vndb
 
 class Anime(commands.Cog):
