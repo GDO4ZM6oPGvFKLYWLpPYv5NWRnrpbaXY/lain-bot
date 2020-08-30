@@ -46,7 +46,7 @@ class Anime(commands.Cog):
 
 		await channel.send(embed=embed)
 
-	@commands.group()
+	@commands.group(pass_context=True)
 	async def al(self, ctx):
 		# anilist command group
 		if ctx.invoked_subcommand is None:
@@ -347,7 +347,8 @@ class Anime(commands.Cog):
 			print(anilistResults["avatar"]["large"])
 			print(anilistResults["siteUrl"])
 			await ctx.send(e)
-	
+
+	"""
 	@commands.group()
 	async def mal(self, ctx):
 		if ctx.invoked_subcommand is None:
@@ -381,8 +382,9 @@ class Anime(commands.Cog):
 		embed.set_thumbnail(url=str(results['main_picture']['large']))
 
 		embed.set_footer(text=genres)
+	"""
 
-	@commands.group()
+	@commands.group(pass_context=True)
 	async def vn(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid vndb command passed...')
