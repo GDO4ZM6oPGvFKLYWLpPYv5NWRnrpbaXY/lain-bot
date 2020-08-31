@@ -4,7 +4,16 @@ import praw
 import random
 import re
 
+import os
+from dotenv import load_dotenv
+
 from modules.anime.anilist import Anilist
+
+load_dotenv()
+
+themes_id = os.getenv("THEMES_ID")
+themes_secret = os.getenv("THEMES_SECRET")
+themes_agent = os.getenv("THEMES_AGENT")
 
 class Themes():
     def openingsMoe():
@@ -36,8 +45,7 @@ class Themes():
         return {'found': False}
 
     def themesMoe(year, mal, which, num):
-        config = json.load(open('themes.json', 'r'))
-        reddit = praw.Reddit(client_id=config['id'], client_secret=config['secret'], user_agent='Snans')
+        reddit = praw.Reddit(client_id=themes_id, client_secret=themes_secret, user_agent=themes_agent)
 
         which = {
             1 : 'OP',
