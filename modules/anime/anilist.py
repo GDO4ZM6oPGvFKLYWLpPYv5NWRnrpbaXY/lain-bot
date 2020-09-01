@@ -223,6 +223,7 @@ class Anilist(graphene.ObjectType):
 					status
 					progress
 					media {
+						type
 						title {
 							romaji
 							english
@@ -232,6 +233,7 @@ class Anilist(graphene.ObjectType):
 							medium
 							extraLarge
 						}
+						countryOfOrigin
 					}
 					createdAt
 					siteUrl

@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import has_permissions, CheckFailure
 import random
 import os
 from os import path
@@ -12,6 +13,7 @@ from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
 from modules.anime.mal import Mal
 from modules.anime.vndb import Vndb
+from modules.config.config import Config
 
 class Anime(commands.Cog):
 
@@ -173,6 +175,44 @@ class Anime(commands.Cog):
 		embed.set_footer(text=alts)
 
 		await ctx.send(embed=embed)
+
+	@al.command(pass_context=True)
+	@has_permissions(administrator=True)
+	async def animelist(self, ctx):
+		try:
+			if Config.cfgRead(str(ctx.guild.id), "alAnimeChannel")==ctx.channel.id:
+				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", 0)
+				Config.cfgUpdate(str(ctx.guild.id), "alAnimeOn", False)
+				await ctx.send("Disabled AniList Anime messages in this channel!")
+			elif Config.cfgRead(str(ctx.guild.id), "alAnimeChannel")!=0:
+				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", ctx.channel.id)
+				Config.cfgUpdate(str(ctx.guild.id), "alAnimeOn", True)
+				await ctx.send("Moved and enabled AniList Anime messages to this channel!")
+			else: #this is seperate just in case, i forgot why while coding
+				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", ctx.channel.id)
+				Config.cfgUpdate(str(ctx.guild.id), "alAnimeOn", True)
+				await ctx.send("Enabled AniList Anime messages in this channel!")
+		except:
+			await ctx.send("error! LOL!")
+
+	@al.command(pass_context=True)
+	@has_permissions(administrator=True)
+	async def mangaList(self, ctx):
+		try:
+			if Config.cfgRead(str(ctx.guild.id), "alMangaChannel")==ctx.channel.id:
+				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", 0)
+				Config.cfgUpdate(str(ctx.guild.id), "alMangaOn", False)
+				await ctx.send("Disabled AniList Manga messages in this channel!")
+			elif Config.cfgRead(str(ctx.guild.id), "alMangaChannel")!=0:
+				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", ctx.channel.id)
+				Config.cfgUpdate(str(ctx.guild.id), "alMangaOn", True)
+				await ctx.send("Moved and enabled AniList Manga messages to this channel!")
+			else: #this is seperate just in case, i forgot why while coding
+				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", ctx.channel.id)
+				Config.cfgUpdate(str(ctx.guild.id), "alMangaOn", True)
+				await ctx.send("Enabled AniList Manga messages in this channel!")
+		except:
+			await ctx.send("error! LOL!")
 
 	@al.group(pass_context=True)
 	async def user(self, ctx):
