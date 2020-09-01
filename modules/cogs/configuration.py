@@ -60,22 +60,3 @@ class Configuration(commands.Cog):
 			await ctx.send("Updated welcome message!")
 		except:
 			await ctx.send("Error!")
-
-	@config.command(pass_context=True)
-	@has_permissions(administrator=True)
-	async def alupdate(self, ctx):
-		try:
-			if Config.cfgRead(str(ctx.guild.id), "alChannel")==ctx.channel.id:
-				Config.cfgUpdate(str(ctx.guild.id), "alChannel", 0)
-				Config.cfgUpdate(str(ctx.guild.id), "alOn", False)
-				await ctx.send("Disabled AniList messages in this channel!")
-			elif Config.cfgRead(str(ctx.guild.id), "alChannel")!=0:
-				Config.cfgUpdate(str(ctx.guild.id), "alChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "alOn", True)
-				await ctx.send("Moved and enabled AniList messages to this channel!")
-			else: #this is seperate just in case, i forgot why while coding
-				Config.cfgUpdate(str(ctx.guild.id), "alChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "alOn", True)
-				await ctx.send("Enabled AniList messages in this channel!")
-		except:
-			await ctx.send("error! LOL!")
