@@ -197,7 +197,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	@has_permissions(administrator=True)
-	async def mangaList(self, ctx):
+	async def mangalist(self, ctx):
 		try:
 			if Config.cfgRead(str(ctx.guild.id), "alMangaChannel")==ctx.channel.id:
 				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", 0)
