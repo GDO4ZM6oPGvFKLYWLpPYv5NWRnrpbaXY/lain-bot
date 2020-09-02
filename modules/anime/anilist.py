@@ -261,9 +261,9 @@ class Anilist(graphene.ObjectType):
 	# input time as 00:00 of the day, 86400
 	def watchingSearch(user):
 		query = '''
-		query ($userId: Int, $status: MediaListStatus, $page: Int, $perPage: Int, $type: MediaType) {
+		query ($userId: Int, $status_in: [MediaListStatus], $page: Int, $perPage: Int, $type: MediaType) {
 			Page (page: $page, perPage: $perPage){
-				mediaList (userId: $userId, status: $status, type: $type) {
+				mediaList (userId: $userId, status_in: $status_in, type: $type) {
 					media {
 						id
 						siteUrl
@@ -290,7 +290,7 @@ class Anilist(graphene.ObjectType):
 
 		variables = {
 			'userId': user,
-			'status': "CURRENT",
+			'status_in': ["CURRENT", "PLANNING"],
 			'page': 0,
 			'perPage': 50,
 			'type': "ANIME"
