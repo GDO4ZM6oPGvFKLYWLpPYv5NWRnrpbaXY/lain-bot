@@ -5,6 +5,8 @@ import time
 import os
 import json
 
+from datetime import datetime, timezone, timedelta
+
 from modules.config.config import Config
 from modules.config.user import User
 from modules.anime.anilist import Anilist
@@ -18,6 +20,7 @@ class Loop(commands.Cog):
         self.al_json = al_json
         self.al_update.start()
         self.al_timer.start()
+        self.al_airing.start()
         self.update_count=0
 
     def cog_unload(self):
@@ -79,4 +82,52 @@ class Loop(commands.Cog):
 
     @tasks.loop(seconds=60.0)
     async def al_timer(self):
-        print(time.strftime("[%H:%M", time.gmtime())+"] Resetting anime update count.")
+        if self.update_count>0:
+            print(time.strftime("[%H:%M", time.gmtime())+"] Resetting anime update count.")
+            self.update_count=0
+
+    @tasks.loop(seconds=900)
+    async def al_airing(self):
+        if self.update_count<60:
+            for guild in self.bot.guilds:
+                if Config.cfgRead(str(guild.id), "alAnimeOn"):
+                    channel = guild.get_channel(int(Config.cfgRead(str(guild.id), "alAnimeChannel")))
+                    shows = {}
+                    timeInt = int(time.time())
+                    for member in guild.members:
+                        if str(member.id) in self.al_json:
+                            alID = self.al_json[str(member.id)]
+                            result = Anilist.watchingSearch(alID)
+                            if result != None:
+                                self.update_count=self.update_count+1
+                                result = result["data"]["Page"]["mediaList"]
+                                for res in result:
+                                    r = res["media"]
+                                    if r["status"] == "RELEASING":
+                                        id = r["id"]
+                                        shows[id] = r
+                                        # gets rid of duplicate results
+
+                    for show, v in shows.items():
+                        airtime = v["nextAiringEpisode"]["airingAt"]
+                        if airtime-timeInt < 900:
+                            try:
+                                embed = discord.Embed(
+                                    title = v["title"]["romaji"],
+                                    url = v["siteUrl"]
+                                )
+                                if v["bannerImage"]!=None:
+                                    embed.set_image(url=v["bannerImage"])
+                                elif v["coverImage"]["extraLarge"]!=None:
+                                    embed.set_image(url=v["coverImage"]["extraLarge"])
+                                elif v["coverImage"]["medium"]!=None:
+                                    embed.set_image(url=v["coverImage"]["medium"])
+
+                                # set to CST right now
+                                localTime = airtime - 21600
+
+                                embed.add_field(name="Episode "+str(v["nextAiringEpisode"]["episode"])+" releasing soon", value="Airing at "+time.strftime('%I:%M %p', time.gmtime(localTime))+" (CST)", inline=True)
+
+                                await channel.send(embed=embed)
+                            except Exception as e:
+                                print(e)
