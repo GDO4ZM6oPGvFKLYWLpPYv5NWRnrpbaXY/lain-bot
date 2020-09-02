@@ -256,3 +256,50 @@ class Anilist(graphene.ObjectType):
 
 		if response.status_code == 200:
 			return result
+
+	# for the user airing show searches
+	# input time as 00:00 of the day, 86400
+	def watchingSearch(user):
+		query = '''
+		query ($userId: Int, $status: MediaListStatus, $page: Int, $perPage: Int, $type: MediaType) {
+			Page (page: $page, perPage: $perPage){
+				mediaList (userId: $userId, status: $status, type: $type) {
+					media {
+						id
+						siteUrl
+						status
+						episodes
+						bannerImage
+						coverImage {
+							medium
+							extraLarge
+						}
+						title {
+							romaji
+							english
+						}
+						nextAiringEpisode {
+						episode
+							airingAt
+						}
+					}
+				}
+			}
+		}
+		'''
+
+		variables = {
+			'userId': user,
+			'status': "CURRENT",
+			'page': 0,
+			'perPage': 50,
+			'type': "ANIME"
+		}
+
+		url = 'https://graphql.anilist.co'
+
+		response = requests.post(url, json={'query': query, 'variables': variables})
+		result = response.json()
+
+		if response.status_code == 200:
+			return result
