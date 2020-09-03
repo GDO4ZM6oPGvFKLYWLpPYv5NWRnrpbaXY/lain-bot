@@ -110,7 +110,7 @@ class Loop(commands.Cog):
 
                     for show, v in shows.items():
                         airtime = v["nextAiringEpisode"]["airingAt"]
-                        if timeInt-airtime < 900 and timeInt-airtime > 0:
+                        if airtime-timeInt < 900:
                             try:
                                 embed = discord.Embed(
                                     title = v["title"]["romaji"],
@@ -124,9 +124,9 @@ class Loop(commands.Cog):
                                     embed.set_image(url=v["coverImage"]["medium"])
 
                                 # set to CST right now
-                                localTime = airtime - 18000
+                                localTime = airtime - 21600
 
-                                embed.add_field(name="Episode "+str(v["nextAiringEpisode"]["episode"])+" released", value="Aired at "+time.strftime('%I:%M %p', time.gmtime(localTime))+" (CST)", inline=True)
+                                embed.add_field(name="Episode "+str(v["nextAiringEpisode"]["episode"])+" releasing soon", value="Airing at "+time.strftime('%I:%M %p', time.gmtime(localTime))+" (CST)", inline=True)
 
                                 await channel.send(embed=embed)
                             except Exception as e:
