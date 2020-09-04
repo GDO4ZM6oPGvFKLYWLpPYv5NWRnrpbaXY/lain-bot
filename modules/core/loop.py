@@ -124,7 +124,7 @@ class Loop(commands.Cog):
                                     embed.set_image(url=v["coverImage"]["medium"])
 
                                 # set to CST right now
-                                localTime = airtime - 21600
+                                localTime = airtime - 18000
 
                                 embed.add_field(name="Episode "+str(v["nextAiringEpisode"]["episode"])+" releasing soon", value="Airing at "+time.strftime('%I:%M %p', time.gmtime(localTime))+" (CST)", inline=True)
 
