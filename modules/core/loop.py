@@ -46,6 +46,7 @@ class Loop(commands.Cog):
                             if result != None:
                                 self.update_count = self.update_count+1
                                 result = result["data"]["Activity"]
+                                # later i'll implement a command that toggles this filter
                                 if result["media"]["countryOfOrigin"]=="JP":
                                     try:
                                         embed = discord.Embed(
@@ -103,7 +104,7 @@ class Loop(commands.Cog):
                                 result = result["data"]["Page"]["mediaList"]
                                 for res in result:
                                     r = res["media"]
-                                    if r["status"] == "RELEASING":
+                                    if r["status"] == "RELEASING" and r["episodes"]<51:
                                         id = r["id"]
                                         shows[id] = r
                                         # gets rid of duplicate results
