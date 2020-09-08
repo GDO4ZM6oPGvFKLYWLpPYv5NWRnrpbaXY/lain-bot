@@ -20,7 +20,7 @@ class Loop(commands.Cog):
         self.al_json = al_json
         self.al_update.start()
         self.al_timer.start()
-        self.al_airing.start()
+        #self.al_airing.start()
         self.update_count=0
 
     def cog_unload(self):
