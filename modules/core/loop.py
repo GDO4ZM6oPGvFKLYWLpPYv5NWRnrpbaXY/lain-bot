@@ -49,10 +49,15 @@ class Loop(commands.Cog):
                                 # later i'll implement a command that toggles this filter
                                 if result["media"]["countryOfOrigin"]=="JP":
                                     try:
-                                        embed = discord.Embed(
-                                            title = str(member.name),
-                                            url = result["siteUrl"]
-                                        )
+                                        if result["siteUrl"]!=None:
+                                            embed = discord.Embed(
+                                                title = str(member.name),
+                                                url = result["siteUrl"]
+                                            )
+                                        else:
+                                            embed = discord.Embed(
+                                                title = str(member.name)
+                                            )
                                         #custom random banners in next update
                                         if result["media"]["bannerImage"]!=None:
                                             embed.set_image(url=result["media"]["bannerImage"])
