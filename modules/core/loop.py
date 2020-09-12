@@ -47,7 +47,8 @@ class Loop(commands.Cog):
                                 self.update_count = self.update_count+1
                                 result = result["data"]["Activity"]
                                 # later i'll implement a command that toggles this filter
-                                if result["media"]["countryOfOrigin"]=="JP":
+                                #  result["media"]["countryOfOrigin"]=="JP"
+                                if True:
                                     try:
                                         if result["siteUrl"]!=None:
                                             embed = discord.Embed(
