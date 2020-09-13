@@ -41,51 +41,55 @@ class Loop(commands.Cog):
                             alID = self.al_json[str(member.id)]
                             # print(time.strftime("[%H:%M", time.gmtime())+"] Checking user "+member.name+" (AL ID:"+str(alID)+") for list updates.")
                             timeInt = int(time.time())
-                            result = Anilist.activitySearch(alID, timeInt-10.0)
-                            # print(result)
-                            if result != None:
-                                self.update_count = self.update_count+1
-                                result = result["data"]["Activity"]
-                                # later i'll implement a command that toggles this filter
-                                #  result["media"]["countryOfOrigin"]=="JP"
-                                if True:
-                                    try:
-                                        if result["siteUrl"]!=None:
-                                            embed = discord.Embed(
-                                                title = str(member.name),
-                                                url = result["siteUrl"]
-                                            )
-                                        else:
-                                            embed = discord.Embed(
-                                                title = str(member.name)
-                                            )
-                                        #custom random banners in next update
-                                        if result["media"]["bannerImage"]!=None:
-                                            embed.set_image(url=result["media"]["bannerImage"])
-                                        elif result["media"]["coverImage"]["extraLarge"]!=None:
-                                            embed.set_image(url=result["media"]["coverImage"]["extraLarge"])
-                                        elif result["media"]["coverImage"]["medium"]!=None:
-                                            embed.set_image(url=result["media"]["coverImage"]["medium"])
-
-                                        embed.set_footer(text="Posted at: "+str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result["createdAt"]))))
-
-                                        if result["status"] == "watched episode" or result["status"] == "read chapter":
-                                            embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+str(result["progress"])+" of "+result["media"]["title"]["romaji"], inline=True)
-                                        else:
-                                            embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
+                            try:
+                                result = Anilist.activitySearch(alID, timeInt-10.0)
+                                # print(result)
+                                if result != None:
+                                    self.update_count = self.update_count+1
+                                    result = result["data"]["Activity"]
+                                    # later i'll implement a command that toggles this filter
+                                    #  result["media"]["countryOfOrigin"]=="JP"
+                                    if True:
                                         try:
-                                            if result["media"]["type"] == "ANIME":
-                                                await animeChannel.send(embed=embed)
-                                            if result["media"]["type"] == "MANGA":
-                                                await mangaChannel.send(embed=embed)
-                                            print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+str(member.name))
+                                            if result["siteUrl"]!=None:
+                                                embed = discord.Embed(
+                                                    title = str(member.name),
+                                                    url = result["siteUrl"]
+                                                )
+                                            else:
+                                                embed = discord.Embed(
+                                                    title = str(member.name)
+                                                )
+                                            #custom random banners in next update
+                                            if result["media"]["bannerImage"]!=None:
+                                                embed.set_image(url=result["media"]["bannerImage"])
+                                            elif result["media"]["coverImage"]["extraLarge"]!=None:
+                                                embed.set_image(url=result["media"]["coverImage"]["extraLarge"])
+                                            elif result["media"]["coverImage"]["medium"]!=None:
+                                                embed.set_image(url=result["media"]["coverImage"]["medium"])
+
+                                            embed.set_footer(text="Posted at: "+str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(result["createdAt"]))))
+
+                                            if result["status"] == "watched episode" or result["status"] == "read chapter":
+                                                embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+str(result["progress"])+" of "+result["media"]["title"]["romaji"], inline=True)
+                                            else:
+                                                embed.add_field(name="Updated their list on AniList: ", value=str(result["status"]).capitalize()+" "+result["media"]["title"]["romaji"], inline=True)
+                                            try:
+                                                if result["media"]["type"] == "ANIME":
+                                                    await animeChannel.send(embed=embed)
+                                                if result["media"]["type"] == "MANGA":
+                                                    await mangaChannel.send(embed=embed)
+                                                print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+str(member.name))
+                                            except Exception as e:
+                                                print("Exception with posting embed!")
+                                                print(e)
                                         except Exception as e:
-                                            print("Exception with posting embed!")
+                                            print("Exception with something else!")
                                             print(e)
-                                    except Exception as e:
-                                        print("Exception with something else!")
-                                        print(e)
-        # print(time.strftime("[%H:%M", time.gmtime())+"] Successfully checked AL for list updates!")
+                            except Exception as e:
+                                print(e)
+
+            # print(time.strftime("[%H:%M", time.gmtime())+"] Successfully checked AL for list updates!")
 
     @tasks.loop(seconds=60.0)
     async def al_timer(self):
