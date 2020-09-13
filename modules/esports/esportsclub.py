@@ -27,95 +27,103 @@ class EsportsClub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
-    async def verify(self, ctx):
-        asciiChars = string.ascii_lowercase + string.digits
-        user = ctx.message.author
+    # @commands.command(pass_context=True)
+    # async def verify(self, ctx):
+        # asciiChars = string.ascii_lowercase + string.digits
+        # user = ctx.message.author
 
-        s = ctx.message.content
-        subcommand = s[8:13]
+#
+        # s = ctx.message.content
+        # subcommand = s[8:13]
 
-        if subcommand == "":
-            await user.send("Type ``>verify email [your @wisc.edu email]`` to verify your Discord account on the Esports Club Discord")
-        elif subcommand == "email":
-            content = s[14:]
-            if "@wisc.edu" in content:
-                verificationCode = ''.join((random.choice(asciiChars) for i in range(4)))
-                print('Verification Code:'+verificationCode)
-                User.userUpdate(str(user.id), "VerificationCode", verificationCode)
+#
+        # if subcommand == "":
+            # await user.send("Type ``>verify email [your @wisc.edu email]`` to verify your Discord account on the Esports Club Discord")
+        # elif subcommand == "email":
+            # content = s[14:]
+            # if "@wisc.edu" in content:
+                # verificationCode = ''.join((random.choice(asciiChars) for i in range(4)))
+                # print('Verification Code:'+verificationCode)
+                # User.userUpdate(str(user.id), "VerificationCode", verificationCode)
                 #content = re.sub(r'\s*', "", content)
-                print(content)
+                # print(content)
 
-                subject = "Esports Club Verification Code"
-                body = "To verify yourself with the Madison Esports Club, respond to the bot with the command \"k!verify code "+verificationCode+"\""
+#
+                # subject = "Esports Club Verification Code"
+                # body = "To verify yourself with the Madison Esports Club, respond to the bot with the command \"k!verify code "+verificationCode+"\""
 
-                message = """From: %s
-                To: %s
-                Subject: %s
+#
+                # message = """From: %s
+                # To: %s
+                # Subject: %s
 
-                %s
-                """ % (gmail_user, content, subject, body)
+#
+                # %s
+                # """ % (gmail_user, content, subject, body)
 
-                try:
+#
+                # try:
                     #server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    server.ehlo()
-                except Exception as e:
-                    print("Exception authenticating mail server")
-                    print(e)
-                try:
-                    server.login(gmail_user, gmail_pass)
-                except Exception as e:
-                    print("Email login error")
-                    print(e)
-                try:
-                    server.sendmail(gmail_user, content, message)
-                    await user.send("An email has been sent to "+content+" with additional instructions!")
-                    User.userUpdate(str(user.id), "Email", content)
-                    print("Email sent to "+content)
-                except:
-                    await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
-                    print("Error with sending the email!")
-                try:
-                    server.close()
-                except Exception as e:
-                    print(e)
-            else:
-                await user.send("Be sure to use your ``@wisc.edu`` email address!")
-        elif subcommand == "code ":
-            content = s[13:]
-            userCode = User.userRead(str(user.id), "VerificationCode")
-            print(userCode)
-            if content.lower() == userCode.lower():
-                try:
-                    for guild in self.bot.guilds:
-                        if str(guild.id) == "147255790078656513":
-                            role = discord.utils.get(guild.roles, name='Verified')
-                            await discord.Member.add_roles(member, role)
-                    await user.send("Thank you, Verified role has been granted!")
-                except:
-                    await user.send("Error granting role! DM an admin on the server for help!")
-            else:
-                await user.send("The code does not match! Make sure you are copy-pasting the code correctly, and not including any additional characters such as spaces!")
+                    # server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+                    # server.ehlo()
+                # except Exception as e:
+                    # print("Exception authenticating mail server")
+                    # print(e)
+                # try:
+                    # server.login(gmail_user, gmail_pass)
+                # except Exception as e:
+                    # print("Email login error")
+                    # print(e)
+                # try:
+                    # server.sendmail(gmail_user, content, message)
+                    # await user.send("An email has been sent to "+content+" with additional instructions!")
+                    # User.userUpdate(str(user.id), "Email", content)
+                    # print("Email sent to "+content)
+                # except:
+                    # await user.send("An error has occured! You can attempt to verify again, or DM an admin on the server for help!")
+                    # print("Error with sending the email!")
+                # try:
+                    # server.close()
+                # except Exception as e:
+                    # print(e)
+            # else:
+                # await user.send("Be sure to use your ``@wisc.edu`` email address!")
+        # elif subcommand == "code ":
+            # content = s[13:]
+            # userCode = User.userRead(str(user.id), "VerificationCode")
+            # print(userCode)
+                # try:
+                    # for guild in self.bot.guilds:
+                        # if str(guild.id) == "147255790078656513":
+                            # role = discord.utils.get(guild.roles, name='Verified')
+                            # await discord.Member.add_roles(member, role)
+                    # await user.send("Thank you, Verified role has been granted!")
+                # except:
+                    # await user.send("Error granting role! DM an admin on the server for help!")
+            # else:
+                # await user.send("The code does not match! Make sure you are copy-pasting the code correctly, and not including any additional characters such as spaces!")
 
-        else:
-            await ctx.send("Error, command not found!")
+#
+        # else:
+            # await ctx.send("Error, command not found!")
 
-    @commands.command(pass_context=True)
-    @has_permissions(administrator=True)
-    async def status(self, ctx):
-        status = str(ctx.message.content)[(len(ctx.prefix) + len('config status ')):]
-        try:
-            Config.cfgUpdate(str(ctx.guild.id), "status", status)
-        except:
-            print("Error with changing status on Esports Club")
-            pass
-        try:
-            esportsStatus = discord.Game(Config.cfgRead("147255790078656513", "status"))
-        except:
-            print("Error with changing status on Esports Club")
-            pass
-        await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
+
+#
+    # @commands.command(pass_context=True)
+    # @has_permissions(administrator=True)
+    # async def status(self, ctx):
+        # status = str(ctx.message.content)[(len(ctx.prefix) + len('config status ')):]
+        # try:
+            # Config.cfgUpdate(str(ctx.guild.id), "status", status)
+        # except:
+            # print("Error with changing status on Esports Club")
+            # pass
+        # try:
+            # esportsStatus = discord.Game(Config.cfgRead("147255790078656513", "status"))
+        # except:
+            # print("Error with changing status on Esports Club")
+            # pass
+        # await bot.change_presence(status=discord.Status.online, activity=esportsStatus)
 
     @commands.group()
     async def uw(self, ctx):
@@ -174,30 +182,32 @@ class EsportsClub(commands.Cog):
             embed.add_field(name="Course Designation:", value=extra[1].text, inline=False)
             await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True)
-    async def name(self, ctx):
-        print(User.userRead(str(ctx.message.author.id), "Cooldown"))
-        if time.time() > User.userRead(str(ctx.message.author.id), "Cooldown")+86400:
-            contents = str(ctx.message.content)[(len(ctx.prefix) + len('name ')):]
-            x = re.search(r'\<\@\!.*\>', contents)
-            y = re.sub(r'[\<\@\!\>]', '', x.group())
-            z = re.sub(r'\<\@\!.*\>', '', contents)
-            user = None
-            user = ctx.guild.get_member(int(y))
-            if contents=="":
-                timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+86400-time.time())
-                await ctx.send("Cooldown: "+timeleft)
-            else:
-                try:
-                    await user.edit(nick=z)
-                    await ctx.send("Successfully changed "+user.name+"\'s nickname to "+z)
-                    User.userUpdate(str(ctx.message.author.id), "Cooldown", time.time())
-                except:
-                    await ctx.send("Error changing user's name! Be sure the bot has permissions!")
-        else:
-            timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+86400-time.time())
-            await ctx.send("On cooldown! Wait another "+timeleft)
+#
+    # @commands.command(pass_context=True)
+    # async def name(self, ctx):
+        # print(User.userRead(str(ctx.message.author.id), "Cooldown"))
+        # if time.time() > User.userRead(str(ctx.message.author.id), "Cooldown")+86400:
+            # contents = str(ctx.message.content)[(len(ctx.prefix) + len('name ')):]
+            # x = re.search(r'\<\@\!.*\>', contents)
+            # y = re.sub(r'[\<\@\!\>]', '', x.group())
+            # z = re.sub(r'\<\@\!.*\>', '', contents)
+            # user = None
+            # user = ctx.guild.get_member(int(y))
+            # if contents=="":
+                # timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+86400-time.time())
+                # await ctx.send("Cooldown: "+timeleft)
+            # else:
+                # try:
+                    # await user.edit(nick=z)
+                    # await ctx.send("Successfully changed "+user.name+"\'s nickname to "+z)
+                    # User.userUpdate(str(ctx.message.author.id), "Cooldown", time.time())
+                # except:
+                    # await ctx.send("Error changing user's name! Be sure the bot has permissions!")
+        # else:
+            # timeleft = convert(User.userRead(str(ctx.message.author.id), "Cooldown")+86400-time.time())
+            # await ctx.send("On cooldown! Wait another "+timeleft)
 
+#
 
 #super WIP code
 def getSubj(subj):
