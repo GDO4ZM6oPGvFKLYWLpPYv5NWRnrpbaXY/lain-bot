@@ -29,6 +29,7 @@ class Anilist(graphene.ObjectType):
 	            	day
 	            }
 	            season
+				format
 	            seasonYear
 	            coverImage {
 					extraLarge
