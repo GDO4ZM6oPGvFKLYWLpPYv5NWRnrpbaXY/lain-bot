@@ -187,7 +187,7 @@ class Anime(commands.Cog):
 			embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
 			embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
 			if 'RELEASING' not in status:
-
+				embed.add_field(name='Chapters', value=str(anilistResults['data']['Media']['chapters']), inline=False)
 				# find difference in year month and days of show's air time
 				try:
 					air = True
