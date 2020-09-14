@@ -39,6 +39,7 @@ class Anilist(graphene.ObjectType):
 	            meanScore
 	            popularity
 	            siteUrl
+				chapters
 	        }
 		}
 		'''
