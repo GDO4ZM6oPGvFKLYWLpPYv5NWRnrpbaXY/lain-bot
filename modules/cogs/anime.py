@@ -171,6 +171,7 @@ class Anime(commands.Cog):
 		)
 
 		embed.set_footer(text=gees)
+		embed.add_field(name = 'Format', value=str(anilistResults['data']['Media']['format']).title())
 
 		# images, check if valid before displaying
 		if 'None' != str(anilistResults['data']['Media']['bannerImage']):
