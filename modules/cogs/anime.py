@@ -147,6 +147,88 @@ class Anime(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@al.command(pass_context=True)
+	async def manga(self, ctx):
+		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
+		# retrieve json file
+		anilistResults = Anilist.aniSearchManga(comic)
+		showID = anilistResults["data"]["Media"]["id"]
+
+		# parse out website styling
+		desc = shorten(str(anilistResults['data']['Media']['description']))
+
+		# make genre list look nice
+		gees = str(anilistResults['data']['Media']['genres'])
+		gees = gees.replace('\'', '')
+		gees = gees.replace('[', '')
+		gees = gees.replace(']', '')
+
+		# embed text to output
+		embed = discord.Embed(
+			title = str(anilistResults['data']['Media']['title']['romaji']),
+			description = desc,
+			color = discord.Color.blue(),
+			url = str(anilistResults['data']['Media']['siteUrl'])
+		)
+
+		embed.set_footer(text=gees)
+
+		# images, check if valid before displaying
+		if 'None' != str(anilistResults['data']['Media']['bannerImage']):
+			embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
+
+		if 'None' != str(anilistResults['data']['Media']['coverImage']['large']):
+			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
+
+
+		# if show is airing, cancelled, finished, or not released
+		status = anilistResults['data']['Media']['status']
+
+		if 'NOT_YET_RELEASED' not in status:
+			embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
+			embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
+			if 'RELEASING' not in status:
+				embed.add_field(name='Chapters', value=str(anilistResults['data']['Media']['chapters']), inline=False)
+				# find difference in year month and days of show's air time
+				try:
+					air = True
+					years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
+					months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
+					days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+				except TypeError:
+					print('Error calculating air time')
+					air = False
+
+				# get rid of anything with zero
+				if air:
+					tyme = str(days) + ' days'
+					if months != 0:
+						tyme += ', ' + str(months) + ' months'
+					if years != 0:
+						tyme += ', ' + str(years) + ' years'
+
+					embed.add_field(name='Released', value=tyme, inline=False)
+
+		users = 0
+		for user in ctx.guild.members:
+			try:
+				alID = User.userRead(str(user.id), "alID")
+				if users>=9:
+					break
+				if alID!=0:
+					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
+					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
+					if scoreResults==0:
+						embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
+						users+=1
+					else:
+						embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
+						users+=1
+			except:
+				pass
+
+		await ctx.send(embed=embed)
+
+	@al.command(pass_context=True)
 	async def char(self, ctx):
 		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
 		anilistResults = Anilist.charSearch(c)
