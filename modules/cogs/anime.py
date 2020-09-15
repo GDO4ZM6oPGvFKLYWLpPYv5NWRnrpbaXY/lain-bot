@@ -633,6 +633,20 @@ class Anime(commands.Cog):
 		except Exception as e:
 			print(e)
 			await ctx.send('VN not found (title usually has to be exact)')
+	
+	@vn.command(pass_context=True)
+	async def quote(self, ctx):
+		q = Vndb()
+		quote = q.quote()
+
+		embed = discord.Embed(
+					title = quote['quote'],
+					color = discord.Color.purple()
+				)
+		
+		embed.set_author(name=quote['title'], url='https://vndb.org/v' + str(quote['id']), icon_url=quote['cover'])
+
+		await ctx.send(embed=embed)
 
 def shorten(desc):
 	# italic
