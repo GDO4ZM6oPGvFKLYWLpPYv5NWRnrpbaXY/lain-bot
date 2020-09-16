@@ -56,6 +56,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	async def search(self, ctx):
+		await ctx.trigger_typing()
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
@@ -125,24 +126,6 @@ class Anime(commands.Cog):
 						tyme += ', ' + str(years) + ' years'
 
 					embed.add_field(name='Aired', value=tyme, inline=False)
-
-		# users = 0
-		# for user in ctx.guild.members:
-		# 	try:
-		# 		alID = User.userRead(str(user.id), "alID")
-		# 		if users>=9:
-		# 			break
-		# 		if alID!=0:
-		# 			scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-		# 			statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
-		# 			if scoreResults==0:
-		# 				embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
-		# 				users+=1
-		# 			else:
-		# 				embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
-		# 				users+=1
-		# 	except:
-		# 		pass
 
 		await embedScores(ctx.guild, showID, 'animeList', 9, embed)
 
@@ -439,12 +422,12 @@ class Anime(commands.Cog):
 						{'discordId': ctx.message.author.id}, 
 						{'$set': { 
 							'anilistId': search['data']['User']['id'],
-							'anielistName': search['data']['User']['name'],
+							'anilistName': search['data']['User']['name'],
 							'animeList': lists['animeList'], 
 							'mangaList': lists['mangaList'], 
 							'profile': search['data']['User'],
-							'animeMessageGuild': [],
-							'mangaMessageGuild': []
+							'animeMessageGuilds': [],
+							'mangaMessageGuilds': []
 							}
 						},
 						upsert=True
@@ -453,10 +436,19 @@ class Anime(commands.Cog):
 				else:
 					await ctx.send('Your details have NOT been updated!')
 
-
-
 	@user.command()
 	async def remove(self, ctx):
+		res = await Database.userCollection().update_one(
+			{ 'discordId': ctx.message.author.id },
+			{ '$set': { 'animeMessageGuilds': [], 'mangaMessageGuilds': [] } }
+		)
+		if res.matched_count:
+			await ctx.send('You have been removed!')
+		else:
+			await ctx.send('You were never registered.')
+
+	@user.command()
+	async def remove_old(self, ctx):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user remove ')):]
 		atLen = len(user)-5
 		if user == "":
@@ -848,7 +840,7 @@ async def embedScores(guild, showID, listType, maxDisplay, embed):
 		userIdsInGuild = [u.id for u in guild.members]
 		users = [d async for d in Database.userCollection().find(
 			{
-				# 'discordId': { '$in': userIdsInGuild },
+				'discordId': { '$in': userIdsInGuild },
 				listType+'.'+str(showID): { '$exists': True }
 			},
 			{

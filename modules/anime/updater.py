@@ -312,10 +312,11 @@ class Updater(commands.Cog):
             mangaSync = self.syncMangaList(old_managaList, fetched_mangaList, self.scoreFormat(user))
 
             # do stuff if there were any changes detected
-            try:
-                await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
-            except:
-                print('bots don\'t quit. ignore the discord.py errors.')
+            # try:
+            #     await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
+            # except:
+            #     print('bots don\'t quit. ignore the discord.py errors.')
+            await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
 
             # update local user to match anilist
             await Database.userCollection().update_one({'_id': user['_id']}, {'$set': {'animeList': animeSync['new_list'], 'mangaList': mangaSync['new_list'], 'profile': fetched_user['data']['User']}})
