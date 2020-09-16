@@ -11,6 +11,6 @@ class Session(commands.Cog):
 		await self.session.close()
 
 	def cog_unload(self):
-		tmp_loop = asyncio.get_event_loop()
+		tmp_loop = asyncio.new_event_loop()
 		tmp_loop.run_until_complete(self.close_session(self))
 		tmp_loop.close()
