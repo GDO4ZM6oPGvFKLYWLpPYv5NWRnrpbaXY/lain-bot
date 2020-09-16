@@ -145,31 +145,7 @@ class Anime(commands.Cog):
 		# 	except:
 		# 		pass
 
-		# get all users in db that are in this guild and have the show on their list
-		userIdsInGuild = [u.id for u in ctx.guild.members]
-		users = [d async for d in Database.userCollection().find(
-			{
-				# 'discordId': { '$in': userIdsInGuild },
-				'animeList.'+str(showID): { '$exists': True }
-			},
-			{
-				'anilistName': 1,
-				'animeList.'+str(showID): 1,
-				'profile.mediaListOptions': 1
-			}
-			)
-		]
-
-		maxDisplay = 9
-		usrLen = len(users)
-		for i in range(0, min(usrLen, maxDisplay-1)):
-			userScoreEmbeder(users[i], showID, 'animeList', embed)
-
-		# either load 9th or say there are '+XX others'
-		if usrLen == maxDisplay:
-			userScoreEmbeder(users[maxDisplay], showID, 'animeList', embed)
-		elif usrLen > maxDisplay:
-			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
+		await embedScores(ctx.guild, showID, 'animeList', 9, embed)
 
 		await ctx.send(embed=embed)
 
@@ -734,6 +710,32 @@ def scoreFormat(user):
 		return '5'
 	else:
 		return '3'
+
+async def embedScores(guild, showID, listType, maxDisplay, embed):
+		# get all users in db that are in this guild and have the show on their list
+		userIdsInGuild = [u.id for u in guild.members]
+		users = [d async for d in Database.userCollection().find(
+			{
+				# 'discordId': { '$in': userIdsInGuild },
+				listType+'.'+str(showID): { '$exists': True }
+			},
+			{
+				'anilistName': 1,
+				listType+'.'+str(showID): 1,
+				'profile.mediaListOptions': 1
+			}
+			)
+		]
+
+		usrLen = len(users)
+		for i in range(0, min(usrLen, maxDisplay-1)):
+			userScoreEmbeder(users[i], showID, 'animeList', embed)
+
+		# either load last or say there are '+XX others'
+		if usrLen == maxDisplay:
+			userScoreEmbeder(users[maxDisplay], showID, 'animeList', embed)
+		elif usrLen > maxDisplay:
+			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
 
 def userScoreEmbeder(user, showID, listType, embed):
 	userInfo = user[listType][str(showID)]
