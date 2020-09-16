@@ -8,6 +8,7 @@ import json
 from dotenv import load_dotenv
 
 from modules.core.client import Client
+from modules.core.database import Database
 from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
@@ -126,23 +127,49 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Aired', value=tyme, inline=False)
 
-		users = 0
-		for user in ctx.guild.members:
-			try:
-				alID = User.userRead(str(user.id), "alID")
-				if users>=9:
-					break
-				if alID!=0:
-					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
-					if scoreResults==0:
-						embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
-						users+=1
-					else:
-						embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
-						users+=1
-			except:
-				pass
+		# users = 0
+		# for user in ctx.guild.members:
+		# 	try:
+		# 		alID = User.userRead(str(user.id), "alID")
+		# 		if users>=9:
+		# 			break
+		# 		if alID!=0:
+		# 			scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
+		# 			statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
+		# 			if scoreResults==0:
+		# 				embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
+		# 				users+=1
+		# 			else:
+		# 				embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
+		# 				users+=1
+		# 	except:
+		# 		pass
+
+		# get all users in db that are in this guild and have the show on their list
+		userIdsInGuild = [u.id for u in ctx.guild.members]
+		users = [d async for d in Database.userCollection().find(
+			{
+				# 'discordId': { '$in': userIdsInGuild },
+				'animeList.'+str(showID): { '$exists': True }
+			},
+			{
+				'anilistName': 1,
+				'animeList.'+str(showID): 1,
+				'profile.mediaListOptions': 1
+			}
+			)
+		]
+
+		maxDisplay = 9
+		usrLen = len(users)
+		for i in range(0, min(usrLen, maxDisplay-1)):
+			userScoreEmbeder(users[i], showID, 'animeList', embed)
+
+		# either load 9th or say there are '+XX others'
+		if usrLen == maxDisplay:
+			userScoreEmbeder(users[maxDisplay], showID, 'animeList', embed)
+		elif usrLen > maxDisplay:
+			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
 
 		await ctx.send(embed=embed)
 
@@ -696,3 +723,24 @@ def statusConversion(arg):
 		"REPEATING": "R"
 	}
 	return colors.get(arg, "X")
+
+def scoreFormat(user):
+	fmt = user['profile']['mediaListOptions']['scoreFormat']
+	if fmt == 'POINT_100':
+		return '100'
+	elif fmt == 'POINT_10_DECIMAL' or fmt == 'POINT_10':
+		return '10'
+	elif fmt == 'POINT_5':
+		return '5'
+	else:
+		return '3'
+
+def userScoreEmbeder(user, showID, listType, embed):
+	userInfo = user[listType][str(showID)]
+	status = statusConversion(userInfo['status'])
+	score = userInfo['score']
+	scoreFmt = scoreFormat(user)
+	if not score or score == 0:
+		embed.add_field(name=user['anilistName'], value="No Score ("+status+")", inline=True)
+	else:
+		embed.add_field(name=user['anilistName'], value=str(score)+"/"+scoreFmt+" ("+status+")", inline=True)
