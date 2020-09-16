@@ -5,7 +5,7 @@ from modules.core.database import Database
 from modules.anime.anilist2 import Anilist2
 from modules.core.img_gen import ImageGenerator
 
-class Updator(commands.Cog):
+class Updater(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot

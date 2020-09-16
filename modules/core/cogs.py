@@ -9,7 +9,7 @@ from modules.cogs.configuration import Configuration
 from modules.cogs.memes import Memes
 from modules.cogs.testing import Testing
 
-from modules.anime.updator import Updator
+from modules.anime.updater import Updater
 
 from modules.esports.esportsclub import EsportsClub
 
@@ -26,4 +26,4 @@ class Cogs:
     Client.bot.add_cog(EsportsClub(Client.bot))
 
     # Client.bot.add_cog(Loop(Client.bot, Anime.al_json))
-    Client.bot.add_cog(Updator(Client.bot))
+    Client.bot.add_cog(Updater(Client.bot))
