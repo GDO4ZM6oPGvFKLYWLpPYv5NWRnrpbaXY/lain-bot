@@ -266,7 +266,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	@has_permissions(administrator=True)
-	async def animelist(self, ctx):
+	async def animelist_old(self, ctx):
 		try:
 			if Config.cfgRead(str(ctx.guild.id), "alAnimeChannel")==ctx.channel.id:
 				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", 0)
@@ -283,9 +283,83 @@ class Anime(commands.Cog):
 		except:
 			await ctx.send("error! LOL!")
 
+	@al.group(pass_context=True)
+	async def animelist(self, ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid animelist command passed...\nTry \"\>al animelist enable\" to enable anime updates on this channel or use disable.')
+	
+	@animelist.command(pass_context=True, name="enable")
+	@has_permissions(administrator=True)
+	async def animelist_enable(self, ctx):
+		res = await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$addToSet': { 'animeMessageChannels': ctx.channel.id } },
+			upsert=True
+		)
+		# if the update created a new document, populate it with the rest of the info
+		if res.upserted_id:
+			await Database.guildCollection().update_one(
+				{ '_id': res.upserted_id },
+				{ '$set': { 'name': ctx.guild.name, 'mangaMessageChannels': [] } }
+			)
+
+		await ctx.send("Enabled AniList Anime messages in this channel!")
+
+		# now update all the users to use this channel. this is so individual control can be added later
+		await Database.userCollection().update_many(
+			{ 'discordId': {'$in': [user.id for user in ctx.guild.members]} },
+			{ '$addToSet': {'animeMessageGuilds': ctx.guild.id} }
+		)
+
+	@animelist.command(pass_context=True, name="disable")
+	@has_permissions(administrator=True)
+	async def animelist_diable(self, ctx):
+		await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$pullAll': { 'animeMessageChannels': [ctx.channel.id] } },
+		)
+		await ctx.send("Anime messages disabled for this channel!")
+
+	@al.group(pass_context=True)
+	async def mangalist(self, ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid mangalist command passed...\nTry \"\>al mangalist enable\" to enable manga updates on this channel or use disable.')
+	
+	@mangalist.command(pass_context=True, name="enable")
+	@has_permissions(administrator=True)
+	async def mangalist_enable(self, ctx):
+		res = await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$addToSet': { 'mangaMessageChannels': ctx.channel.id } },
+			upsert=True
+		)
+		# if the update created a new document, populate it with the rest of the info
+		if res.upserted_id:
+			await Database.guildCollection().update_one(
+				{ '_id': res.upserted_id },
+				{ '$set': { 'name': ctx.guild.name, 'animeMessageChannels': [] } }
+			)
+
+		await ctx.send("Enabled AniList Manga messages in this channel!")
+
+		# now update all the users to use this channel. this is so individual control can be added later
+		await Database.userCollection().update_many(
+			{ 'discordId': {'$in': [user.id for user in ctx.guild.members]} },
+			{ '$addToSet': {'mangaMessageGuilds': ctx.guild.id} }
+		)
+
+	@mangalist.command(pass_context=True, name="disable")
+	@has_permissions(administrator=True)
+	async def mangalist_disable(self, ctx):
+		await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$pullAll': { 'mangaMessageChannels': [ctx.channel.id] } },
+		)
+		await ctx.send("Manga messages disabled for this channel!")
+
 	@al.command(pass_context=True)
 	@has_permissions(administrator=True)
-	async def mangalist(self, ctx):
+	async def mangalist_old(self, ctx):
 		try:
 			if Config.cfgRead(str(ctx.guild.id), "alMangaChannel")==ctx.channel.id:
 				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", 0)
