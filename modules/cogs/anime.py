@@ -154,7 +154,7 @@ class Anime(commands.Cog):
 		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearchManga(comic)
-		showID = anilistResults["data"]["Media"]["id"]
+		mangaID = anilistResults["data"]["Media"]["id"]
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['Media']['description']))
@@ -212,23 +212,25 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Released', value=tyme, inline=False)
 
-		users = 0
-		for user in ctx.guild.members:
-			try:
-				alID = User.userRead(str(user.id), "alID")
-				if users>=9:
-					break
-				if alID!=0:
-					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
-					if scoreResults==0:
-						embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
-						users+=1
-					else:
-						embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
-						users+=1
-			except:
-				pass
+		# users = 0
+		# for user in ctx.guild.members:
+		# 	try:
+		# 		alID = User.userRead(str(user.id), "alID")
+		# 		if users>=9:
+		# 			break
+		# 		if alID!=0:
+		# 			scoreResults = Anilist.scoreSearch(alID, mangaID)["data"]["MediaList"]["score"]
+		# 			statusResults = statusConversion(Anilist.scoreSearch(alID, mangaID)["data"]["MediaList"]["status"])
+		# 			if scoreResults==0:
+		# 				embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
+		# 				users+=1
+		# 			else:
+		# 				embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
+		# 				users+=1
+		# 	except:
+		# 		pass
+
+		await embedScores(ctx.guild, mangaID, 'mangaList', 9, embed)
 
 		await ctx.send(embed=embed)
 
