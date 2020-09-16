@@ -1,10 +1,8 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
-import random
-import os
+import os, random, json, asyncio
 from os import path
-import json
 from dotenv import load_dotenv
 
 from modules.core.client import Client
@@ -12,6 +10,7 @@ from modules.core.database import Database
 from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
+from modules.anime.anilist2 import Anilist2
 from modules.anime.mal import Mal
 from modules.anime.vndb import Vndb
 from modules.config.config import Config
@@ -383,7 +382,7 @@ class Anime(commands.Cog):
 
 	# al user
 	@user.command()
-	async def set(self, ctx, user):
+	async def set_old(self, ctx, user):
 		#try:
 		User.userUpdate(str(ctx.message.author.id), "alName", user)
 		try:
@@ -398,6 +397,63 @@ class Anime(commands.Cog):
 		except Exception as e:
 			print(e)
 			await ctx.send("Failed to update AL username!")
+
+	@user.command()
+	async def set(self, ctx, user):
+		await ctx.trigger_typing()
+		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
+		if search.get('errors'):
+			notFound = False
+			for error in search['errors']:
+				if error['message'] == 'Not Found.':
+					notFound =  True
+					break
+			if notFound:
+				await ctx.send('Sorry, could not find that user')
+			else:
+				await ctx.send('Error!')
+		else:
+			def check(reaction, user):
+				return user == ctx.message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❌')
+			await ctx.send('Is this you?')	
+			embed = discord.Embed(
+				title = search['data']['User']['name'],
+				description = search['data']['User']['about'] if search['data']['User']['about'] else '',
+				color = discord.Color.blue(),
+				url = 'http://anilist.co/user/'+str(search['data']['User']['id'])
+			)
+			embed.set_thumbnail(url=search['data']['User']['avatar']['large'])
+			msg = await ctx.send(embed=embed)
+			await msg.add_reaction('✅')
+			await msg.add_reaction('❌')
+
+			try:
+				reaction, user = await self.bot.wait_for('reaction_add', timeout=5.0, check=check)
+			except asyncio.TimeoutError:
+				await ctx.send('User not updated')
+			else:
+				if str(reaction.emoji) == '✅':
+					await ctx.trigger_typing()
+					lists = generateLists(search)
+					await Database.userCollection().update_one(
+						{'discordId': ctx.message.author.id}, 
+						{'$set': { 
+							'anilistId': search['data']['User']['id'],
+							'anielistName': search['data']['User']['name'],
+							'animeList': lists['animeList'], 
+							'mangaList': lists['mangaList'], 
+							'profile': search['data']['User'],
+							'animeMessageGuild': [],
+							'mangaMessageGuild': []
+							}
+						},
+						upsert=True
+					)
+					await ctx.send('Your details have been updated!')
+				else:
+					await ctx.send('Your details have NOT been updated!')
+
+
 
 	@user.command()
 	async def remove(self, ctx):
@@ -822,3 +878,32 @@ def userScoreEmbeder(user, showID, listType, embed):
 		embed.add_field(name=user['anilistName'], value="No Score ("+status+")", inline=True)
 	else:
 		embed.add_field(name=user['anilistName'], value=str(score)+"/"+scoreFmt+" ("+status+")", inline=True)
+
+def generateLists(user):
+	lists = { 'animeList': {}, 'mangaList': {} }
+
+	for lst in user['data']['animeList']['lists']:
+		for entry in lst['entries']:
+			new_entry = {
+				'status': entry['status'],
+				'score': entry['score'],
+				'progress': entry['progress'],
+				'episodes': entry['media']['episodes'],
+				'title': entry['media']['title']['romaji']
+			}
+			lists['animeList'][str(entry['mediaId'])] = new_entry
+
+	for lst in user['data']['mangaList']['lists']:
+		for entry in lst['entries']:
+			new_entry = {
+				'status': entry['status'],
+				'score': entry['score'],
+				'progress': entry['progress'],
+				'progressVolumes': entry['progressVolumes'],
+				'chapters': entry['media']['chapters'],
+				'volumes': entry['media']['volumes'],
+				'title': entry['media']['title']['romaji']
+			}
+			lists['mangaList'][str(entry['mediaId'])] = new_entry
+
+	return lists
