@@ -1,10 +1,3 @@
-import discord
-from discord.ext import commands
-import time
-import os
-
-import json
-
 from modules.core.loop import Loop
 from modules.core.client import Client
 
@@ -17,17 +10,15 @@ from modules.cogs.testing import Testing
 
 from modules.esports.esportsclub import EsportsClub
 
-bot = Client.bot
-
 class Cogs:
-    bot.add_cog(Memes(bot))
-    bot.add_cog(Fighting(bot))
-    bot.add_cog(Anime(bot))
-    bot.add_cog(Configuration(bot))
-    bot.add_cog(Music(bot))
-    bot.add_cog(Testing(bot))
+    Client.bot.add_cog(Memes(Client.bot))
+    Client.bot.add_cog(Fighting(Client.bot))
+    Client.bot.add_cog(Anime(Client.bot))
+    Client.bot.add_cog(Configuration(Client.bot))
+    Client.bot.add_cog(Music(Client.bot))
+    Client.bot.add_cog(Testing(Client.bot))
 
     #temporary?
-    bot.add_cog(EsportsClub(bot))
+    Client.bot.add_cog(EsportsClub(Client.bot))
 
-    bot.add_cog(Loop(bot, Anime.al_json))
+    Client.bot.add_cog(Loop(Client.bot, Anime.al_json))
