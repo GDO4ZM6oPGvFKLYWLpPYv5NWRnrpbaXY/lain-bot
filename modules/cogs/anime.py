@@ -652,7 +652,7 @@ def colorConversion(arg):
 	}
 	return colors.get(arg, discord.Color.teal())
 
-def statusConversion(arg):
+def statusConversion(arg, listType):
 	colors = {
 		"CURRENT": "W",
 		"PLANNING": "P",
@@ -661,6 +661,10 @@ def statusConversion(arg):
 		"PAUSED": "H",
 		"REPEATING": "R"
 	}
+	if listType == 'mangaList':
+		colors['CURRENT'] == "R"
+		colors['REPEATING'] == "RR"
+
 	return colors.get(arg, "X")
 
 def scoreFormat(user):
@@ -703,7 +707,8 @@ async def embedScores(guild, showID, listType, maxDisplay, embed):
 
 def userScoreEmbeder(user, showID, listType, embed):
 	userInfo = user[listType][str(showID)]
-	status = statusConversion(userInfo['status'])
+	status = statusConversion(userInfo['status'], listType)
+
 	score = userInfo['score']
 	scoreFmt = scoreFormat(user)
 	if not score or score == 0:
