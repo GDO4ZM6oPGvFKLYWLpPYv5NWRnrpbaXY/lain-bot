@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
-import os, random, json, asyncio
+import os, random, asyncio
 from os import path
 from dotenv import load_dotenv
 
@@ -309,24 +309,6 @@ class Anime(commands.Cog):
 	async def user(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid Anilist user command passed...')
-
-	# al user
-	@user.command()
-	async def set_old(self, ctx, user):
-		#try:
-		User.userUpdate(str(ctx.message.author.id), "alName", user)
-		try:
-			userID = Anilist.userSearch(user)["data"]["User"]["id"]
-			User.userUpdate(str(ctx.message.author.id), "alID", userID)
-			await ctx.send("Updated AL username!")
-			with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
-				json_data = json.load(al_json)
-				json_data[str(ctx.message.author.id)] = str(userID)
-			with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
-				al_json.write(json.dumps(json_data))
-		except Exception as e:
-			print(e)
-			await ctx.send("Failed to update AL username!")
 
 	@user.command(name="set")
 	async def set_(self, ctx, user):
