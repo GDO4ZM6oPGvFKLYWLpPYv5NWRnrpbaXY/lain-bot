@@ -696,7 +696,7 @@ async def embedScores(guild, showID, listType, maxDisplay, embed):
 
 		# either load last or say there are '+XX others'
 		if usrLen == maxDisplay:
-			userScoreEmbeder(users[maxDisplay], showID, 'animeList', embed)
+			userScoreEmbeder(users[maxDisplay-1], showID, 'animeList', embed)
 		elif usrLen > maxDisplay:
 			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
 
