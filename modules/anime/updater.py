@@ -174,7 +174,7 @@ class Updater(commands.Cog):
         guildIdsWithUser = []
         for guild in self.bot.guilds:
             for member in guild.members:
-                if member.id == user['discordId']:
+                if str(member.id) == user['discordId']:
                     guildIdsWithUser.append(guild.id)
 
         mangaOnlyChannels = []

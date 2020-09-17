@@ -348,7 +348,7 @@ class Anime(commands.Cog):
 					await ctx.trigger_typing()
 					lists = generateLists(search)
 					await Database.userCollection().update_one(
-						{'discordId': ctx.message.author.id}, 
+						{'discordId': str(ctx.message.author.id)}, 
 						{'$set': { 
 							'anilistId': search['data']['User']['id'],
 							'anilistName': search['data']['User']['name'],
@@ -367,7 +367,7 @@ class Anime(commands.Cog):
 	@user.command()
 	async def remove(self, ctx):
 		res = await Database.userCollection().update_one(
-			{ 'discordId': ctx.message.author.id },
+			{ 'discordId': str(ctx.message.author.id) },
 			{ '$set': { 'status': 0 } }
 		)
 		if res.matched_count:
@@ -675,7 +675,7 @@ def scoreFormat(user):
 
 async def embedScores(guild, showID, listType, maxDisplay, embed):
 		# get all users in db that are in this guild and have the show on their list
-		userIdsInGuild = [u.id for u in guild.members]
+		userIdsInGuild = [str(u.id) for u in guild.members]
 		print(userIdsInGuild)
 		users = [d async for d in Database.userCollection().find(
 			{
