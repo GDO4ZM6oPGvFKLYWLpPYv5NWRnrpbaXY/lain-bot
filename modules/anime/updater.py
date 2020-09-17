@@ -90,14 +90,14 @@ class Updater(commands.Cog):
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
                     changes['msgs'].append(msg)
 
-                new_entry = {
-                    'status': fetched_entry['status'],
-                    'score': fetched_entry['score'],
-                    'progress': fetched_entry['progress'],
-                    'episodes': fetched_entry['media']['episodes'],
-                    'title': fetched_entry['media']['title']['romaji']
-                }
-                new_list[str(fetched_entry['mediaId'])] = new_entry
+                # new_entry = {
+                #     'status': fetched_entry['status'],
+                #     'score': fetched_entry['score'],
+                #     'progress': fetched_entry['progress'],
+                #     'episodes': fetched_entry['media']['episodes'],
+                #     'title': fetched_entry['media']['title']['romaji']
+                # }
+                new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=True)
 
         return { 'changes': changes, 'new_list': new_list }
 
@@ -153,16 +153,16 @@ class Updater(commands.Cog):
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
                     changes['msgs'].append(msg)
 
-                new_entry = {
-                    'status': fetched_entry['status'],
-                    'score': fetched_entry['score'],
-                    'progress': fetched_entry['progress'],
-                    'progressVolumes': fetched_entry['progressVolumes'],
-                    'chapters': fetched_entry['media']['chapters'],
-                    'volumes': fetched_entry['media']['volumes'],
-                    'title': fetched_entry['media']['title']['romaji']
-                }
-                new_list[str(fetched_entry['mediaId'])] = new_entry
+                # new_entry = {
+                #     'status': fetched_entry['status'],
+                #     'score': fetched_entry['score'],
+                #     'progress': fetched_entry['progress'],
+                #     'progressVolumes': fetched_entry['progressVolumes'],
+                #     'chapters': fetched_entry['media']['chapters'],
+                #     'volumes': fetched_entry['media']['volumes'],
+                #     'title': fetched_entry['media']['title']['romaji']
+                # }
+                new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=False)
                 
         return { 'changes': changes, 'new_list': new_list }
 

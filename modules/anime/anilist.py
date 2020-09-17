@@ -1,7 +1,9 @@
 import graphene
 import requests
 import json
+import aiohttp
 
+from modules.core.session import Session
 from modules.core.client import Client
 
 class Anilist(graphene.ObjectType):

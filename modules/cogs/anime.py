@@ -876,26 +876,10 @@ def generateLists(user):
 
 	for lst in user['data']['animeList']['lists']:
 		for entry in lst['entries']:
-			new_entry = {
-				'status': entry['status'],
-				'score': entry['score'],
-				'progress': entry['progress'],
-				'episodes': entry['media']['episodes'],
-				'title': entry['media']['title']['romaji']
-			}
-			lists['animeList'][str(entry['mediaId'])] = new_entry
+			lists['animeList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=True)
 
 	for lst in user['data']['mangaList']['lists']:
 		for entry in lst['entries']:
-			new_entry = {
-				'status': entry['status'],
-				'score': entry['score'],
-				'progress': entry['progress'],
-				'progressVolumes': entry['progressVolumes'],
-				'chapters': entry['media']['chapters'],
-				'volumes': entry['media']['volumes'],
-				'title': entry['media']['title']['romaji']
-			}
-			lists['mangaList'][str(entry['mediaId'])] = new_entry
+			lists['mangaList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=False)
 
 	return lists
