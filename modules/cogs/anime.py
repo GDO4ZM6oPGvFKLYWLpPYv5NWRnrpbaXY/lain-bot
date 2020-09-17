@@ -147,6 +147,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	async def manga(self, ctx):
+		await ctx.trigger_typing()
 		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearchManga(comic)
