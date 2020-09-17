@@ -19,9 +19,6 @@ class Anime(commands.Cog):
 
 	load_dotenv()
 
-	al_json_path = os.getenv("OS_PATH")+"/modules/anime/config/alID.json"
-	al_json = json.load(open(al_json_path, 'r'))
-
 	def __init__(self, bot):
 		self.bot = bot
 
@@ -245,25 +242,6 @@ class Anime(commands.Cog):
 
 		await ctx.send(embed=embed)
 
-	@al.command(pass_context=True)
-	@has_permissions(administrator=True)
-	async def animelist_old(self, ctx):
-		try:
-			if Config.cfgRead(str(ctx.guild.id), "alAnimeChannel")==ctx.channel.id:
-				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", 0)
-				Config.cfgUpdate(str(ctx.guild.id), "alAnimeOn", False)
-				await ctx.send("Disabled AniList Anime messages in this channel!")
-			elif Config.cfgRead(str(ctx.guild.id), "alAnimeChannel")!=0:
-				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "alAnimeOn", True)
-				await ctx.send("Moved and enabled AniList Anime messages to this channel!")
-			else: #this is seperate just in case, i forgot why while coding
-				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "alAnimeOn", True)
-				await ctx.send("Enabled AniList Anime messages in this channel!")
-		except:
-			await ctx.send("error! LOL!")
-
 	@al.group(pass_context=True)
 	async def animelist(self, ctx):
 		if ctx.invoked_subcommand is None:
@@ -286,11 +264,6 @@ class Anime(commands.Cog):
 
 		await ctx.send("Enabled AniList Anime messages in this channel!")
 
-		# now update all the users to use this channel. this is so individual control can be added later
-		await Database.userCollection().update_many(
-			{ 'discordId': {'$in': [user.id for user in ctx.guild.members]} },
-			{ '$addToSet': {'animeMessageGuilds': ctx.guild.id} }
-		)
 
 	@animelist.command(pass_context=True, name="disable")
 	@has_permissions(administrator=True)
@@ -323,12 +296,6 @@ class Anime(commands.Cog):
 
 		await ctx.send("Enabled AniList Manga messages in this channel!")
 
-		# now update all the users to use this channel. this is so individual control can be added later
-		await Database.userCollection().update_many(
-			{ 'discordId': {'$in': [user.id for user in ctx.guild.members]} },
-			{ '$addToSet': {'mangaMessageGuilds': ctx.guild.id} }
-		)
-
 	@mangalist.command(pass_context=True, name="disable")
 	@has_permissions(administrator=True)
 	async def mangalist_disable(self, ctx):
@@ -337,25 +304,6 @@ class Anime(commands.Cog):
 			{  '$pullAll': { 'mangaMessageChannels': [ctx.channel.id] } },
 		)
 		await ctx.send("Manga messages disabled for this channel!")
-
-	@al.command(pass_context=True)
-	@has_permissions(administrator=True)
-	async def mangalist_old(self, ctx):
-		try:
-			if Config.cfgRead(str(ctx.guild.id), "alMangaChannel")==ctx.channel.id:
-				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", 0)
-				Config.cfgUpdate(str(ctx.guild.id), "alMangaOn", False)
-				await ctx.send("Disabled AniList Manga messages in this channel!")
-			elif Config.cfgRead(str(ctx.guild.id), "alMangaChannel")!=0:
-				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "alMangaOn", True)
-				await ctx.send("Moved and enabled AniList Manga messages to this channel!")
-			else: #this is seperate just in case, i forgot why while coding
-				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "alMangaOn", True)
-				await ctx.send("Enabled AniList Manga messages in this channel!")
-		except:
-			await ctx.send("error! LOL!")
 
 	@al.group(pass_context=True)
 	async def user(self, ctx):
@@ -425,8 +373,7 @@ class Anime(commands.Cog):
 							'animeList': lists['animeList'], 
 							'mangaList': lists['mangaList'], 
 							'profile': search['data']['User'],
-							'animeMessageGuilds': [],
-							'mangaMessageGuilds': []
+							'status': 1,
 							}
 						},
 						upsert=True
@@ -439,66 +386,12 @@ class Anime(commands.Cog):
 	async def remove(self, ctx):
 		res = await Database.userCollection().update_one(
 			{ 'discordId': ctx.message.author.id },
-			{ '$set': { 'animeMessageGuilds': [], 'mangaMessageGuilds': [] } }
+			{ '$set': { 'status': 0 } }
 		)
 		if res.matched_count:
 			await ctx.send('You have been removed!')
 		else:
 			await ctx.send('You were never registered.')
-
-	@user.command()
-	async def remove_old(self, ctx):
-		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user remove ')):]
-		atLen = len(user)-5
-		if user == "":
-			try:
-				User.userUpdate(str(ctx.message.author.id), "alName", None)
-				User.userUpdate(str(ctx.message.author.id), "alID", 0)
-				with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
-					json_data = json.load(al_json)
-					json_data[str(ctx.message.author.id)] = 0
-				with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
-					al_json.write(json.dumps(json_data))
-				await ctx.send("Removed AL account from your profile!")
-			except:
-				user = None
-				await ctx.send("Failed to remove AL account from your profile!")
-		try:
-			if ctx.message.author.guild_permissions.administrator:
-				if user.startswith("<@!"):
-					userLen = len(user)-1
-					atUser = user[3:userLen]
-					try:
-						User.userUpdate(str(atUser), "alName", None)
-						User.userUpdate(str(atUser), "alID", 0)
-						with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
-							json_data = json.load(al_json)
-							json_data[str(atUser)] = 0
-						with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
-							al_json.write(json.dumps(json_data))
-						await ctx.send("Removed AL account from "+user+".")
-					except:
-						await ctx.send("Error removing AL account from "+user+".")
-				# re.findall(".+#[0-9]{4}", txt)
-				elif user[atLen]=="#":
-					for users in self.bot.users:
-						usersSearch = users.name+"#"+users.discriminator
-						if usersSearch == user:
-							try:
-								with open(os.getcwd()+"/modules/anime/config/alID.json", 'r') as al_json:
-									json_data = json.load(al_json)
-									json_data[str(users.id)] = 0
-								with open(os.getcwd()+"/modules/anime/config/alID.json", 'w') as al_json:
-									al_json.write(json.dumps(json_data))
-								User.userUpdate(str(users.id), "alName", None)
-								User.userUpdate(str(users.id), "alID", 0)
-								await ctx.send("Removed AL account from "+user+".")
-							except:
-								await ctx.send("Error removing AL account from "+user+".")
-			else:
-				await ctx.send("You do not have permissions to remove AL from others!")
-		except:
-			pass
 
 	# al user
 	@user.command()
@@ -801,6 +694,7 @@ def scoreFormat(user):
 async def embedScores(guild, showID, listType, maxDisplay, embed):
 		# get all users in db that are in this guild and have the show on their list
 		userIdsInGuild = [u.id for u in guild.members]
+		print(userIdsInGuild)
 		users = [d async for d in Database.userCollection().find(
 			{
 				'discordId': { '$in': userIdsInGuild },

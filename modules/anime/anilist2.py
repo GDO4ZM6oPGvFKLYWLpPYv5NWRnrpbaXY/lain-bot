@@ -9,6 +9,7 @@ class Anilist2:
     userDataQuery = '''
         query($id: Int) {
             User(id:$id) {
+                name
                 mediaListOptions {
                     scoreFormat
                 }

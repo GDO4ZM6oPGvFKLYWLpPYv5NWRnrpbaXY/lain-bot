@@ -90,13 +90,6 @@ class Updater(commands.Cog):
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
                     changes['msgs'].append(msg)
 
-                # new_entry = {
-                #     'status': fetched_entry['status'],
-                #     'score': fetched_entry['score'],
-                #     'progress': fetched_entry['progress'],
-                #     'episodes': fetched_entry['media']['episodes'],
-                #     'title': fetched_entry['media']['title']['romaji']
-                # }
                 new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=True)
 
         return { 'changes': changes, 'new_list': new_list }
@@ -153,15 +146,6 @@ class Updater(commands.Cog):
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
                     changes['msgs'].append(msg)
 
-                # new_entry = {
-                #     'status': fetched_entry['status'],
-                #     'score': fetched_entry['score'],
-                #     'progress': fetched_entry['progress'],
-                #     'progressVolumes': fetched_entry['progressVolumes'],
-                #     'chapters': fetched_entry['media']['chapters'],
-                #     'volumes': fetched_entry['media']['volumes'],
-                #     'title': fetched_entry['media']['title']['romaji']
-                # }
                 new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=False)
                 
         return { 'changes': changes, 'new_list': new_list }
@@ -186,24 +170,22 @@ class Updater(commands.Cog):
     async def sendChanges(self, user, changes):
         changes = self.limitChanges(changes, 8)
 
-        botGuildIds = [guild.id for guild in self.bot.guilds]
-        userEnableMangaGuildIds = user['mangaMessageGuilds']
-        userEnableAnimeGuildIds = user['animeMessageGuilds']
-
-        # get guild where user has activated messaging and are active in the bot
-        mangaMessageGuilds = list(set(botGuildIds).intersection(userEnableMangaGuildIds))
-        animeMessageGuilds = list(set(botGuildIds).intersection(userEnableAnimeGuildIds))
+        guildIdsWithUser = []
+        for guild in self.bot.guilds:
+            for member in guild.members:
+                if member.id == user['discordId']:
+                    guildIdsWithUser.append(guild.id)
 
         mangaOnlyChannels = []
         animeOnlyChannels = []
 
-        async for guild in Database.guildCollection().find({'id': {'$in': mangaMessageGuilds}}):
+        async for guild in Database.guildCollection().find({'id': {'$in': guildIdsWithUser}}):
             for channel in guild['mangaMessageChannels']:
                 mangaOnlyChannels.append(self.bot.get_guild(guild['id']).get_channel(channel))
 
-        async for guild in Database.guildCollection().find({'id': {'$in': animeMessageGuilds}}):
             for channel in guild['animeMessageChannels']:
                 animeOnlyChannels.append(self.bot.get_guild(guild['id']).get_channel(channel))
+
 
         comboChannels = []
         for i in reversed(range(len(mangaOnlyChannels))):
@@ -286,7 +268,7 @@ class Updater(commands.Cog):
 
 
     # interate through each user in database keeping up to date with anilist
-    @tasks.loop(seconds=2)
+    @tasks.loop(seconds=10)
     async def al_update(self):
         # wait until bot is ready
         if not self.bot.is_ready():
@@ -295,7 +277,7 @@ class Updater(commands.Cog):
 
         # next user in database iteration
         nextUser = await self.cursor.to_list(length=1)
-
+        print('--ipdater')
         if nextUser:
             # get local data
             user = nextUser[0]
@@ -314,20 +296,24 @@ class Updater(commands.Cog):
                 print(fetched_user)
                 return
 
-
             # find differences
             animeSync = self.syncAnimeList(old_animeList, fetched_animeList, self.scoreFormat(user))
             mangaSync = self.syncMangaList(old_managaList, fetched_mangaList, self.scoreFormat(user))
 
-            # do stuff if there were any changes detected
-            # try:
-            #     await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
-            # except:
-            #     print('bots don\'t quit. ignore the discord.py errors.')
-            await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
+            if user['status']:
+                await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
 
             # update local user to match anilist
-            await Database.userCollection().update_one({'_id': user['_id']}, {'$set': {'animeList': animeSync['new_list'], 'mangaList': mangaSync['new_list'], 'profile': fetched_user['data']['User']}})
+            await Database.userCollection().update_one(
+                {'_id': user['_id']}, 
+                {'$set': {
+                    'animeList': animeSync['new_list'], 
+                    'mangaList': mangaSync['new_list'], 
+                    'profile': fetched_user['data']['User'], 
+                    'anilistName': fetched_user['data']['User']['name']
+                    }
+                }
+            )
 
         else:
             # iterated all users in database. repeat
@@ -335,7 +321,7 @@ class Updater(commands.Cog):
             self.cursor = Database.userCollection().find()
 
     # delete any images created by the gerator
-    @tasks.loop(minutes=30)
+    @tasks.loop(minutes=15)
     async def cleanup_img_gen(self):
         files = [f for f in os.listdir(os.getcwd() + '/assets/img_gen/') if os.path.isfile(os.getcwd() + '/assets/img_gen/' + f)]
         for f in files:
