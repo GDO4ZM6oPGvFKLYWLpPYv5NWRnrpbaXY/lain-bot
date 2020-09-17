@@ -170,6 +170,7 @@ class Updater(commands.Cog):
     async def sendChanges(self, user, changes):
         changes = self.limitChanges(changes, 8)
 
+        # get all the guilds this user is apart of
         guildIdsWithUser = []
         for guild in self.bot.guilds:
             for member in guild.members:
@@ -268,7 +269,7 @@ class Updater(commands.Cog):
 
 
     # interate through each user in database keeping up to date with anilist
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=2)
     async def al_update(self):
         # wait until bot is ready
         if not self.bot.is_ready():
@@ -277,7 +278,6 @@ class Updater(commands.Cog):
 
         # next user in database iteration
         nextUser = await self.cursor.to_list(length=1)
-        print('--ipdater')
         if nextUser:
             # get local data
             user = nextUser[0]
@@ -321,7 +321,7 @@ class Updater(commands.Cog):
             self.cursor = Database.userCollection().find()
 
     # delete any images created by the gerator
-    @tasks.loop(minutes=15)
+    @tasks.loop(minutes=4)
     async def cleanup_img_gen(self):
         files = [f for f in os.listdir(os.getcwd() + '/assets/img_gen/') if os.path.isfile(os.getcwd() + '/assets/img_gen/' + f)]
         for f in files:
