@@ -6,7 +6,7 @@ class Database:
 	"""
 	user model:
 		_id				mongodb generated id
-		discordId		int - discord id for user
+		discordId		str - discord id for user
 		anilistId		int - anilist id
 		anilistName		str - anilist name
 		profile			{} - anilist profile data (genres, favs, etc)
