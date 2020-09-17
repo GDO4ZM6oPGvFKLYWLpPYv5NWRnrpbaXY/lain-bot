@@ -23,8 +23,8 @@ class Anime(commands.Cog):
 		self.bot = bot
 
 	@commands.command(pass_context=True)
-	async def safebooru(self, ctx, tags): #looks up images on safebooru
-
+	async def safebooru(self, ctx, tags):
+		"""Look up images on safebooru"""
 		channel = ctx.message.channel
 
 		safebooruSearch = Safebooru.booruSearch(tags)
@@ -70,6 +70,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	async def search(self, ctx):
+		"""search for anime in anilist"""
 		await ctx.trigger_typing()
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
@@ -147,6 +148,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	async def manga(self, ctx):
+		"""Search for manga in anilist"""
 		await ctx.trigger_typing()
 		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
 		# retrieve json file
@@ -215,6 +217,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	async def char(self, ctx):
+		"""Search for a character on anilist"""
 		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
 		anilistResults = Anilist.charSearch(c)
 
@@ -251,6 +254,7 @@ class Anime(commands.Cog):
 	@animelist.command(pass_context=True, name="enable")
 	@has_permissions(administrator=True)
 	async def animelist_enable(self, ctx):
+		"""Enable anilist anime updates in this channel. Require admin privileges."""
 		res = await Database.guildCollection().update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$addToSet': { 'animeMessageChannels': str(ctx.channel.id) } },
@@ -269,6 +273,7 @@ class Anime(commands.Cog):
 	@animelist.command(pass_context=True, name="disable")
 	@has_permissions(administrator=True)
 	async def animelist_diable(self, ctx):
+		"""Disable anilist anime updates in this channel. Require admin privileges."""
 		await Database.guildCollection().update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$pullAll': { 'animeMessageChannels': [str(ctx.channel.id)] } },
@@ -283,6 +288,7 @@ class Anime(commands.Cog):
 	@mangalist.command(pass_context=True, name="enable")
 	@has_permissions(administrator=True)
 	async def mangalist_enable(self, ctx):
+		"""Enable anilist manga updates in this channel. Require admin privileges."""
 		res = await Database.guildCollection().update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$addToSet': { 'mangaMessageChannels': str(ctx.channel.id) } },
@@ -300,6 +306,7 @@ class Anime(commands.Cog):
 	@mangalist.command(pass_context=True, name="disable")
 	@has_permissions(administrator=True)
 	async def mangalist_disable(self, ctx):
+		"""Disable anilist manga updates in this channel. Require admin privileges."""
 		await Database.guildCollection().update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$pullAll': { 'mangaMessageChannels': [str(ctx.channel.id)] } },
@@ -312,6 +319,7 @@ class Anime(commands.Cog):
 			await ctx.send('Invalid Anilist user command passed...')
 
 	@user.command(name="set")
+	"""Set anilist username for updates"""
 	async def set_(self, ctx, user):
 		await ctx.trigger_typing()
 		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
@@ -367,6 +375,7 @@ class Anime(commands.Cog):
 
 	@user.command()
 	async def remove(self, ctx):
+	"""Remove anilist username for updates"""
 		res = await Database.userCollection().update_one(
 			{ 'discordId': str(ctx.message.author.id) },
 			{ '$set': { 'status': 0 } }
@@ -379,6 +388,7 @@ class Anime(commands.Cog):
 	# al user
 	@user.command()
 	async def profile(self, ctx):
+		"""Display an anilist user profile"""
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
 		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
 
@@ -480,6 +490,7 @@ class Anime(commands.Cog):
 
 	@vn.command(pass_context=True)
 	async def get(self, ctx):
+		"""Lookup a visual novel on vndb"""
 		# name of vn
 		arg = str(ctx.message.content)[(len(ctx.prefix) + len('vn get ')):]
 		try:
@@ -602,6 +613,7 @@ class Anime(commands.Cog):
 	
 	@vn.command(pass_context=True)
 	async def quote(self, ctx):
+		"""Display a random visual novel quote"""
 		q = Vndb()
 		quote = q.quote()
 
