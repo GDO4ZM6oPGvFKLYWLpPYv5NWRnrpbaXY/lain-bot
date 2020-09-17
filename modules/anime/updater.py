@@ -175,17 +175,16 @@ class Updater(commands.Cog):
         for guild in self.bot.guilds:
             for member in guild.members:
                 if str(member.id) == user['discordId']:
-                    guildIdsWithUser.append(guild.id)
+                    guildIdsWithUser.append(str(guild.id))
 
         mangaOnlyChannels = []
         animeOnlyChannels = []
 
         async for guild in Database.guildCollection().find({'id': {'$in': guildIdsWithUser}}):
             for channel in guild['mangaMessageChannels']:
-                mangaOnlyChannels.append(self.bot.get_guild(guild['id']).get_channel(channel))
-
+                mangaOnlyChannels.append(self.bot.get_guild(int(guild['id'])).get_channel(int(channel)))
             for channel in guild['animeMessageChannels']:
-                animeOnlyChannels.append(self.bot.get_guild(guild['id']).get_channel(channel))
+                animeOnlyChannels.append(self.bot.get_guild(int(guild['id'])).get_channel(int(channel)))
 
 
         comboChannels = []
