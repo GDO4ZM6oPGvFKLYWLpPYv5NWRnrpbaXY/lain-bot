@@ -1,16 +1,16 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
-import random
-import os
+import os, random, json, asyncio
 from os import path
-import json
 from dotenv import load_dotenv
 
 from modules.core.client import Client
+from modules.core.database import Database
 from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.anilist import Anilist
+from modules.anime.anilist2 import Anilist2
 from modules.anime.mal import Mal
 from modules.anime.vndb import Vndb
 from modules.config.config import Config
@@ -55,7 +55,25 @@ class Anime(commands.Cog):
 			await ctx.send('Invalid anilist command passed...')
 
 	@al.command(pass_context=True)
+	async def help(self, ctx):
+		await ctx.trigger_typing()
+		embed = discord.Embed(
+			title = 'Available commands',
+			description = '',
+			color = discord.Color.blue(),
+		)
+		embed.add_field(name='al animelist enable', value='Requires admin. Enable anilist anime updates messages on this channel. The same can be done for \'mangalist\'. Replace \'enable\' with \'disable\' to stop message updates.', inline=False)
+		embed.add_field(name='al search \<show\>', value='search for anime in anilist', inline=False)
+		embed.add_field(name='al manga \<manga\>', value='search for manga in anilist', inline=False)
+		embed.add_field(name='al user set \<username\>', value='connect anilist account to discord account', inline=False)
+		embed.add_field(name='al user remove', value='disconnect anilist account from discord account', inline=False)
+		embed.add_field(name='+more', value='I\'m too lazy to do describe all of them. There\'s safebooru, al char, al user profile', inline=False)
+
+		await ctx.send(embed=embed)
+
+	@al.command(pass_context=True)
 	async def search(self, ctx):
+		await ctx.trigger_typing()
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearch(show)
@@ -126,23 +144,7 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Aired', value=tyme, inline=False)
 
-		users = 0
-		for user in ctx.guild.members:
-			try:
-				alID = User.userRead(str(user.id), "alID")
-				if users>=9:
-					break
-				if alID!=0:
-					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
-					if scoreResults==0:
-						embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
-						users+=1
-					else:
-						embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
-						users+=1
-			except:
-				pass
+		await embedScores(ctx.guild, showID, 'animeList', 9, embed)
 
 		await ctx.send(embed=embed)
 
@@ -151,7 +153,7 @@ class Anime(commands.Cog):
 		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
 		# retrieve json file
 		anilistResults = Anilist.aniSearchManga(comic)
-		showID = anilistResults["data"]["Media"]["id"]
+		mangaID = anilistResults["data"]["Media"]["id"]
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['Media']['description']))
@@ -209,23 +211,7 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Released', value=tyme, inline=False)
 
-		users = 0
-		for user in ctx.guild.members:
-			try:
-				alID = User.userRead(str(user.id), "alID")
-				if users>=9:
-					break
-				if alID!=0:
-					scoreResults = Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["score"]
-					statusResults = statusConversion(Anilist.scoreSearch(alID, showID)["data"]["MediaList"]["status"])
-					if scoreResults==0:
-						embed.add_field(name=user.name, value="No Score ("+statusResults+")", inline=True)
-						users+=1
-					else:
-						embed.add_field(name=user.name, value=str(scoreResults)+"/10 ("+statusResults+")", inline=True)
-						users+=1
-			except:
-				pass
+		await embedScores(ctx.guild, mangaID, 'mangaList', 9, embed)
 
 		await ctx.send(embed=embed)
 
@@ -261,7 +247,7 @@ class Anime(commands.Cog):
 
 	@al.command(pass_context=True)
 	@has_permissions(administrator=True)
-	async def animelist(self, ctx):
+	async def animelist_old(self, ctx):
 		try:
 			if Config.cfgRead(str(ctx.guild.id), "alAnimeChannel")==ctx.channel.id:
 				Config.cfgUpdate(str(ctx.guild.id), "alAnimeChannel", 0)
@@ -278,9 +264,83 @@ class Anime(commands.Cog):
 		except:
 			await ctx.send("error! LOL!")
 
+	@al.group(pass_context=True)
+	async def animelist(self, ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid animelist command passed...\nTry \"\>al animelist enable\" to enable anime updates on this channel or use disable.')
+	
+	@animelist.command(pass_context=True, name="enable")
+	@has_permissions(administrator=True)
+	async def animelist_enable(self, ctx):
+		res = await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$addToSet': { 'animeMessageChannels': ctx.channel.id } },
+			upsert=True
+		)
+		# if the update created a new document, populate it with the rest of the info
+		if res.upserted_id:
+			await Database.guildCollection().update_one(
+				{ '_id': res.upserted_id },
+				{ '$set': { 'name': ctx.guild.name, 'mangaMessageChannels': [] } }
+			)
+
+		await ctx.send("Enabled AniList Anime messages in this channel!")
+
+		# now update all the users to use this channel. this is so individual control can be added later
+		await Database.userCollection().update_many(
+			{ 'discordId': {'$in': [user.id for user in ctx.guild.members]} },
+			{ '$addToSet': {'animeMessageGuilds': ctx.guild.id} }
+		)
+
+	@animelist.command(pass_context=True, name="disable")
+	@has_permissions(administrator=True)
+	async def animelist_diable(self, ctx):
+		await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$pullAll': { 'animeMessageChannels': [ctx.channel.id] } },
+		)
+		await ctx.send("Anime messages disabled for this channel!")
+
+	@al.group(pass_context=True)
+	async def mangalist(self, ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid mangalist command passed...\nTry \"\>al mangalist enable\" to enable manga updates on this channel or use disable.')
+	
+	@mangalist.command(pass_context=True, name="enable")
+	@has_permissions(administrator=True)
+	async def mangalist_enable(self, ctx):
+		res = await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$addToSet': { 'mangaMessageChannels': ctx.channel.id } },
+			upsert=True
+		)
+		# if the update created a new document, populate it with the rest of the info
+		if res.upserted_id:
+			await Database.guildCollection().update_one(
+				{ '_id': res.upserted_id },
+				{ '$set': { 'name': ctx.guild.name, 'animeMessageChannels': [] } }
+			)
+
+		await ctx.send("Enabled AniList Manga messages in this channel!")
+
+		# now update all the users to use this channel. this is so individual control can be added later
+		await Database.userCollection().update_many(
+			{ 'discordId': {'$in': [user.id for user in ctx.guild.members]} },
+			{ '$addToSet': {'mangaMessageGuilds': ctx.guild.id} }
+		)
+
+	@mangalist.command(pass_context=True, name="disable")
+	@has_permissions(administrator=True)
+	async def mangalist_disable(self, ctx):
+		await Database.guildCollection().update_one(
+			{ 'id': ctx.guild.id },
+			{  '$pullAll': { 'mangaMessageChannels': [ctx.channel.id] } },
+		)
+		await ctx.send("Manga messages disabled for this channel!")
+
 	@al.command(pass_context=True)
 	@has_permissions(administrator=True)
-	async def mangalist(self, ctx):
+	async def mangalist_old(self, ctx):
 		try:
 			if Config.cfgRead(str(ctx.guild.id), "alMangaChannel")==ctx.channel.id:
 				Config.cfgUpdate(str(ctx.guild.id), "alMangaChannel", 0)
@@ -304,7 +364,7 @@ class Anime(commands.Cog):
 
 	# al user
 	@user.command()
-	async def set(self, ctx, user):
+	async def set_old(self, ctx, user):
 		#try:
 		User.userUpdate(str(ctx.message.author.id), "alName", user)
 		try:
@@ -320,8 +380,74 @@ class Anime(commands.Cog):
 			print(e)
 			await ctx.send("Failed to update AL username!")
 
+	@user.command(name="set")
+	async def set_(self, ctx, user):
+		await ctx.trigger_typing()
+		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
+		if search.get('errors'):
+			notFound = False
+			for error in search['errors']:
+				if error['message'] == 'Not Found.':
+					notFound =  True
+					break
+			if notFound:
+				await ctx.send('Sorry, could not find that user')
+			else:
+				await ctx.send('Error!')
+		else:
+			def check(reaction, user):
+				return user == ctx.message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❌')
+			await ctx.send('Is this you?')	
+			embed = discord.Embed(
+				title = search['data']['User']['name'],
+				description = search['data']['User']['about'] if search['data']['User']['about'] else '',
+				color = discord.Color.blue(),
+				url = 'http://anilist.co/user/'+str(search['data']['User']['id'])
+			)
+			embed.set_thumbnail(url=search['data']['User']['avatar']['large'])
+			msg = await ctx.send(embed=embed)
+			await msg.add_reaction('✅')
+			await msg.add_reaction('❌')
+
+			try:
+				reaction, user = await self.bot.wait_for('reaction_add', timeout=5.0, check=check)
+			except asyncio.TimeoutError:
+				await ctx.send('User not updated')
+			else:
+				if str(reaction.emoji) == '✅':
+					await ctx.trigger_typing()
+					lists = generateLists(search)
+					await Database.userCollection().update_one(
+						{'discordId': ctx.message.author.id}, 
+						{'$set': { 
+							'anilistId': search['data']['User']['id'],
+							'anilistName': search['data']['User']['name'],
+							'animeList': lists['animeList'], 
+							'mangaList': lists['mangaList'], 
+							'profile': search['data']['User'],
+							'animeMessageGuilds': [],
+							'mangaMessageGuilds': []
+							}
+						},
+						upsert=True
+					)
+					await ctx.send('Your details have been updated!')
+				else:
+					await ctx.send('Your details have NOT been updated!')
+
 	@user.command()
 	async def remove(self, ctx):
+		res = await Database.userCollection().update_one(
+			{ 'discordId': ctx.message.author.id },
+			{ '$set': { 'animeMessageGuilds': [], 'mangaMessageGuilds': [] } }
+		)
+		if res.matched_count:
+			await ctx.send('You have been removed!')
+		else:
+			await ctx.send('You were never registered.')
+
+	@user.command()
+	async def remove_old(self, ctx):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user remove ')):]
 		atLen = len(user)-5
 		if user == "":
@@ -470,42 +596,6 @@ class Anime(commands.Cog):
 			print(anilistResults["avatar"]["large"])
 			print(anilistResults["siteUrl"])
 			await ctx.send(e)
-
-	"""
-	@commands.group()
-	async def mal(self, ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid MAL command passed...')
-
-	@mal.command(pass_context=True)
-	async def search(self, ctx):
-		show = str(ctx.message.content)[(len(ctx.prefix) + len('mal search ')):]
-		results = Mal.aniSearch(show)
-
-		# description of media
-		desc = shorten(results['synopsis'])
-
-		# get all genres and turn into string
-		genres = ''
-		i = 0
-		for genre in results['genres']:
-			genres += genre['name']
-			i += 1
-
-			if i != len(results['genres']):
-				genres += ', '
-
-		embed = discord.Embed(
-			title = str(results['title']),
-			description = desc,
-			color = discord.Color.blue(),
-			url = 'https://myanimelist.net/anime/' + str(results['id'])
-		)
-
-		embed.set_thumbnail(url=str(results['main_picture']['large']))
-
-		embed.set_footer(text=genres)
-	"""
 
 	@commands.group(pass_context=True)
 	async def vn(self, ctx):
@@ -696,3 +786,63 @@ def statusConversion(arg):
 		"REPEATING": "R"
 	}
 	return colors.get(arg, "X")
+
+def scoreFormat(user):
+	fmt = user['profile']['mediaListOptions']['scoreFormat']
+	if fmt == 'POINT_100':
+		return '100'
+	elif fmt == 'POINT_10_DECIMAL' or fmt == 'POINT_10':
+		return '10'
+	elif fmt == 'POINT_5':
+		return '5'
+	else:
+		return '3'
+
+async def embedScores(guild, showID, listType, maxDisplay, embed):
+		# get all users in db that are in this guild and have the show on their list
+		userIdsInGuild = [u.id for u in guild.members]
+		users = [d async for d in Database.userCollection().find(
+			{
+				'discordId': { '$in': userIdsInGuild },
+				listType+'.'+str(showID): { '$exists': True }
+			},
+			{
+				'anilistName': 1,
+				listType+'.'+str(showID): 1,
+				'profile.mediaListOptions': 1
+			}
+			)
+		]
+
+		usrLen = len(users)
+		for i in range(0, min(usrLen, maxDisplay-1)):
+			userScoreEmbeder(users[i], showID, 'animeList', embed)
+
+		# either load last or say there are '+XX others'
+		if usrLen == maxDisplay:
+			userScoreEmbeder(users[maxDisplay], showID, 'animeList', embed)
+		elif usrLen > maxDisplay:
+			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
+
+def userScoreEmbeder(user, showID, listType, embed):
+	userInfo = user[listType][str(showID)]
+	status = statusConversion(userInfo['status'])
+	score = userInfo['score']
+	scoreFmt = scoreFormat(user)
+	if not score or score == 0:
+		embed.add_field(name=user['anilistName'], value="No Score ("+status+")", inline=True)
+	else:
+		embed.add_field(name=user['anilistName'], value=str(score)+"/"+scoreFmt+" ("+status+")", inline=True)
+
+def generateLists(user):
+	lists = { 'animeList': {}, 'mangaList': {} }
+
+	for lst in user['data']['animeList']['lists']:
+		for entry in lst['entries']:
+			lists['animeList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=True)
+
+	for lst in user['data']['mangaList']['lists']:
+		for entry in lst['entries']:
+			lists['mangaList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=False)
+
+	return lists

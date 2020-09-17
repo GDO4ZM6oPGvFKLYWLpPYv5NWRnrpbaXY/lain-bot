@@ -15,12 +15,15 @@ Run main.py, and provide a Discord Bot token through .env with the line "BOT_TOK
 * **aync-timeout** - *3.0.1*
 * **requests** - *2.23.0*
 * **graphene** - *2.1.8*
-* **fmmpeg-python** - *0.2.0*
+* **ffmpeg-python** - *0.2.0*
 * **youtube_dl** - *2020.3.24*
 * **python_dotenv** - *0.13.0*
 * **praw** - *7.1.0*
 * **asyncpg** - *0.20.1*
 * **requests-html** - *0.3.4*
+* **aiohttp** - *3.6.2*
+* **Pillow** - *7.2.0*
+* **motor** - *2.2.0*
 
 ## Contributing
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
