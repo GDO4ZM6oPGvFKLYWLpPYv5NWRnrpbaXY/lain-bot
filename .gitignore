@@ -138,3 +138,4 @@ config/*
 user/*
 !user/.gitkeep
 modules/anime/config/alID.json
+assets/img_gen/*.jpg
