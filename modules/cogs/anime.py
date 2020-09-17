@@ -251,8 +251,8 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def animelist_enable(self, ctx):
 		res = await Database.guildCollection().update_one(
-			{ 'id': ctx.guild.id },
-			{  '$addToSet': { 'animeMessageChannels': ctx.channel.id } },
+			{ 'id': str(ctx.guild.id) },
+			{  '$addToSet': { 'animeMessageChannels': str(ctx.channel.id) } },
 			upsert=True
 		)
 		# if the update created a new document, populate it with the rest of the info
@@ -269,8 +269,8 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def animelist_diable(self, ctx):
 		await Database.guildCollection().update_one(
-			{ 'id': ctx.guild.id },
-			{  '$pullAll': { 'animeMessageChannels': [ctx.channel.id] } },
+			{ 'id': str(ctx.guild.id) },
+			{  '$pullAll': { 'animeMessageChannels': [str(ctx.channel.id)] } },
 		)
 		await ctx.send("Anime messages disabled for this channel!")
 
@@ -283,8 +283,8 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def mangalist_enable(self, ctx):
 		res = await Database.guildCollection().update_one(
-			{ 'id': ctx.guild.id },
-			{  '$addToSet': { 'mangaMessageChannels': ctx.channel.id } },
+			{ 'id': str(ctx.guild.id) },
+			{  '$addToSet': { 'mangaMessageChannels': str(ctx.channel.id) } },
 			upsert=True
 		)
 		# if the update created a new document, populate it with the rest of the info
@@ -300,8 +300,8 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def mangalist_disable(self, ctx):
 		await Database.guildCollection().update_one(
-			{ 'id': ctx.guild.id },
-			{  '$pullAll': { 'mangaMessageChannels': [ctx.channel.id] } },
+			{ 'id': str(ctx.guild.id) },
+			{  '$pullAll': { 'mangaMessageChannels': [str(ctx.channel.id)] } },
 		)
 		await ctx.send("Manga messages disabled for this channel!")
 

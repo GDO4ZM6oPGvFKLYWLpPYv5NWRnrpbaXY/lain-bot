@@ -21,8 +21,8 @@ class Database:
 	guild model:
 		_id						mongodb generated id	
 		id						int - discord id for guild
-		animeMessageChannels	[int] - channel ids where anime messages are enabled
-		mangaMessageChannels	[int] - channel ids where manga messages are enabled
+		animeMessageChannels	[str] - channel ids where anime messages are enabled
+		mangaMessageChannels	[str] - channel ids where manga messages are enabled
 		name					str - name of guild (not really needed, just there for debugging)
 	"""
 	def guildCollection():
