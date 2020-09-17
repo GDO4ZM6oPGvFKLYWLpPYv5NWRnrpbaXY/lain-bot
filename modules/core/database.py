@@ -18,3 +18,21 @@ class Database:
 			return await d.find_one({'anilistId':anilistId})
 		else:
 			return await d.find_one({'discordId':discordId})
+
+	# type either 'anime' or 'manga'
+	def formListEntryFromAnilistEntry(anilistEntry, anime=True):
+		new_entry = {
+			'status': anilistEntry['status'],
+			'score': anilistEntry['score'],
+			'progress': anilistEntry['progress'],
+			'title': anilistEntry['media']['title']['romaji']
+		}
+
+		if anime:
+			new_entry['episodes'] =  anilistEntry['media']['episodes']
+		else:
+			new_entry['progressVolumes'] = anilistEntry['progressVolumes']
+			new_entry['chapters'] = anilistEntry['media']['chapters']
+			new_entry['volumes'] = anilistEntry['media']['volumes']
+		
+		return new_entry
