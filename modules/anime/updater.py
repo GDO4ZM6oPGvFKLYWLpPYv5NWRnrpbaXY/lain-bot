@@ -286,7 +286,7 @@ class Updater(commands.Cog):
 
 
     # interate through each user in database keeping up to date with anilist
-    @tasks.loop(seconds=4)
+    @tasks.loop(seconds=2)
     async def al_update(self):
         # wait until bot is ready
         if not self.bot.is_ready():
@@ -304,8 +304,16 @@ class Updater(commands.Cog):
 
             # get anilist data
             fetched_user = await Anilist2.getUserData(self.bot.get_cog('Session').session, user['anilistId'])
-            fetched_animeList = fetched_user['data']['animeList']
-            fetched_mangaList = fetched_user['data']['mangaList']
+            fetched_animeList = None
+            fetched_mangaList = None
+            try:
+                fetched_animeList = fetched_user['data']['animeList']
+                fetched_mangaList = fetched_user['data']['mangaList']
+            except:
+                print('update fail')
+                print(fetched_user)
+                return
+
 
             # find differences
             animeSync = self.syncAnimeList(old_animeList, fetched_animeList, self.scoreFormat(user))
