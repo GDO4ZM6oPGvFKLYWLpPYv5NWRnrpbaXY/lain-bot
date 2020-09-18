@@ -76,10 +76,3 @@ class Events:
 			welcomeMsg = Config.cfgRead(str(member.guild.id), "welcomeMsg")
 			welcomeMsgFormatted = welcomeMsg.format(member=member.mention)
 			await bot.get_channel(Config.cfgRead(str(member.guild.id), "welcomeChannel")).send(welcomeMsgFormatted)
-
-	@bot.event
-	async def on_message(msg):
-		if msg.content.lower() in ['good bot', 'good bot!']:
-			await msg.channel.send('https://files.catbox.moe/jkhrji.png')
-		elif msg.content.lower() in ['bad bot', 'bad bot!']:
-			await msg.channel.send('https://files.catbox.moe/bde830.gif')
