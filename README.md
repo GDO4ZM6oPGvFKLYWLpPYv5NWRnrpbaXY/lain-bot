@@ -24,6 +24,7 @@ Run main.py, and provide a Discord Bot token through .env with the line "BOT_TOK
 * **aiohttp** - *3.6.2*
 * **Pillow** - *7.2.0*
 * **motor** - *2.2.0*
+* **pytz** - *2020.1*
 
 ## Contributing
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
