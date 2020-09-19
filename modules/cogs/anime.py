@@ -250,7 +250,7 @@ class Anime(commands.Cog):
 	async def animelist(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid animelist command passed...\nTry \"\>al animelist enable\" to enable anime updates on this channel or use disable.')
-	
+
 	@animelist.command(pass_context=True, name="enable")
 	@has_permissions(administrator=True)
 	async def animelist_enable(self, ctx):
@@ -284,7 +284,7 @@ class Anime(commands.Cog):
 	async def mangalist(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid mangalist command passed...\nTry \"\>al mangalist enable\" to enable manga updates on this channel or use disable.')
-	
+
 	@mangalist.command(pass_context=True, name="enable")
 	@has_permissions(administrator=True)
 	async def mangalist_enable(self, ctx):
@@ -319,8 +319,8 @@ class Anime(commands.Cog):
 			await ctx.send('Invalid Anilist user command passed...')
 
 	@user.command(name="set")
-	"""Set anilist username for updates"""
 	async def set_(self, ctx, user):
+		"""Set anilist username for updates"""
 		await ctx.trigger_typing()
 		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
 		if search.get('errors'):
@@ -336,7 +336,7 @@ class Anime(commands.Cog):
 		else:
 			def check(reaction, user):
 				return user == ctx.message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❌')
-			await ctx.send('Is this you?')	
+			await ctx.send('Is this you?')
 			embed = discord.Embed(
 				title = search['data']['User']['name'],
 				description = search['data']['User']['about'] if search['data']['User']['about'] else '',
@@ -357,12 +357,12 @@ class Anime(commands.Cog):
 					await ctx.trigger_typing()
 					lists = generateLists(search)
 					await Database.userCollection().update_one(
-						{'discordId': str(ctx.message.author.id)}, 
-						{'$set': { 
+						{'discordId': str(ctx.message.author.id)},
+						{'$set': {
 							'anilistId': search['data']['User']['id'],
 							'anilistName': search['data']['User']['name'],
-							'animeList': lists['animeList'], 
-							'mangaList': lists['mangaList'], 
+							'animeList': lists['animeList'],
+							'mangaList': lists['mangaList'],
 							'profile': search['data']['User'],
 							'status': 1,
 							}
@@ -375,7 +375,7 @@ class Anime(commands.Cog):
 
 	@user.command()
 	async def remove(self, ctx):
-	"""Remove anilist username for updates"""
+		"""Remove anilist username for updates"""
 		res = await Database.userCollection().update_one(
 			{ 'discordId': str(ctx.message.author.id) },
 			{ '$set': { 'status': 0 } }
@@ -412,7 +412,7 @@ class Anime(commands.Cog):
 			search = {'discordId': str(ctx.message.author.id)}
 
 		userData = await Database.userCollection().find_one(
-			search, 
+			search,
 			{
 				'anilistId': 1,
 				'anilistName': 1,
@@ -684,7 +684,7 @@ class Anime(commands.Cog):
 		except Exception as e:
 			print(e)
 			await ctx.send('VN not found (title usually has to be exact)')
-	
+
 	@vn.command(pass_context=True)
 	async def quote(self, ctx):
 		"""Display a random visual novel quote"""
@@ -695,7 +695,7 @@ class Anime(commands.Cog):
 					title = quote['quote'],
 					color = discord.Color.purple()
 				)
-		
+
 		embed.set_author(name=quote['title'], url='https://vndb.org/v' + str(quote['id']), icon_url=quote['cover'])
 
 		await ctx.send(embed=embed)
