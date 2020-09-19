@@ -1,4 +1,4 @@
-import discord, os, sys, json, time, datetime, pytz
+import discord, os, sys, json, time, datetime, pytz, traceback
 from discord.ext import tasks, commands
 
 from modules.core.database import Database
