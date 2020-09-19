@@ -273,7 +273,7 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def animelist_diable(self, ctx):
 		"""Disable anilist anime updates in this channel. Require admin privileges."""
-		await Database.guildCollection().update_one(
+		await Database.guild_update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$pullAll': { 'animeMessageChannels': [str(ctx.channel.id)] } },
 		)
@@ -288,7 +288,7 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def mangalist_enable(self, ctx):
 		"""Enable anilist manga updates in this channel. Require admin privileges."""
-		res = await Database.guildCollection().update_one(
+		res = await Database.guild_update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$addToSet': { 'mangaMessageChannels': str(ctx.channel.id) } },
 			upsert=True
@@ -306,7 +306,7 @@ class Anime(commands.Cog):
 	@has_permissions(administrator=True)
 	async def mangalist_disable(self, ctx):
 		"""Disable anilist manga updates in this channel. Require admin privileges."""
-		await Database.guildCollection().update_one(
+		await Database.guild_update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$pullAll': { 'mangaMessageChannels': [str(ctx.channel.id)] } },
 		)
@@ -318,10 +318,24 @@ class Anime(commands.Cog):
 			await ctx.send('Invalid Anilist user command passed...')
 
 	@user.command(name="set")
-	async def set_(self, ctx, user):
+	async def set_(self, ctx, *user):
 		"""Set anilist username for updates"""
 		await ctx.trigger_typing()
+		if not user:
+			await ctx.send('Please provide a username')
+			return
+		
+		if len(user[0]) < 2:
+			await ctx.send('Usernames are 2 or more characters')
+			return
+
+		user = user[0]
+
 		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
+		if not search:
+			print('--search command err')
+			return
+
 		if search.get('errors'):
 			notFound = False
 			for error in search['errors']:
@@ -350,12 +364,12 @@ class Anime(commands.Cog):
 			try:
 				reaction, user = await self.bot.wait_for('reaction_add', timeout=5.0, check=check)
 			except asyncio.TimeoutError:
-				await ctx.send('User not updated')
+				await ctx.send('Timed out. User not updated')
 			else:
 				if str(reaction.emoji) == '✅':
 					await ctx.trigger_typing()
 					lists = generateLists(search)
-					await Database.userCollection().update_one(
+					await Database.user_update_one(
 						{'discordId': str(ctx.message.author.id)},
 						{'$set': {
 							'anilistId': search['data']['User']['id'],
@@ -375,7 +389,7 @@ class Anime(commands.Cog):
 	@user.command()
 	async def remove(self, ctx):
 		"""Remove anilist username for updates"""
-		res = await Database.userCollection().update_one(
+		res = await Database.user_update_one(
 			{ 'discordId': str(ctx.message.author.id) },
 			{ '$set': { 'status': 0 } }
 		)
@@ -410,7 +424,7 @@ class Anime(commands.Cog):
 			#no username given -> retrieve message creator's info
 			search = {'discordId': str(ctx.message.author.id)}
 
-		userData = await Database.userCollection().find_one(
+		userData = await Database.user_find_one(
 			search,
 			{
 				'anilistId': 1,

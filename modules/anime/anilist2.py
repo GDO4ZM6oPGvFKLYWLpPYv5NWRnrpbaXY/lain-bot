@@ -189,7 +189,7 @@ class Anilist2:
         """
 
         if not (session or name):
-            return
+            return None
 
         async with session.post(Anilist2.apiUrl, json={'query': Anilist2.userSearchQuery, 'variables': {'name': name}}) as resp:
             if resp.status != 200:
