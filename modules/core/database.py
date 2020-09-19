@@ -1,7 +1,7 @@
 import motor.motor_asyncio, os
 
 class Database:
-	client = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' os.getenv('DBPATH')
+	client = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH'))
 
 	"""
 	user model:
