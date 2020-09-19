@@ -254,15 +254,14 @@ class Anime(commands.Cog):
 	@animelist.command(pass_context=True, name="enable")
 	@has_permissions(administrator=True)
 	async def animelist_enable(self, ctx):
-		"""Enable anilist anime updates in this channel. Require admin privileges."""
-		res = await Database.guildCollection().update_one(
+		res = await Database.guild_update_one(
 			{ 'id': str(ctx.guild.id) },
 			{  '$addToSet': { 'animeMessageChannels': str(ctx.channel.id) } },
 			upsert=True
 		)
 		# if the update created a new document, populate it with the rest of the info
 		if res.upserted_id:
-			await Database.guildCollection().update_one(
+			await Database.guild_update_one(
 				{ '_id': res.upserted_id },
 				{ '$set': { 'name': ctx.guild.name, 'mangaMessageChannels': [] } }
 			)
@@ -296,7 +295,7 @@ class Anime(commands.Cog):
 		)
 		# if the update created a new document, populate it with the rest of the info
 		if res.upserted_id:
-			await Database.guildCollection().update_one(
+			await Database.guild_update_one(
 				{ '_id': res.upserted_id },
 				{ '$set': { 'name': ctx.guild.name, 'animeMessageChannels': [] } }
 			)
@@ -767,8 +766,7 @@ def scoreFormat(user):
 async def embedScores(guild, showID, listType, maxDisplay, embed):
 		# get all users in db that are in this guild and have the show on their list
 		userIdsInGuild = [str(u.id) for u in guild.members]
-		print(userIdsInGuild)
-		users = [d async for d in Database.userCollection().find(
+		users = [d async for d in Database.user_find(
 			{
 				'discordId': { '$in': userIdsInGuild },
 				listType+'.'+str(showID): { '$exists': True }

@@ -1,4 +1,4 @@
-import discord, os, sys, json, time
+import discord, os, sys, json, time, datetime, pytz
 from discord.ext import tasks, commands
 
 from modules.core.database import Database
@@ -18,34 +18,14 @@ class Updater(commands.Cog):
         self.cleanup_img_gen.cancel()
 
 
-    # helper function for getting the denominator for different scoring formats
-    def scoreFormat(self, user):
-        fmt = user['profile']['mediaListOptions']['scoreFormat']
-        if fmt == 'POINT_100':
-            return '100'
-        elif fmt == 'POINT_10_DECIMAL' or fmt == 'POINT_10':
-            return '10'
-        elif fmt == 'POINT_5':
-            return '5'
-        else:
-            return '3'
+    def fieldsModified(self, e1, e2, fieldsToCheck):
+        return [field for field in fieldsToCheck if e1[field] != e2[field]]
 
+    def animeModified(self, e1, e2):
+        return self.fieldsModified(e1, e2, Database.animeModFields)
 
-    def animeModified(self, old, new):
-        test = True
-        test = test and old['status'] == new['status']
-        test = test and old['score'] == new['score']
-        test = test and old['progress'] == new['progress']
-        return not test
-
-
-    def mangaModified(self, old, new):
-        test = True
-        test = test and old['status'] == new['status']
-        test = test and old['score'] == new['score']
-        test = test and old['progress'] == new['progress']
-        test = test and old['progressVolumes'] == new['progressVolumes']
-        return not test
+    def mangaModified(self, e1, e2):
+        return self.fieldsModified(e1, e2, Database.mangaModFields)
 
 
     def syncAnimeList(self, old_list, fetched_list, scoreFormat):
@@ -56,21 +36,24 @@ class Updater(commands.Cog):
             for fetched_entry in lst['entries']:
                 old_entry = old_list.get(str(fetched_entry['mediaId']))
                 if old_entry:
-                    if self.animeModified(old_entry, fetched_entry):
-                        changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                        if old_entry['status'] != fetched_entry['status']:
+                    modified = self.animeModified(old_entry, fetched_entry)
+                    if modified:
+                        if 'status' in modified:
                             if fetched_entry['status'] == 'COMPLETED':
                                 msg = 'completed ' + old_entry['title']
                                 if fetched_entry['score'] > 0:
                                     msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             else:
                                 msg = 'added ' + old_entry['title'] + ' to ' + fetched_entry['status'].lower() + ' list'
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                         else:
-                            if old_entry['score'] != fetched_entry['score']:
+                            if 'score' in modified:
                                 msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' -> ' + str(fetched_entry['score']) + '/' + scoreFormat
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             # does not handle if progress was reduced
                             if old_entry['progress'] < fetched_entry['progress']:
                                 msg = 'watched '
@@ -81,6 +64,7 @@ class Updater(commands.Cog):
                                 else:
                                     msg += 'episodes ' + str(old_entry['progress']+1) + '-' + str(fetched_entry['progress']) + ' of ' + old_entry['title']
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                 else:
                     # new entry from anilist
                     changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
@@ -103,21 +87,24 @@ class Updater(commands.Cog):
             for fetched_entry in lst['entries']:
                 old_entry = old_list.get(str(fetched_entry['mediaId']))
                 if old_entry:
-                    if self.mangaModified(old_entry, fetched_entry):
-                        changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                        if old_entry['status'] != fetched_entry['status']:
+                    modified = self.mangaModified(old_entry, fetched_entry)
+                    if modified:
+                        if 'status' in modified:
                             if fetched_entry['status'] == 'COMPLETED':
                                 msg = 'completed ' + old_entry['title']
                                 if fetched_entry['score'] > 0:
                                     msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             else:
                                 msg = 'added ' + old_entry['title'] + ' to ' + fetched_entry['status'].lower() + ' list'
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                         else:
-                            if old_entry['score'] != fetched_entry['score']:
+                            if 'score' in modified:
                                 msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' -> ' + str(fetched_entry['score']) + '/' + scoreFormat
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             # does not handle if progress was reduced
                             if old_entry['progress'] < fetched_entry['progress']:
                                 msg = 'read '
@@ -128,6 +115,7 @@ class Updater(commands.Cog):
                                 else:
                                     msg += 'chapters ' + str(old_entry['progress']+1) + '-' + str(fetched_entry['progress']) + ' of ' + old_entry['title']
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             if old_entry['progressVolumes'] < fetched_entry['progressVolumes']:
                                 msg = 'read '
                                 if fetched_entry['status'] == 'REPEATING':
@@ -137,6 +125,7 @@ class Updater(commands.Cog):
                                 else:
                                     msg += 'volumes ' + str(old_entry['progressVolumes']+1) + '-' + str(fetched_entry['progressVolumes']) + ' of ' + old_entry['title']
                                 changes['msgs'].append(msg)
+                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                 else:
                     # new entry from anilist
                     changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
@@ -150,24 +139,44 @@ class Updater(commands.Cog):
                 
         return { 'changes': changes, 'new_list': new_list }
 
-    def limitChanges(self, changes, limit):
+
+    def limitChanges(self, changes, limit, imgLimit=8):
         aChMln = len(changes['animeChanges']['msgs'])
         mChMln = len(changes['mangaChanges']['msgs'])
 
+        # get rid of entries with neither banner nor cover and use one in place of the other if just one missing
+        for i in reversed(range(len(changes['animeChanges']['imgUrls']))):
+            imgUrl = changes['animeChanges']['imgUrls'][i]
+            if imgUrl['banner'] is None and imgUrl['cover'] is None:
+                del changes['animeChanges']['imgUrls'][i]
+            elif imgUrl['banner'] is None:
+                imgUrl['banner'] = imgUrl['cover']
+            elif imgUrl['cover'] is None:
+                imgUrl['cover'] = imgUrl['banner']
+            else:
+                pass
+
+        changes['animeChanges']['imgUrls'] = changes['animeChanges']['imgUrls'][:imgLimit]
+        changes['mangaChanges']['imgUrls'] = changes['mangaChanges']['imgUrls'][:imgLimit]
+        
+        # don't let msgs be longer than limit and add new msg if it is
         if changes['animeChanges']['msgs'] and  aChMln > limit:
-            changes['animeChanges']['imgUrls'] = changes['animeChanges']['imgUrls'][:limit]
             changes['animeChanges']['msgs'] = changes['animeChanges']['msgs'][:limit]
             changes['animeChanges']['msgs'].append('and ' + str(aChMln-limit) + ' other changes!')
 
         if changes['mangaChanges']['msgs'] and  mChMln > limit:
-            changes['mangaChanges']['imgUrls'] = changes['mangaChanges']['imgUrls'][:limit]
             changes['mangaChanges']['msgs'] = changes['mangaChanges']['msgs'][:limit]
             changes['mangaChanges']['msgs'].append('and ' + str(aChMln-limit) + ' other changes!')
 
         return changes
 
+
     # send user updates to servers
     async def sendChanges(self, user, changes):
+        # check if there were any changes
+        if not (changes['animeChanges']['msgs'] or changes['mangaChanges']['msgs']):
+            return
+
         changes = self.limitChanges(changes, 8)
 
         # get all the guilds this user is apart of
@@ -180,13 +189,18 @@ class Updater(commands.Cog):
         mangaOnlyChannels = []
         animeOnlyChannels = []
 
-        async for guild in Database.guildCollection().find({'id': {'$in': guildIdsWithUser}}):
+        async for guild in Database.guild_find({'id': {'$in': guildIdsWithUser}}):
             for channel in guild['mangaMessageChannels']:
-                mangaOnlyChannels.append(self.bot.get_guild(int(guild['id'])).get_channel(int(channel)))
+                mangaOnlyChannels.append(self.bot.get_channel(int(channel)))
             for channel in guild['animeMessageChannels']:
-                animeOnlyChannels.append(self.bot.get_guild(int(guild['id'])).get_channel(int(channel)))
+                animeOnlyChannels.append(self.bot.get_channel(int(channel)))
 
+        # get_channel() returns None on failure so get rid of any of those
+        mangaOnlyChannels = [x for x in mangaOnlyChannels if x is not None]
+        animeOnlyChannels = [x for x in animeOnlyChannels if x is not None]
 
+        # remove common elements and place into their own list
+        # comboChannels = [self.bot.get_channel(int("756626065652449300"))]
         comboChannels = []
         for i in reversed(range(len(mangaOnlyChannels))):
             mChn = mangaOnlyChannels[i]
@@ -213,21 +227,30 @@ class Updater(commands.Cog):
         }
 
         for embed in embeds:
-            embeds[embed].set_thumbnail(url=user['profile']['avatar']['large'])
+            embeds[embed].set_footer(text='This message was posted ' + datetime.datetime.now(pytz.timezone('America/Chicago')).strftime('%b %d, %Y at %I:%M %p (CT)'))
+
+        if user['profile']['avatar']['large']:
+            for embed in embeds:
+                embeds[embed].set_thumbnail(url=user['profile']['avatar']['large'])
 
         if changes['animeChanges']['msgs']:
-            embeds['anime'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\> ' + str(x),changes['animeChanges']['msgs'])), inline=False)
-            embeds['combo'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\> ' + str(x),changes['animeChanges']['msgs'])), inline=False)
+            embeds['anime'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['animeChanges']['msgs'])), inline=False)
+            embeds['combo'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['animeChanges']['msgs'])), inline=False)
 
         if changes['mangaChanges']['msgs']:
-            embeds['manga'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\> ' + str(x),changes['mangaChanges']['msgs'])), inline=False)
-            embeds['combo'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\> ' + str(x),changes['mangaChanges']['msgs'])), inline=False)
+            embeds['manga'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['mangaChanges']['msgs'])), inline=False)
+            embeds['combo'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['mangaChanges']['msgs'])), inline=False)
 
+        # get time to use for any image generation
         uf = str(int(round(time.time()*1000)))
 
+        animeImgLen = len(changes['animeChanges']['imgUrls'])
+        mangaImgLen = len(changes['mangaChanges']['imgUrls'])
+
         if changes['mangaChanges']['msgs']:
-            if len(changes['mangaChanges']['imgUrls']) < 2:
-                embeds['manga'].set_image(url=changes['mangaChanges']['imgUrls'][0]['banner'])
+            if mangaImgLen < 2:
+                if mangaImgLen == 1:
+                    embeds['manga'].set_image(url=changes['mangaChanges']['imgUrls'][0]['banner'])
                 for channel in mangaOnlyChannels:
                     await channel.send(embed=embeds['manga'])
             else:
@@ -238,8 +261,9 @@ class Updater(commands.Cog):
                     await channel.send(file=f, embed=embeds['manga'])
 
         if changes['animeChanges']['msgs']:
-            if len(changes['animeChanges']['imgUrls']) < 2:
-                embeds['anime'].set_image(url=changes['animeChanges']['imgUrls'][0]['banner'])
+            if animeImgLen < 2:
+                if animeImgLen == 1:
+                    embeds['anime'].set_image(url=changes['animeChanges']['imgUrls'][0]['banner'])
                 for channel in animeOnlyChannels:
                     await channel.send(embed=embeds['anime'])
             else:
@@ -251,11 +275,13 @@ class Updater(commands.Cog):
 
         # channels that support manga and anime updates
         if changes['animeChanges']['msgs'] or changes['mangaChanges']['msgs']:
-            if len(changes['animeChanges']['imgUrls']) + len(changes['mangaChanges']['imgUrls']) < 2:
+            if animeImgLen + mangaImgLen < 2:
                 if changes['animeChanges']['imgUrls']: 
                     embeds['combo'].set_image(url=changes['animeChanges']['imgUrls'][0]['banner'])
-                else:
+                elif changes['mangaChanges']['imgUrls']:
                     embeds['combo'].set_image(url=changes['mangaChanges']['imgUrls'][0]['banner'])
+                else:
+                    pass
                 for channel in comboChannels:
                     await channel.send(embed=embeds['combo'])
             else:     
@@ -276,7 +302,13 @@ class Updater(commands.Cog):
             return
 
         # next user in database iteration
-        nextUser = await self.cursor.to_list(length=1)
+        try:
+            nextUser = await self.cursor.to_list(length=1)
+        except Exception as e:
+            print('--updater.py:al_update :: unable to get next user from db')
+            print(e)
+            return
+
         if nextUser:
             # get local data
             user = nextUser[0]
@@ -285,25 +317,31 @@ class Updater(commands.Cog):
 
             # get anilist data
             fetched_user = await Anilist2.getUserData(self.bot.get_cog('Session').session, user['anilistId'])
-            fetched_animeList = None
-            fetched_mangaList = None
-            try:
-                fetched_animeList = fetched_user['data']['animeList']
-                fetched_mangaList = fetched_user['data']['mangaList']
-            except:
-                print('update fail')
+
+            # check for errors
+            if not fetched_user or 'errors' in fetched_user:
+                print('update fail - either no user data or errors in query result')
                 print(fetched_user)
                 return
 
-            # find differences
-            animeSync = self.syncAnimeList(old_animeList, fetched_animeList, self.scoreFormat(user))
-            mangaSync = self.syncMangaList(old_managaList, fetched_mangaList, self.scoreFormat(user))
+            fetched_animeList = fetched_user['data']['animeList']
+            fetched_mangaList = fetched_user['data']['mangaList']
 
+            # find differences
+            animeSync = self.syncAnimeList(old_animeList, fetched_animeList, Database.userScoreFormat(user))
+            mangaSync = self.syncMangaList(old_managaList, fetched_mangaList, Database.userScoreFormat(user))
+
+            # only send messages for set users
             if user['status']:
-                await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
+                try:
+                    await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
+                except Exception as e:
+                    print('could not send changes')
+                    print(e)
+                    print(traceback.format_exc())
 
             # update local user to match anilist
-            await Database.userCollection().update_one(
+            await Database.user_update_one(
                 {'_id': user['_id']}, 
                 {'$set': {
                     'animeList': animeSync['new_list'], 
@@ -322,10 +360,14 @@ class Updater(commands.Cog):
     # delete any images created by the gerator
     @tasks.loop(minutes=4)
     async def cleanup_img_gen(self):
-        files = [f for f in os.listdir(os.getcwd() + '/assets/img_gen/') if os.path.isfile(os.getcwd() + '/assets/img_gen/' + f)]
-        for f in files:
-            t = f.partition('_')[0]
-            fmt = f[-3:]
-            # remove jpgs and ones older than a minute
-            if fmt == 'jpg' and int(round(time.time()*1000)) - int(t) > 60000:
-                os.remove(os.getcwd() + '/assets/img_gen/' + f)
+        try:
+            files = [f for f in os.listdir(os.getcwd() + '/assets/img_gen/') if os.path.isfile(os.getcwd() + '/assets/img_gen/' + f)]
+            for f in files:
+                t = f.partition('_')[0]
+                fmt = f[-3:]
+                # remove jpgs older than a minute
+                if fmt == 'jpg' and int(round(time.time()*1000)) - int(t) > 60000:
+                    os.remove(os.getcwd() + '/assets/img_gen/' + f)
+        except Exception as e:
+            print('--updater.py:cleanup_img_gen :: unable to delete images')
+            print(e)

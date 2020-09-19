@@ -19,7 +19,7 @@ class Configuration(commands.Cog):
 	@config.command(pass_context=True)
 	@has_permissions(administrator=True)
 	async def details(self, ctx):
-		guildDetails = await Database.guildCollection().find_one({'id': str(ctx.guild.id)})
+		guildDetails = await Database.guild_find_one({'id': str(ctx.guild.id)})
 		if guildDetails:
 			embed = discord.Embed(title ='Lain-bot details', description='details on which channels are enabled to recieve anime or manga list update messages\n')
 			if len(guildDetails['animeMessageChannels']):
