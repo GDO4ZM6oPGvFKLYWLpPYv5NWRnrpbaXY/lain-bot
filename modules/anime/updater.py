@@ -294,7 +294,7 @@ class Updater(commands.Cog):
 
 
     # interate through each user in database keeping up to date with anilist
-    @tasks.loop(seconds=2)
+    @tasks.loop(seconds=float(os.getenv('UPDATE_INTERVAL', 10)))
     async def al_update(self):
         # wait until bot is ready
         if not self.bot.is_ready():
