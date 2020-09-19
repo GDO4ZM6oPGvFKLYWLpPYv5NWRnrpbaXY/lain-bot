@@ -385,10 +385,84 @@ class Anime(commands.Cog):
 		else:
 			await ctx.send('You were never registered.')
 
+	@user.command()
+	async def profile(self, ctx, *user):
+		await ctx.trigger_typing()
+		search = {}
+		if len(user):
+			# username given
+			user = user[0].rstrip()
+			if user.startswith('<@!'):
+				userLen = len(user)-1
+				atUser = user[3:userLen]
+				search = {'discordId': atUser }
+			elif user[len(user)-5]=="#":
+				userId = ctx.guild.get_member_named(user).id
+				if userId:
+					# found in guild
+					search = {'discordId': str(userId) }
+				else:
+					# not found
+					await ctx.send('Sorry. I could not find that user in this server.')
+					return
+			else:
+				search = {'anilistName': user }
+		else:
+			#no username given -> retrieve message creator's info
+			search = {'discordId': str(ctx.message.author.id)}
+
+		userData = await Database.userCollection().find_one(
+			search, 
+			{
+				'anilistId': 1,
+				'anilistName': 1,
+				'profile': 1,
+			}
+		)
+		if userData:
+			# found
+			embed = discord.Embed(
+				title = userData['anilistName'],
+				color = discord.Color.teal(),
+				url = 'https://anilist.co/user/'+str(userData['anilistId'])
+			)
+			animeGenres = None
+			genreData = userData['profile']['statistics']['anime']['genres']
+			if genreData and len(genreData):
+				animeGenres=', '.join(map(lambda x: x['genre'], genreData))
+
+			animeFavs = None
+			favData = userData['profile']['favourites']['anime']['nodes']
+			if favData and len(favData):
+				animeFavs=', '.join(map(lambda x: x['title']['romaji'], favData))
+
+			if userData['profile']["bannerImage"]:
+				embed.set_image(url=userData['profile']["bannerImage"])
+			if userData['profile']["avatar"]["large"]:
+				embed.set_thumbnail(url=userData['profile']["avatar"]["large"])
+			if userData['profile']['about']:
+				embed.add_field(name="About:", value=str(userData['profile']['about']), inline=False)
+
+			embed.add_field(name="Anime count:", value=str(userData['profile']["statistics"]["anime"]["count"]), inline=True)
+			embed.add_field(name="Mean anime score:", value=str(userData['profile']["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
+
+			if animeFavs:
+				embed.add_field(name="Some favourites:", value=animeFavs, inline=False)
+
+			if animeGenres:
+				embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+
+			await ctx.send(embed=embed)
+		else:
+			# not found
+			if 'anilistName' in search:
+				await ctx.send('Sorry. I do not support searches on users not registered with me.')
+			else:
+				await ctx.send('Sorry. I could not find that user')
+
 	# al user
 	@user.command()
-	async def profile(self, ctx):
-		"""Display an anilist user profile"""
+	async def profile_old(self, ctx, user):
 		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
 		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
 
