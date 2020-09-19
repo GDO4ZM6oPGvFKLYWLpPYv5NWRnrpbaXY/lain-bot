@@ -6,6 +6,9 @@ os.chdir(root_dir)
 
 # Copy skeleton .env
 print("Creating .env...")
-shutil.copy(os.path.join('skel','.env'), '.')
+if os.path.exists('.env'):
+    print(" '.env' exists! Skipping.")
+else:    
+    shutil.copy(os.path.join('skel','.env'), '.')
 
 print('Done!')
