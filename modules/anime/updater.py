@@ -51,7 +51,7 @@ class Updater(commands.Cog):
                                 changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                         else:
                             if 'score' in modified:
-                                msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' -> ' + str(fetched_entry['score']) + '/' + scoreFormat
+                                msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' ➔ ' + str(fetched_entry['score']) + '/' + scoreFormat
                                 changes['msgs'].append(msg)
                                 changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             # does not handle if progress was reduced
@@ -102,7 +102,7 @@ class Updater(commands.Cog):
                                 changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                         else:
                             if 'score' in modified:
-                                msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' -> ' + str(fetched_entry['score']) + '/' + scoreFormat
+                                msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' ➔ ' + str(fetched_entry['score']) + '/' + scoreFormat
                                 changes['msgs'].append(msg)
                                 changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                             # does not handle if progress was reduced
