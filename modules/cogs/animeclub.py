@@ -10,7 +10,11 @@ class AnimeClub(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
+	def is_anime_club_server(ctx):
+		return ctx.guild.id == 254864526069989377
+
 	@commands.group(pass_context=True, aliases=['sced', 'sc'])
+	@commands.check(is_anime_club_server)
 	async def schedule(self, ctx):
 		await ctx.trigger_typing()
 		if ctx.invoked_subcommand is None:
