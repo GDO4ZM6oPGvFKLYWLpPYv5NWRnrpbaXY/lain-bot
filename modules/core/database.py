@@ -32,6 +32,14 @@ class Database:
 	def guildCollection():
 		return Database.client['lain-bot']['guilds']
 
+	"""
+	storage model:
+		_id						mongodb generated id	
+		id						str - string to name storage item
+	"""
+	def storageCollection():
+		return Database.client['lain-bot']['storage']
+
 	
 	async def user_update_one(filter, update, upsert=False):
 		"""Update a user in db
@@ -192,3 +200,41 @@ class Database:
 				return '5'
 			else:
 				return '3'
+
+
+	async def storage_update_one(filter, update):
+		"""Update something in storage
+
+			Args:
+				filter (obj): A query that matches the storage item to update
+				update (obj): The modifications to apply
+
+			Returns:
+				UpdateResult or None: On success, return info pertaining to update, otherwise, None
+		"""
+
+		try:
+			res = await Database.storageCollection().update_one(filter, update)
+		except:
+			return None
+		else:
+			return res
+
+
+	async def storage_find_one(filter, projection=None):
+		"""Find a storage item in db
+
+			Args:
+				filter (obj): A query that matches the storage item to find
+				projection (obj, optional): MongoDB projection. Defaults to no projection.
+
+			Returns:
+				document or None: The found document or None
+		"""
+
+		try:
+			res = await Database.storageCollection().find_one(filter, projection)
+		except:
+			return None
+		else:
+			return res
