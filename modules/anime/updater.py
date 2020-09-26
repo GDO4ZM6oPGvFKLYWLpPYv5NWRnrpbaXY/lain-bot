@@ -234,12 +234,12 @@ class Updater(commands.Cog):
                 embeds[embed].set_thumbnail(url=user['profile']['avatar']['large'])
 
         if changes['animeChanges']['msgs']:
-            embeds['anime'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['animeChanges']['msgs'])), inline=False)
-            embeds['combo'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['animeChanges']['msgs'])), inline=False)
+            embeds['anime'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\• ' + x, changes['animeChanges']['msgs'])), inline=False)
+            embeds['combo'].add_field(name="Updated their anime list: ", value='\n'.join(map(lambda x: '\• ' + x, changes['animeChanges']['msgs'])), inline=False)
 
         if changes['mangaChanges']['msgs']:
-            embeds['manga'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['mangaChanges']['msgs'])), inline=False)
-            embeds['combo'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\> ' + x, changes['mangaChanges']['msgs'])), inline=False)
+            embeds['manga'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\• ' + x, changes['mangaChanges']['msgs'])), inline=False)
+            embeds['combo'].add_field(name="Updated their manga list: ", value='\n'.join(map(lambda x: '\• ' + x, changes['mangaChanges']['msgs'])), inline=False)
 
         # get time to use for any image generation
         uf = str(int(round(time.time()*1000)))
