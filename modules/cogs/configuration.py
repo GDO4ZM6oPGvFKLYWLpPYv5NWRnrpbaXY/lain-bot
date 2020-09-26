@@ -23,13 +23,11 @@ class Configuration(commands.Cog):
 		if guildDetails:
 			embed = discord.Embed(title ='Lain-bot details', description='details on which channels are enabled to recieve anime or manga list update messages\n')
 			if len(guildDetails['animeMessageChannels']):
-				ch = [ctx.bot.get_channel(int(channel)).name for channel in guildDetails['animeMessageChannels']]
 				embed.add_field(name='Anime', value='\n'.join(map(lambda x: '<#' + str(x) + '>',guildDetails['animeMessageChannels'])), inline=True)
 			else:
 				embed.add_field(name='Anime', value='none', inline=True)
 
 			if len(guildDetails['mangaMessageChannels']):
-				ch = [ctx.bot.get_channel(int(channel)).name for channel in guildDetails['mangaMessageChannels']]
 				embed.add_field(name='Manga', value='\n'.join(map(lambda x: '<#' + str(x) + '>',guildDetails['mangaMessageChannels'])), inline=True)
 			else:
 				embed.add_field(name='Manga', value='none', inline=True)

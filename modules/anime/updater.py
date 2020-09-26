@@ -156,8 +156,25 @@ class Updater(commands.Cog):
             else:
                 pass
 
+        # remove duplicate imgUrls
+        seen = set()
+        new_lst = []
+        for u in changes['animeChanges']['imgUrls']:
+            if u['banner'] + u['cover'] not in seen:
+                new_lst.append(u)
+                seen.add(u['banner'] + u['cover'])
+        changes['animeChanges']['imgUrls'] = new_lst
+
+        seen = set()
+        new_lst = []
+        for u in changes['mangaChanges']['imgUrls']:
+            if u['banner'] + u['cover'] not in seen:
+                new_lst.append(u)
+                seen.add(u['banner'] + u['cover'])
+        changes['mangaChanges']['imgUrls'] = new_lst
+
         changes['animeChanges']['imgUrls'] = changes['animeChanges']['imgUrls'][:imgLimit]
-        changes['mangaChanges']['imgUrls'] = changes['mangaChanges']['imgUrls'][:imgLimit]
+        changes['mangaChanges']['imgUrls'] = changes['mangaChanges']['imgUrls'][:imgLimit]        
         
         # don't let msgs be longer than limit and add new msg if it is
         if changes['animeChanges']['msgs'] and  aChMln > limit:
@@ -191,9 +208,13 @@ class Updater(commands.Cog):
 
         async for guild in Database.guild_find({'id': {'$in': guildIdsWithUser}}):
             for channel in guild['mangaMessageChannels']:
-                mangaOnlyChannels.append(self.bot.get_channel(int(channel)))
+                c = self.bot.get_channel(int(channel))
+                if c:
+                    mangaOnlyChannels.append(c)
             for channel in guild['animeMessageChannels']:
-                animeOnlyChannels.append(self.bot.get_channel(int(channel)))
+                c = self.bot.get_channel(int(channel))
+                if c:
+                    animeOnlyChannels.append(c)
 
         # get_channel() returns None on failure so get rid of any of those
         mangaOnlyChannels = [x for x in mangaOnlyChannels if x is not None]

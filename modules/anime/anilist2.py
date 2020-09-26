@@ -194,7 +194,7 @@ class Anilist2:
         async with session.post(Anilist2.apiUrl, json={'query': Anilist2.userSearchQuery, 'variables': {'name': name}}) as resp:
             if resp.status != 200:
                 return None
-            
+                
             return await Anilist2.getJsonFromResp(resp)
     
 
