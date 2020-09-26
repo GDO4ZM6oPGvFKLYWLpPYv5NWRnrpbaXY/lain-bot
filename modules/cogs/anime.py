@@ -334,6 +334,7 @@ class Anime(commands.Cog):
 		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
 		if not search:
 			print('--search command err')
+			ctx.send('Error! Probably an invalid username')
 			return
 
 		if search.get('errors'):
