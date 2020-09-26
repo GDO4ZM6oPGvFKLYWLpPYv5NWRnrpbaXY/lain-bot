@@ -387,6 +387,95 @@ class Anime(commands.Cog):
 					await ctx.send('Your details have NOT been updated!')
 
 	@user.command()
+	async def watching(self, ctx, *user):
+		await ctx.trigger_typing()
+		search = {}
+		if len(user):
+			# username given
+			user = user[0].strip()
+			if user.startswith('<@!'):
+				userLen = len(user)-1
+				atUser = user[3:userLen]
+				search = {'discordId': atUser }
+			elif user.startswith('<@'):
+				userLen = len(user)-1
+				atUser = user[2:userLen]
+				search = {'discordId': atUser }
+			elif len(user) > 5 and user[len(user)-5]=="#":
+				userId = ctx.guild.get_member_named(user).id
+				if userId:
+					# found in guild
+					search = {'discordId': str(userId) }
+				else:
+					# not found
+					await ctx.send('Sorry. I could not find that user in this server.')
+					return
+			else:
+				search = {'anilistName': user }
+		else:
+			#no username given -> retrieve message creator's info
+			search = {'discordId': str(ctx.message.author.id)}
+
+		userData = await Database.user_find_one(
+			search,
+			{
+				'anilistId': 1,
+				'anilistName': 1,
+				'animeList': 1,
+				'profile.avatar.large': 1,
+				'profile.bannerImage': 1
+			}
+		)
+
+		if userData:
+			watchingList = []
+			rewatchingList = []
+
+			for entry in userData['animeList']:
+				e = '• ' + userData['animeList'][entry]['title'] + ' (' + str(userData['animeList'][entry]['progress']) + '/'
+				if userData['animeList'][entry]['episodes']:
+					e = e + str(userData['animeList'][entry]['episodes']) + ')'
+				else:
+					e = e + '-)'
+
+				if userData['animeList'][entry]['status'] == 'CURRENT':
+					watchingList.append(e)
+					continue
+				if userData['animeList'][entry]['status'] == 'REPEATING':
+					rewatchingList.append(e)
+					continue
+			
+			if not (watchingList or rewatchingList):
+				await ctx.send('They do not have anything on their watch/rewatch list at the moment.')
+				return
+
+			# found
+			embed = discord.Embed(
+				title = userData['anilistName'],
+				color = discord.Color.teal(),
+				url = 'https://anilist.co/user/'+str(userData['anilistId']),
+			)
+			embed.set_thumbnail(url=userData['profile']['avatar']['large'])
+
+			embed.set_image(url='https://files.catbox.moe/ixivqn.png') # mobile width fix
+
+			if watchingList:
+				embed.add_field(name='Watching', value='\n'.join(watchingList), inline=False)
+
+			if rewatchingList:
+				embed.add_field(name='Rewatching', value='\n'.join(rewatchingList), inline=False)
+
+			await ctx.send(embed=embed)
+		else:
+			# not found
+			if 'anilistName' in search:
+				await ctx.send('Sorry. I do not support searches on users not registered with me')
+				await ctx.send('...yet')
+			else:
+				await ctx.send('Sorry. I do not have that user\'s info')
+
+
+	@user.command()
 	async def remove(self, ctx):
 		"""Remove anilist username for updates"""
 		res = await Database.user_update_one(
