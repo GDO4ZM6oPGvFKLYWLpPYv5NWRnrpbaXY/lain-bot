@@ -402,10 +402,10 @@ class Anime(commands.Cog):
 				atUser = user[2:userLen]
 				search = {'discordId': atUser }
 			elif len(user) > 5 and user[len(user)-5]=="#":
-				userId = ctx.guild.get_member_named(user).id
+				userId = ctx.guild.get_member_named(user)
 				if userId:
 					# found in guild
-					search = {'discordId': str(userId) }
+					search = {'discordId': str(userId.id) }
 				else:
 					# not found
 					await ctx.send('Sorry. I could not find that user in this server.')
@@ -448,6 +448,9 @@ class Anime(commands.Cog):
 			if not (watchingList or rewatchingList):
 				await ctx.send('They do not have anything on their watch/rewatch list at the moment.')
 				return
+
+			watchingList = limitLength(watchingList)
+			rewatchingList = limitLength(rewatchingList)
 
 			# found
 			embed = discord.Embed(
@@ -915,3 +918,23 @@ def generateLists(user):
 			lists['mangaList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=False)
 
 	return lists
+
+def limitLength(lst):
+	orgLen = len('\n'.join(lst))
+	if orgLen <= 1024:
+		return lst
+	   
+	lst.append('+#### others!')
+	tLen = len('\n'.join(lst))
+	lst = lst[:-1]
+	numRemoved = 0
+	lenRemoved = 0
+	for i in reversed(range(len(lst))):
+		lenRemoved += len(lst[i]) + 1
+		numRemoved += 1
+		del lst[i]
+		if tLen - lenRemoved <= 1024:
+			break
+
+	lst.append('+' + str(numRemoved) + ' others!')
+	return lst
