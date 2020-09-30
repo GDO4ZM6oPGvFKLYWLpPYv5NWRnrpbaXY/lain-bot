@@ -13,6 +13,13 @@ class AnimeClub(commands.Cog):
 	def is_anime_club_server(ctx):
 		return ctx.guild.id == 254864526069989377
 
+	async def cog_command_error(self, ctx, err):
+		print(err)
+		try:
+			await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+		except:
+			pass
+
 	@commands.group(pass_context=True, aliases=['sced', 'sc'])
 	@commands.check(is_anime_club_server)
 	async def schedule(self, ctx):
