@@ -22,6 +22,13 @@ class Anime(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
+	async def cog_command_error(self, ctx, err):
+		print(err)
+		try:
+			await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+		except:
+			pass
+		
 	@commands.command(pass_context=True)
 	async def safebooru(self, ctx, tags):
 		"""Look up images on safebooru"""
