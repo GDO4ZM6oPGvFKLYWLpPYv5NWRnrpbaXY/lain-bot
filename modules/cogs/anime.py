@@ -23,12 +23,18 @@ class Anime(commands.Cog):
 		self.bot = bot
 
 	async def cog_command_error(self, ctx, err):
-		print(err)
-		try:
-			await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
-		except:
-			pass
-		
+		if  isinstance(err, discord.ext.commands.MissingPermissions):
+			try:
+				await ctx.send('You lack the needed permissions!')
+			except:
+				pass
+		else:
+			print(err)
+			try:
+				await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+			except:
+				pass
+			
 	@commands.command(pass_context=True)
 	async def safebooru(self, ctx, tags):
 		"""Look up images on safebooru"""
