@@ -71,7 +71,7 @@ class Updater(commands.Cog):
                     if fetched_entry['status'] == 'CURRENT':
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to currently watching list'
                     elif fetched_entry['status'] == 'COMPLETED':
-                        msg = 'completed ' + old_entry['title']
+                        msg = 'completed ' + fetched_entry['media']['title']['romaji']
                         if fetched_entry['score'] > 0:
                             msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
                     else:
