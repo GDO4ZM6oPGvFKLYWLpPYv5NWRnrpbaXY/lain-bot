@@ -1,7 +1,10 @@
 import motor.motor_asyncio, os
 
 class Database:
-	client = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH'))
+	if not bool(os.getenv('NON_SRV_DB', default=False)):
+		client = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH'))
+	else:
+		client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH'))
 
 	animeModFields = ['status', 'score', 'progress']
 	mangaModFields = ['status', 'score', 'progress', 'progressVolumes']
