@@ -25,7 +25,10 @@ class Anime(commands.Cog):
 	async def cog_command_error(self, ctx, err):
 		print(err)
 		try:
-			await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+			if isinstance(err, discord.ext.commands.MissingPermissions):
+				await ctx.send("You lack the needed permissions!")
+			else:
+				await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
 		except:
 			pass
 		
