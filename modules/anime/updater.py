@@ -70,6 +70,10 @@ class Updater(commands.Cog):
                     changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
                     if fetched_entry['status'] == 'CURRENT':
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to currently watching list'
+                    elif fetched_entry['status'] == 'COMPLETED':
+                        msg = 'completed ' + old_entry['title']
+                        if fetched_entry['score'] > 0:
+                            msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
                     else:
                         msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
                     changes['msgs'].append(msg)
