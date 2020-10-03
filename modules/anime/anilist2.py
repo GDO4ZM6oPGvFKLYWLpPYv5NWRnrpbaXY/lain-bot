@@ -1,5 +1,28 @@
 class Anilist2:
 
+    class AnilistBadArguments(Exception):
+        def __init__(self, message="Invalid arguments passed to function"):
+            self.message = message
+            super().__init__(self.message)
+
+    class AnilistError(Exception):
+        def __init__(self, status, message="Anilist Generic Error"):
+            self.message = message
+            self.status = status
+            super().__init__(self.message)
+
+    class AnilistQueryNotResultsError(AnilistError):
+        def __init__(self, status=404, message="Query yielded no results"):
+            self.message = message
+            self.status = status
+            super().__init__(status, self.message)
+
+    class AnilistDownError(AnilistError):
+        def __init__(self, status=503, message="Anilist is currently unreachable at the moment"):
+            self.message = message
+            self.status = status
+            super().__init__(status, self.message)
+
     apiUrl = 'https://graphql.anilist.co'
 
     userDataQuery = '''
@@ -244,8 +267,26 @@ class Anilist2:
         '''
     
     async def aniSearch(session, search, isManga=False, isAnime=False, isCharacter=False):
+        """Search anilist for manga, anime, and/or character
+
+        Args:
+            session (ClientSession): A session for making post requests. Expected to be from aiohttp.ClientSession()
+            search (str): The anilist search string
+            isManga (bool): If the results should contain a manga entry
+            isAnime (bool): If the results should contain an anime entry
+            isCharacter (bool): If the results should contain a character entry
+        
+        Returns: 
+            A valid anilist query response.
+
+        Raises:
+            AnilistBadArguments: If valid session or search not supplied
+            AnilistError: If valid reponse was not obtained
+            AnilistQueryNotResultsError: When the query results in 404 i.e. nothing matched the query
+            AnilistDownError: When the response is a 503 i.e. Anilist most likely down
+        """
         if not (session and (isManga or isAnime or isCharacter)):
-            return None
+            raise Anilist2.AnilistBadArguments()
             
         v = {
             'search': search,
@@ -262,8 +303,9 @@ class Anilist2:
             v['isMain'] = True
             v['format_not_in'] = ['MANGA', 'NOVEL', 'ONE_SHOT']   
 
-        async with session.post(Anilist2.apiUrl, json={'query': Anilist2.mediaQuery, 'variables': v}) as resp:
-            return await Anilist2.__resolveResponse(resp)         
+        # async with session.post(Anilist2.apiUrl, json={'query': Anilist2.mediaQuery, 'variables': v}) as resp:
+        #     return await Anilist2.__resolveResponse(resp)  
+        return await Anilist2.__request(session, Anilist2.mediaQuery, v)       
 
     
     async def getUserData(session, id):
@@ -274,14 +316,22 @@ class Anilist2:
             id (int): The anilist id to get data for
         
         Returns: 
-            A valid anilist query response. Otherwise, None
+            A valid anilist query response.
+
+        Raises:
+            AnilistBadArguments: If valid session or name not supplied
+            AnilistError: If valid reponse was not obtained
+            AnilistQueryNotResultsError: When the query results in 404 i.e. nothing matched the query
+            AnilistDownError: When the response is a 503 i.e. Anilist most likely down
         """
 
         if not (session or id):
-            return None
+            raise Anilist2.AnilistBadArguments()
 
-        async with session.post(Anilist2.apiUrl, json={'query': Anilist2.userDataQuery, 'variables': {'id': id}}) as resp:
-            return await Anilist2.__resolveResponse(resp)
+        return await Anilist2.__request(session, Anilist2.userDataQuery, {'id': id})
+
+        # async with session.post(Anilist2.apiUrl, json={'query': Anilist2.userDataQuery, 'variables': {'id': id}}) as resp:
+        #     return await Anilist2.__resolveResponse(resp)
 
 
     async def userSearch(session, name):
@@ -292,19 +342,31 @@ class Anilist2:
             name (str): The anilist username to search with
         
         Returns: 
-            A valid anilist query response. Otherwise, None
+            A valid anilist query response.
+
+        Raises:
+            AnilistBadArguments: If valid session or name not supplied
+            AnilistError: If valid reponse was not obtained
+            AnilistQueryNotResultsError: When the query results in 404 i.e. nothing matched the query
+            AnilistDownError: When the response is a 503 i.e. Anilist most likely down
         """
 
         if not (session or name):
-            return None
+            raise Anilist2.AnilistBadArguments()
 
-        async with session.post(Anilist2.apiUrl, json={'query': Anilist2.userSearchQuery, 'variables': {'name': name}}) as resp:
-            return await Anilist2.__resolveResponse(resp)
+        return await Anilist2.__request(session, Anilist2.userSearchQuery, {'name': name})
+
+        # async with session.post(Anilist2.apiUrl, json={'query': Anilist2.userSearchQuery, 'variables': {'name': name}}) as resp:
+        #     return await Anilist2.__resolveResponse(resp)
+
     
+    async def __request(session, query, variables):
+        async with session.post(Anilist2.apiUrl, json={'query': query, 'variables': variables}, raise_for_status=False) as resp:
+            return await Anilist2.__resolveResponse(resp)
+
 
     async def __resolveResponse(resp):
         """Tries to resolve response into well-formatted json derived dictionary. 
-        Response errors will be reformatted into anilist's standard query errors object (https://anilist.gitbook.io/anilist-apiv2-docs/overview/graphql/errors).
 
         Args:
             resp (aiohttp.ClientResponse): The response to resolve
@@ -313,26 +375,23 @@ class Anilist2:
             A valid json response as dictionary. Otherwise, None
 
         Raises:
-            ClientResponseError: If http response code is >=400
+            AnilistError: If valid reponse was not obtained
+            AnilistQueryNotResultsError: When the query results in 404 i.e. nothing matched the query
+            AnilistDownError: When the response is a 503 i.e. Anilist most likely down
         """
 
         if not resp:
-            return None
+            raise Anilist2.AnilistError(000, 'No response')
 
-        if resp.status != 200:
-            return {
-                'data': None,
-                'errors': [
-                    {
-                        'message': resp.reason,
-                        'status': resp.status
-                    }
-                ]
-            }
+        if resp.status == 503:
+            raise Anilist2.AnilistDownError()
+
+        if resp.status == 404:
+            raise Anilist2.AnilistQueryNotResultsError()
 
         try:
             ret = await resp.json()
         except:
-            return None
+            raise Anilist2.AnilistError('Could not parse json from response')
         else:
             return ret

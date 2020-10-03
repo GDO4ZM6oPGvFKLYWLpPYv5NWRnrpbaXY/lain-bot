@@ -4,6 +4,8 @@ from discord.ext.commands import has_permissions, CheckFailure
 import os, random, asyncio
 from os import path
 from dotenv import load_dotenv
+from aiohttp import ClientResponseError	
+from requests import HTTPError
 
 from modules.core.client import Client
 from modules.core.database import Database
@@ -24,9 +26,18 @@ class Anime(commands.Cog):
 
 	async def cog_command_error(self, ctx, err):
 		print(err)
+		if isinstance(err, discord.ext.commands.errors.CommandInvokeError):
+			err = err.original
 		try:
 			if isinstance(err, discord.ext.commands.MissingPermissions):
 				await ctx.send("You lack the needed permissions!")
+			elif isinstance(err, Anilist2.AnilistError):
+				if issubclass(type(err), Anilist2.AnilistError):
+					await ctx.send(err.message)
+				else:
+					await ctx.send("Query request failed\nmsg: %s\nstatus: %i" % (err.message, err.status))	
+			elif isinstance(err, HTTPError):	
+				await ctx.send(err.http_error_msg)
 			else:
 				await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
 		except:
