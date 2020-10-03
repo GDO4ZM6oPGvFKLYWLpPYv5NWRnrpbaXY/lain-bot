@@ -342,13 +342,18 @@ class Updater(commands.Cog):
             old_animeList = user['animeList']
 
             # get anilist data
-            fetched_user = await Anilist2.getUserData(Client.session, user['anilistId'])
-
-            # check for errors
-            if not fetched_user or 'errors' in fetched_user:
+            try:
+                fetched_user = await Anilist2.getUserData(Client.session, user['anilistId'])
+            except:
                 print('update fail - either no user data or errors in query result')
                 print(fetched_user)
                 return
+            else:
+                # check for errors in query
+                if not fetched_user or 'errors' in fetched_user:
+                    print('update fail - either no user data or errors in query result')
+                    print(fetched_user)
+                    return
 
             fetched_animeList = fetched_user['data']['animeList']
             fetched_mangaList = fetched_user['data']['mangaList']
