@@ -57,11 +57,9 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(source, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
-		else:
-			print('Anime response code: ' + str(response.status_code) + '\n\n' + str(result))
-			return None
+		response.raise_for_status()
+		return result
+
 
 	def charSearch(searchID):
 		query = '''
@@ -101,11 +99,8 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
-		else:
-			print('Character response code: ' + str(response.status_code) + '\n\n' + str(result))
-			return None
+		response.raise_for_status()
+		return result
 
 	def aniSearch(show):
 		# query of info we want from AniList
@@ -164,11 +159,8 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(source, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
-		else:
-			print('Anime response code: ' + str(response.status_code) + '\n\n' + str(result))
-			return None
+		response.raise_for_status()
+		return result
 
 	def charSearch(searchID):
 		query = '''
@@ -208,11 +200,8 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
-		else:
-			print('Character response code: ' + str(response.status_code) + '\n\n' + str(result))
-			return None
+		response.raise_for_status()
+		return result
 
 	def userSearch(user):
 		#implement query/statistics later
@@ -268,12 +257,9 @@ class Anilist(graphene.ObjectType):
 
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
-
-		if response.status_code == 200:
-			return result
-		else:
-			print('User response code: ' + str(response.status_code) + '\n\n' + str(result))
-			return None
+		
+		response.raise_for_status()
+		return result
 
 	def scoreSearch(user, media):
 		#implement query/statistics later
@@ -298,10 +284,8 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
-		else:
-			return None
+		response.raise_for_status()
+		return result
 
 	def activitySearch(user, time):
 		#implement query/statistics later
@@ -352,11 +336,8 @@ class Anilist(graphene.ObjectType):
 
 		url = 'https://graphql.anilist.co'
 
-		response = requests.post(url, json={'query': query, 'variables': variables})
-		result = response.json()
-
-		if response.status_code == 200:
-			return result
+		response.raise_for_status()
+		return result
 
 	# for the user airing show searches
 	# input time as 00:00 of the day, 86400
@@ -402,5 +383,6 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
+		response.raise_for_status()
+		return result
+		
