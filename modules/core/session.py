@@ -5,7 +5,7 @@ class Session(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
-		self.session = aiohttp.ClientSession()
+		self.session = aiohttp.ClientSession(raise_for_status=True)
 
 	async def close_session(self):
 		await self.session.close()
