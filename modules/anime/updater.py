@@ -4,6 +4,7 @@ from discord.ext import tasks, commands
 from modules.core.database import Database
 from modules.anime.anilist2 import Anilist2
 from modules.core.img_gen import ImageGenerator
+from modules.core.client import Client
 
 class Updater(commands.Cog):
 
@@ -341,7 +342,7 @@ class Updater(commands.Cog):
             old_animeList = user['animeList']
 
             # get anilist data
-            fetched_user = await Anilist2.getUserData(self.bot.get_cog('Session').session, user['anilistId'])
+            fetched_user = await Anilist2.getUserData(Client.session, user['anilistId'])
 
             # check for errors
             if not fetched_user or 'errors' in fetched_user:

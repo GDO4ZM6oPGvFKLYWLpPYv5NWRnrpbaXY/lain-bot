@@ -1,16 +1,29 @@
-from discord.ext import commands
-import aiohttp, asyncio
+import aiohttp, asyncio, sys
 
-class Session(commands.Cog):
+class SessionSetException(Exception):
+	def __init__(self, message="Session can only be set upon instantiation"):
+		self.message = message
+		super().__init__(self.message)
 
-	def __init__(self, bot):
-		self.bot = bot
-		self.session = aiohttp.ClientSession(raise_for_status=True)
+class Session(aiohttp.ClientSession):
 
-	async def close_session(self):
-		await self.session.close()
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
 
-	def cog_unload(self):
-		tmp_loop = asyncio.new_event_loop()
-		tmp_loop.run_until_complete(self.close_session(self))
-		tmp_loop.close()
+	async def __close_session_exec(self):
+		await self.close()
+		await asyncio.sleep(0.1)
+
+	def close_session(self):
+		loop = asyncio.get_event_loop()
+		if loop.is_closed():
+			# https://github.com/encode/httpx/issues/914
+			# graceful shutdown on recent python and windows
+			if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):
+				asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+			loop = asyncio.new_event_loop()
+			asyncio.set_event_loop(loop)
+			loop.run_until_complete(self.__close_session_exec())
+			asyncio.set_event_loop_policy(None) # go back to default policy
+		else:
+			asyncio.ensure_future(self.__close_session_exec())
