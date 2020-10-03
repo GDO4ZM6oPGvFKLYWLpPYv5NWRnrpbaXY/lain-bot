@@ -1,6 +1,5 @@
 # from modules.core.loop import Loop
 from modules.core.client import Client
-from modules.core.session import Session
 
 from modules.cogs.anime import Anime
 from modules.cogs.music import Music
@@ -15,7 +14,6 @@ from modules.anime.updater import Updater
 from modules.esports.esportsclub import EsportsClub
 
 class Cogs:
-    Client.bot.add_cog(Session(Client.bot))
     Client.bot.add_cog(Memes(Client.bot))
     Client.bot.add_cog(Fighting(Client.bot))
     Client.bot.add_cog(Anime(Client.bot))

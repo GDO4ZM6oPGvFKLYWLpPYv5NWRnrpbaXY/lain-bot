@@ -4,8 +4,6 @@ from discord.ext.commands import has_permissions, CheckFailure
 import os, random, asyncio
 from os import path
 from dotenv import load_dotenv
-from aiohttp import ClientResponseError
-from requests import HTTPError
 
 from modules.core.client import Client
 from modules.core.database import Database
@@ -29,10 +27,6 @@ class Anime(commands.Cog):
 		try:
 			if isinstance(err, discord.ext.commands.MissingPermissions):
 				await ctx.send("You lack the needed permissions!")
-			elif isinstance(err, ClientResponseError):
-				await ctx.send("Query failed with status code %i!" % err.status)
-			elif isinstance(err, HTTPError):
-				await ctx.send(err.http_error_msg)
 			else:
 				await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
 		except:
@@ -90,60 +84,60 @@ class Anime(commands.Cog):
 		await ctx.trigger_typing()
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
-		anilistResults = Anilist.aniSearch(show)
-		showID = anilistResults["data"]["Media"]["id"]
+		anilistResults = await Anilist2.aniSearch(Client.session, show, isAnime=True)
+		showID = anilistResults["data"]["anime"]["id"]
 
 		# parse out website styling
-		desc = shorten(str(anilistResults['data']['Media']['description']))
+		desc = shorten(str(anilistResults['data']['anime']['description']))
 
 		# make genre list look nice
-		gees = str(anilistResults['data']['Media']['genres'])
+		gees = str(anilistResults['data']['anime']['genres'])
 		gees = gees.replace('\'', '')
 		gees = gees.replace('[', '')
 		gees = gees.replace(']', '')
 
 		# embed text to output
 		embed = discord.Embed(
-			title = str(anilistResults['data']['Media']['title']['romaji']),
+			title = str(anilistResults['data']['anime']['title']['romaji']),
 			description = desc,
 			color = discord.Color.blue(),
-			url = str(anilistResults['data']['Media']['siteUrl'])
+			url = str(anilistResults['data']['anime']['siteUrl'])
 		)
 
 		embed.set_footer(text=gees)
 
 		# images, check if valid before displaying
-		if 'None' != str(anilistResults['data']['Media']['bannerImage']):
-			embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
+		if 'None' != str(anilistResults['data']['anime']['bannerImage']):
+			embed.set_image(url=str(anilistResults['data']['anime']['bannerImage']))
 
-		if 'None' != str(anilistResults['data']['Media']['coverImage']['large']):
-			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
+		if 'None' != str(anilistResults['data']['anime']['coverImage']['large']):
+			embed.set_thumbnail(url=str(anilistResults['data']['anime']['coverImage']['large']))
 
 		# studio name and link to their AniList page
 		try:
-			embed.set_author(name=str(anilistResults['data']['Media']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['Media']['studios']['nodes'][0]['siteUrl']))
+			embed.set_author(name=str(anilistResults['data']['anime']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['anime']['studios']['nodes'][0]['siteUrl']))
 		except IndexError:
 			print('empty studio name or URL\n')
 
 		# if show is airing, cancelled, finished, or not released
-		status = anilistResults['data']['Media']['status']
+		status = anilistResults['data']['anime']['status']
 
 		if 'NOT_YET_RELEASED' not in status:
-			embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
-			embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
+			embed.add_field(name='Score', value=str(anilistResults['data']['anime']['meanScore']) + '%', inline=True)
+			embed.add_field(name='Popularity', value=str(anilistResults['data']['anime']['popularity']) + ' users', inline=True)
 			if 'RELEASING' not in status:
-				embed.add_field(name='Episodes', value=str(anilistResults['data']['Media']['episodes']), inline=False)
+				embed.add_field(name='Episodes', value=str(anilistResults['data']['anime']['episodes']), inline=False)
 
 				# make sure season is valid
-				if str(anilistResults['data']['Media']['seasonYear']) != 'None' and str(anilistResults['data']['Media']['season']) != 'None':
-					embed.add_field(name='Season', value=str(anilistResults['data']['Media']['seasonYear']) + ' ' + str(anilistResults['data']['Media']['season']).title(), inline=True)
+				if str(anilistResults['data']['anime']['seasonYear']) != 'None' and str(anilistResults['data']['anime']['season']) != 'None':
+					embed.add_field(name='Season', value=str(anilistResults['data']['anime']['seasonYear']) + ' ' + str(anilistResults['data']['anime']['season']).title(), inline=True)
 
 				# find difference in year month and days of show's air time
 				try:
 					air = True
-					years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
-					months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
-					days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+					years = abs(anilistResults['data']['anime']['endDate']['year'] - anilistResults['data']['anime']['startDate']['year'])
+					months = abs(anilistResults['data']['anime']['endDate']['month'] - anilistResults['data']['anime']['startDate']['month'])
+					days = abs(anilistResults['data']['anime']['endDate']['day'] - anilistResults['data']['anime']['startDate']['day'])
 				except TypeError:
 					print('Error calculating air time')
 					air = False
@@ -168,51 +162,51 @@ class Anime(commands.Cog):
 		await ctx.trigger_typing()
 		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
 		# retrieve json file
-		anilistResults = Anilist.aniSearchManga(comic)
-		mangaID = anilistResults["data"]["Media"]["id"]
+		anilistResults = await Anilist2.aniSearch(Client.session, comic, isManga=True)
+		mangaID = anilistResults["data"]["manga"]["id"]
 
 		# parse out website styling
-		desc = shorten(str(anilistResults['data']['Media']['description']))
+		desc = shorten(str(anilistResults['data']['manga']['description']))
 
 		# make genre list look nice
-		gees = str(anilistResults['data']['Media']['genres'])
+		gees = str(anilistResults['data']['manga']['genres'])
 		gees = gees.replace('\'', '')
 		gees = gees.replace('[', '')
 		gees = gees.replace(']', '')
 
 		# embed text to output
 		embed = discord.Embed(
-			title = str(anilistResults['data']['Media']['title']['romaji']),
+			title = str(anilistResults['data']['manga']['title']['romaji']),
 			description = desc,
 			color = discord.Color.blue(),
-			url = str(anilistResults['data']['Media']['siteUrl'])
+			url = str(anilistResults['data']['manga']['siteUrl'])
 		)
 
 		embed.set_footer(text=gees)
-		embed.add_field(name = 'Format', value=str(anilistResults['data']['Media']['format']).title())
+		embed.add_field(name = 'Format', value=str(anilistResults['data']['manga']['format']).title())
 
 		# images, check if valid before displaying
-		if 'None' != str(anilistResults['data']['Media']['bannerImage']):
-			embed.set_image(url=str(anilistResults['data']['Media']['bannerImage']))
+		if 'None' != str(anilistResults['data']['manga']['bannerImage']):
+			embed.set_image(url=str(anilistResults['data']['manga']['bannerImage']))
 
-		if 'None' != str(anilistResults['data']['Media']['coverImage']['large']):
-			embed.set_thumbnail(url=str(anilistResults['data']['Media']['coverImage']['large']))
+		if 'None' != str(anilistResults['data']['manga']['coverImage']['large']):
+			embed.set_thumbnail(url=str(anilistResults['data']['manga']['coverImage']['large']))
 
 
 		# if show is airing, cancelled, finished, or not released
-		status = anilistResults['data']['Media']['status']
+		status = anilistResults['data']['manga']['status']
 
 		if 'NOT_YET_RELEASED' not in status:
-			embed.add_field(name='Score', value=str(anilistResults['data']['Media']['meanScore']) + '%', inline=True)
-			embed.add_field(name='Popularity', value=str(anilistResults['data']['Media']['popularity']) + ' users', inline=True)
+			embed.add_field(name='Score', value=str(anilistResults['data']['manga']['meanScore']) + '%', inline=True)
+			embed.add_field(name='Popularity', value=str(anilistResults['data']['manga']['popularity']) + ' users', inline=True)
 			if 'RELEASING' not in status:
-				embed.add_field(name='Chapters', value=str(anilistResults['data']['Media']['chapters']), inline=False)
+				embed.add_field(name='Chapters', value=str(anilistResults['data']['manga']['chapters']), inline=False)
 				# find difference in year month and days of show's air time
 				try:
 					air = True
-					years = abs(anilistResults['data']['Media']['endDate']['year'] - anilistResults['data']['Media']['startDate']['year'])
-					months = abs(anilistResults['data']['Media']['endDate']['month'] - anilistResults['data']['Media']['startDate']['month'])
-					days = abs(anilistResults['data']['Media']['endDate']['day'] - anilistResults['data']['Media']['startDate']['day'])
+					years = abs(anilistResults['data']['manga']['endDate']['year'] - anilistResults['data']['manga']['startDate']['year'])
+					months = abs(anilistResults['data']['manga']['endDate']['month'] - anilistResults['data']['manga']['startDate']['month'])
+					days = abs(anilistResults['data']['manga']['endDate']['day'] - anilistResults['data']['manga']['startDate']['day'])
 				except TypeError:
 					print('Error calculating air time')
 					air = False
@@ -235,26 +229,26 @@ class Anime(commands.Cog):
 	async def char(self, ctx):
 		"""Search for a character on anilist"""
 		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
-		anilistResults = Anilist.charSearch(c)
+		anilistResults = await Anilist2.aniSearch(Client.session, c, isCharacter=True)
 
 		embed = discord.Embed(
-				title = str(anilistResults['data']['Character']['name']['full']),
+				title = str(anilistResults['data']['character']['name']['full']),
 				color = discord.Color.blue(),
-				url = str(anilistResults['data']['Character']['siteUrl'])
+				url = str(anilistResults['data']['character']['siteUrl'])
 			)
 
 		# make alternative names look nice
-		alts = str(anilistResults['data']['Character']['name']['alternative'])
+		alts = str(anilistResults['data']['character']['name']['alternative'])
 		alts = alts.replace('\'', '')
 		alts = alts.replace('[', '')
 		alts = alts.replace(']', '')
 
-		image = str(anilistResults['data']['Character']['image']['large'])
+		image = str(anilistResults['data']['character']['image']['large'])
 		if (image != 'None'):
 			embed.set_image(url=image)
 
 		try:
-			embed.set_author(name=str(anilistResults['data']['Character']['media']['nodes'][0]['title']['romaji']), url=str(anilistResults['data']['Character']['media']['nodes'][0]['siteUrl']), icon_url=str(anilistResults['data']['Character']['media']['nodes'][0]['coverImage']['medium']))
+			embed.set_author(name=str(anilistResults['data']['character']['media']['nodes'][0]['title']['romaji']), url=str(anilistResults['data']['character']['media']['nodes'][0]['siteUrl']), icon_url=str(anilistResults['data']['character']['media']['nodes'][0]['coverImage']['medium']))
 		except IndexError:
 			print('Character had empty show name or url, or image')
 
@@ -347,7 +341,7 @@ class Anime(commands.Cog):
 
 		user = user[0]
 
-		search = await Anilist2.userSearch(self.bot.get_cog('Session').session, user)
+		search = await Anilist2.userSearch(Client.session, user)
 		if not search:
 			print('--search command err')
 			ctx.send('Error! Probably an invalid username')
@@ -870,8 +864,8 @@ def statusConversion(arg, listType):
 		"REPEATING": "R"
 	}
 	if listType == 'mangaList':
-		colors['CURRENT'] == "R"
-		colors['REPEATING'] == "RR"
+		colors['CURRENT'] = "R"
+		colors['REPEATING'] = "RR"
 
 	return colors.get(arg, "X")
 
