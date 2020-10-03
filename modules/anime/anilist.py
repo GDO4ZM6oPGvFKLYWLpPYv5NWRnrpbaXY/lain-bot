@@ -258,7 +258,7 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 		
-		esponse.raise_for_status()
+		response.raise_for_status()
 		return result
 
 	def scoreSearch(user, media):
@@ -284,10 +284,8 @@ class Anilist(graphene.ObjectType):
 		response = requests.post(url, json={'query': query, 'variables': variables})
 		result = response.json()
 
-		if response.status_code == 200:
-			return result
-		else:
-			return None
+		response.raise_for_status()
+		return result
 
 	def activitySearch(user, time):
 		#implement query/statistics later
