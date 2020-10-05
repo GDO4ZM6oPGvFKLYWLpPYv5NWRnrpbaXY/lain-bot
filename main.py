@@ -7,8 +7,7 @@ from modules.core.events import Events
 from modules.core.cogs import Cogs
 #from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
-
-logging.basicConfig(filename='main.log', filemode='w', level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG, handlers=[logging.FileHandler('main.log', 'w', 'utf-8')])
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project root
 
