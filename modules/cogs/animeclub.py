@@ -1,9 +1,11 @@
-import discord, re
+import discord, re, datetime, pytz
 
 from discord.ext import commands
 from discord.ext.commands import has_any_role, CheckFailure
 
 from modules.core.database import Database
+
+tz = pytz.timezone('US/Central') 
 
 class AnimeClub(commands.Cog):
 
@@ -11,7 +13,7 @@ class AnimeClub(commands.Cog):
 		self.bot = bot
 
 	def is_anime_club_server(ctx):
-		return ctx.guild.id == 254864526069989377
+		return ctx.guild.id in [254864526069989377]
 
 	async def cog_command_error(self, ctx, err):
 		print(err)
@@ -36,12 +38,15 @@ class AnimeClub(commands.Cog):
 		await self.show_shcedule(ctx, wed=True)
 
 	@schedule.command(pass_context=True, name="set")
-	@has_any_role(494979840470941712, 259557922726608896)
+	@has_any_role(494979840470941712, 259557922726608896) # admin, executive council
 	async def set_(self, ctx, *args):
 		if not args:
 			await ctx.send('Invalid command. Try `>schedule set sat <show1><show2><show3>` (the < and > are needed). To set wednesday, use <timeX: showX> in the command.')
 		elif args[0] in ['wed', 'WED', 'Wed', 'Wednesday', 'wednesday']:
-			await self.set_wed(ctx, args[1:])
+			if args[1] == 'bulk':
+				await self.set_wed_bulk(ctx)
+			else:
+				await self.set_wed(ctx, args[1:])
 		elif args[0] in ['sat', 'SAT', 'Sat', 'Saturday', 'saturday']:
 			await self.set_sat(ctx, args[1:])
 		else:
@@ -64,12 +69,30 @@ class AnimeClub(commands.Cog):
 
 	async def set_wed(self, ctx, args):
 		data = re.findall('<[^:]*:[^>]*>',' '.join(args))
+		nxt_wed = next_wednesday()
 		data = [e[1:-1:1] for e in data]
-		res = await Database.storage_update_one({'id': 'schedule'}, {'$set': {'wednesday': data}})
+		res = await Database.storage_update_one({'id': 'schedule'}, {'$set': {'wednesday.'+str(nxt_wed): data}})
 		if not res:
 			await ctx.send('Error setting Wednesday schedule!')
 		else:
-			await ctx.send('Wednesday schedule has been updated!')
+			await ctx.send('Wednesday schedule for {}-{} has been updated!'.format(nxt_wed.month, nxt_wed.day))
+
+	async def set_wed_bulk(self, ctx):
+		lines = list(filter(None, ctx.message.content.split('\n')))[1:]
+		update = {}
+		date = str(to_date(lines[0][3:]))
+		update[date] = []
+		for e in lines[1:]:
+			if e.startswith('d::'):
+				date = str(to_date(e[3:]))
+				update[date] = []
+				continue
+			update[date].append(e)
+		res = await Database.storage_update_one({'id': 'schedule'}, {'$set': {'wednesday': update}})
+		if not res:
+			await ctx.send('Error setting Wednesday schedule!')
+		else:
+			await ctx.send('Wednesday schedules have been updated!')
 
 	async def show_shcedule(self, ctx, wed=False, sat=False):
 		if not wed and not sat:
@@ -79,13 +102,31 @@ class AnimeClub(commands.Cog):
 			embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 			data = await Database.storage_find_one({'id': 'schedule'})
 			if sat:
-				if data['saturday']:
+				if 'saturday' in data and data['saturday']:
 					embed.add_field(name="Saturday", value='\n'.join(data['saturday']), inline=False)
 				else:
-					embed.add_field(name="Saturday", value="<>", inline=False)
+					embed.add_field(name="Saturday", value="*none*", inline=False)
 			if wed:
-				if data['wednesday']:
-					embed.add_field(name="Wednesday", value='\n'.join(data['wednesday']), inline=True)
+				nxt_wed = next_wednesday()
+				if 'wednesday' in data and str(nxt_wed) in data['wednesday']:
+					embed.add_field(name="Wednesday ({}/{})".format(nxt_wed.month, nxt_wed.day), value='\n'.join(data['wednesday'][str(nxt_wed)]), inline=True)
 				else:
-					embed.add_field(name="Wednesday", value="<>", inline=False)
+					embed.add_field(name="Wednesday ({}/{})".format(nxt_wed.month, nxt_wed.day), value="*none*", inline=False)
 			await ctx.send(embed=embed)
+
+# get date of next wednesday with 10p being latest hour to be considered same wednesday
+def next_wednesday(start=None):
+	if not start:
+		start = datetime.datetime.now()
+	days_ahead = 2 - start.weekday()
+	if days_ahead < 0:
+		days_ahead += 7
+	elif days_ahead == 0:
+		if start.hour >= 22:
+			days_ahead = 7
+	return datetime.datetime(start.year, start.month, start.day, hour=22, tzinfo=tz) + datetime.timedelta(days_ahead)
+
+# month-day-year string to datetimes
+def to_date(s):
+	t = s.split('-')
+	return datetime.datetime(int(t[2]), int(t[0]), int(t[1]), hour=22, tzinfo=tz)
