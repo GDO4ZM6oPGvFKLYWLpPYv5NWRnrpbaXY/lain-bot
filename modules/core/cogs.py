@@ -11,8 +11,6 @@ from modules.cogs.testing import Testing
 
 from modules.anime.updater import Updater
 
-from modules.esports.esportsclub import EsportsClub
-
 class Cogs:
     Client.bot.add_cog(Memes(Client.bot))
     Client.bot.add_cog(Fighting(Client.bot))
@@ -21,9 +19,6 @@ class Cogs:
     Client.bot.add_cog(Music(Client.bot))
     Client.bot.add_cog(AnimeClub(Client.bot))
     # Client.bot.add_cog(Testing(Client.bot))
-
-    #temporary?
-    Client.bot.add_cog(EsportsClub(Client.bot))
 
     # Client.bot.add_cog(Loop(Client.bot, Anime.al_json))
     Client.bot.add_cog(Updater(Client.bot))
