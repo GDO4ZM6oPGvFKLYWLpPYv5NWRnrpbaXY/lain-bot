@@ -161,6 +161,17 @@ class Updater(commands.Cog):
             else:
                 pass
 
+        for i in reversed(range(len(changes['mangaChanges']['imgUrls']))):
+            imgUrl = changes['mangaChanges']['imgUrls'][i]
+            if imgUrl['banner'] is None and imgUrl['cover'] is None:
+                del changes['mangaChanges']['imgUrls'][i]
+            elif imgUrl['banner'] is None:
+                imgUrl['banner'] = imgUrl['cover']
+            elif imgUrl['cover'] is None:
+                imgUrl['cover'] = imgUrl['banner']
+            else:
+                pass
+
         # remove duplicate imgUrls
         seen = set()
         new_lst = []
@@ -188,7 +199,7 @@ class Updater(commands.Cog):
 
         if changes['mangaChanges']['msgs'] and  mChMln > limit:
             changes['mangaChanges']['msgs'] = changes['mangaChanges']['msgs'][:limit]
-            changes['mangaChanges']['msgs'].append('and ' + str(aChMln-limit) + ' other changes!')
+            changes['mangaChanges']['msgs'].append('and ' + str(mChMln-limit) + ' other changes!')
 
         return changes
 
