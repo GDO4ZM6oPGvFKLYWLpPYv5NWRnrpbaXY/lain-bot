@@ -136,19 +136,9 @@ class Anilist2:
             animeList: MediaListCollection(userName:$name, type:ANIME){
                 lists {
                     entries {
-                        status
-                        mediaId
-                        score
-                        progress
+                        ...mediaFields
                         media {
-                            bannerImage
-                            coverImage {
-                                large
-                            }
                             episodes
-                            title {
-                                romaji
-                            }
                         }
                     }
                 }
@@ -156,23 +146,30 @@ class Anilist2:
             mangaList: MediaListCollection(userName:$name, type:MANGA){
                 lists {
                     entries {
-                        status
-                        mediaId
-                        score
-                        progress
+                        ...mediaFields
                         progressVolumes
                         media {
-                            bannerImage
-                            coverImage {
-                                large
-                            }
                             chapters
                             volumes
-                            title {
-                                romaji
-                            }
                         }
                     }
+                }
+            }
+        }
+        fragment mediaFields on MediaList {
+            status
+            mediaId
+            score
+            progress
+            media {
+                bannerImage
+                coverImage {
+                    large
+                }
+                title {
+                    romaji
+                    emglish
+                    native
                 }
             }
         }
