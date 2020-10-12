@@ -6,8 +6,6 @@ class Database:
 	else:
 		client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH'))
 
-	animeModFields = ['status', 'score', 'progress']
-	mangaModFields = ['status', 'score', 'progress', 'progressVolumes']
 
 	"""
 	user model:

@@ -6,6 +6,20 @@ from modules.anime.anilist2 import Anilist2
 from modules.core.img_gen import ImageGenerator
 from modules.core.client import Client
 
+animeModFields = ['status', 'score', 'progress']
+animeBase = {
+    'status': 'empty',
+    'score': 0,
+    'progress': 0
+}
+mangaModFields = ['status', 'score', 'progress', 'progressVolumes']
+mangaBase = {
+    'status': 'empty',
+    'score': 0,
+    'progress': 0,
+    'progressVolumes': 0
+}
+
 class Updater(commands.Cog):
 
     def __init__(self, bot):
@@ -23,10 +37,10 @@ class Updater(commands.Cog):
         return [field for field in fieldsToCheck if e1[field] != e2[field]]
 
     def animeModified(self, e1, e2):
-        return self.fieldsModified(e1, e2, Database.animeModFields)
+        return self.fieldsModified(e1, e2, animeModFields)
 
     def mangaModified(self, e1, e2):
-        return self.fieldsModified(e1, e2, Database.mangaModFields)
+        return self.fieldsModified(e1, e2, mangaModFields)
 
 
     def syncAnimeList(self, old_list, fetched_list, scoreFormat):
@@ -35,49 +49,94 @@ class Updater(commands.Cog):
 
         for lst in fetched_list['lists']:
             for fetched_entry in lst['entries']:
+                # set up data differences
                 old_entry = old_list.get(str(fetched_entry['mediaId']))
-                if old_entry:
-                    modified = self.animeModified(old_entry, fetched_entry)
-                    if modified:
-                        if 'status' in modified:
-                            if fetched_entry['status'] == 'COMPLETED':
-                                msg = 'completed ' + old_entry['title']
-                                if fetched_entry['score'] > 0:
-                                    msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                            else:
-                                msg = 'added ' + old_entry['title'] + ' to ' + fetched_entry['status'].lower() + ' list'
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                        else:
-                            if 'score' in modified:
-                                msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' ➔ ' + str(fetched_entry['score']) + '/' + scoreFormat
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                            # does not handle if progress was reduced
-                            if old_entry['progress'] < fetched_entry['progress']:
-                                msg = 'watched '
-                                if fetched_entry['status'] == 'REPEATING':
-                                    msg = 'rewatched '
-                                if fetched_entry['progress'] - old_entry['progress'] == 1:
-                                    msg += 'episode ' + str(fetched_entry['progress']) + ' of ' + old_entry['title']
-                                else:
-                                    msg += 'episodes ' + str(old_entry['progress']+1) + '-' + str(fetched_entry['progress']) + ' of ' + old_entry['title']
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                else:
-                    # new entry from anilist
-                    changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                    if fetched_entry['status'] == 'CURRENT':
-                        msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to currently watching list'
-                    elif fetched_entry['status'] == 'COMPLETED':
-                        msg = 'completed ' + fetched_entry['media']['title']['romaji']
-                        if fetched_entry['score'] > 0:
-                            msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
+                if not old_entry:
+                    old_entry = animeBase
+
+                modified = self.animeModified(old_entry, fetched_entry)
+
+                title = fetched_entry['media']['title']['romaji']
+                if not title:
+                    title = fetched_entry['media']['title']['english']
+                if not title:
+                    title = fetched_entry['media']['title']['native']
+                if not title:
+                    title = ':COULD NOT GET VALID TITLE:'
+
+                banner = fetched_entry['media']['bannerImage']
+                cover = fetched_entry['media']['coverImage']['large']
+
+                prog = fetched_entry['progress']
+                prog_str = str(prog)
+                prog_old = old_entry['progress']
+                prog_old_inc_str = str(prog_old+1)
+                prog_delta = prog - prog_old
+
+                score = fetched_entry['score']
+                score_str = str(score)
+                score_old = old_entry['score']
+                score_old_str = str(score_old)
+
+                status = fetched_entry['status']
+                status_old = old_entry['status']
+
+                msg = ''
+                if 'score' in modified and not ('status' in modified and status == 'COMPLETED'):
+                # handle if score changed except if entry changed to completed since 
+                # changing to complete will show score if it's there
+                    msg = 'score of ' + title + ' changed: '
+                    if score_old == 0:
+                        msg += '-'
                     else:
-                        msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
+                        msg += score_old_str
+                    
+                    msg += '/' + scoreFormat + ' ➔ ' + score_str + '/' + scoreFormat
+                    
                     changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+
+                if 'status' in modified:
+                # handle changes of adding to lists where score/progress doesn't matter
+                    if status == 'PLANNING' or (prog == 0 and status in ['CURRENT', 'REPEATING']):
+                        msg = title + ' added to ' + status.lower() + ' list'
+                    elif status in ['DROPPED', 'PAUSED']:
+                        msg = status.lower() + ' ' + title
+                        if prog > 0:
+                            msg += ' on episode ' + prog_str
+                    elif status == 'COMPLETED':
+                        msg = status.lower() + ' ' + title
+                        if score > 0:
+                            msg += ' with a score of ' + score_str
+                    else:
+                        msg = ''
+
+                    if msg:
+                        changes['msgs'].append(msg)
+                        changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                        new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=True)
+                        continue
+
+                if prog_delta == 1:
+                # handle when progress is incremented by 1 i.e. watched 1 episode
+                    msg = ''
+                    if status == 'REPEATING':
+                        msg += 're'
+                    msg += 'watched episode ' + prog_str + ' of ' + title
+
+                    changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                elif prog_delta > 1:
+                # i'm not gonna handle if progress is reduced
+                    msg = ''
+                    if status == 'REPEATING':
+                        msg += 're'
+                    msg += 'watched episodes ' + prog_old_inc_str + '-' + prog_str + ' of ' + title
+
+                    changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                else:
+                    pass
 
                 new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=True)
 
@@ -90,58 +149,124 @@ class Updater(commands.Cog):
 
         for lst in fetched_list['lists']:
             for fetched_entry in lst['entries']:
+                # set up data differences
                 old_entry = old_list.get(str(fetched_entry['mediaId']))
-                if old_entry:
-                    modified = self.mangaModified(old_entry, fetched_entry)
-                    if modified:
-                        if 'status' in modified:
-                            if fetched_entry['status'] == 'COMPLETED':
-                                msg = 'completed ' + old_entry['title']
-                                if fetched_entry['score'] > 0:
-                                    msg += ' with a score of ' + str(fetched_entry['score']) + '/' + scoreFormat
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                            else:
-                                msg = 'added ' + old_entry['title'] + ' to ' + fetched_entry['status'].lower() + ' list'
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                        else:
-                            if 'score' in modified:
-                                msg = 'score of ' + old_entry['title'] + ' changed: ' + str(old_entry['score']) + '/' + scoreFormat + ' ➔ ' + str(fetched_entry['score']) + '/' + scoreFormat
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                            # does not handle if progress was reduced
-                            if old_entry['progress'] < fetched_entry['progress']:
-                                msg = 'read '
-                                if fetched_entry['status'] == 'REPEATING':
-                                    msg = 'reread '
-                                if fetched_entry['progress'] - old_entry['progress'] == 1:
-                                    msg += 'chapter ' + str(fetched_entry['progress']) + ' of ' + old_entry['title']
-                                else:
-                                    msg += 'chapters ' + str(old_entry['progress']+1) + '-' + str(fetched_entry['progress']) + ' of ' + old_entry['title']
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                            if old_entry['progressVolumes'] < fetched_entry['progressVolumes']:
-                                msg = 'read '
-                                if fetched_entry['status'] == 'REPEATING':
-                                    msg = 'reread '
-                                if fetched_entry['progressVolumes'] - old_entry['progressVolumes'] == 1:
-                                    msg += 'volume ' + str(fetched_entry['progressVolumes']) + ' of ' + old_entry['title']
-                                else:
-                                    msg += 'volumes ' + str(old_entry['progressVolumes']+1) + '-' + str(fetched_entry['progressVolumes']) + ' of ' + old_entry['title']
-                                changes['msgs'].append(msg)
-                                changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                else:
-                    # new entry from anilist
-                    changes['imgUrls'].append({ 'banner': fetched_entry['media']['bannerImage'], 'cover': fetched_entry['media']['coverImage']['large']})
-                    if fetched_entry['status'] == 'CURRENT':
-                        msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to currently reading list'
+                if not old_entry:
+                    old_entry = mangaBase
+
+                modified = self.mangaModified(old_entry, fetched_entry)
+
+                title = fetched_entry['media']['title']['romaji']
+                if not title:
+                    title = fetched_entry['media']['title']['english']
+                if not title:
+                    title = fetched_entry['media']['title']['native']
+                if not title:
+                    title = ':COULD NOT GET VALID TITLE:'
+
+                banner = fetched_entry['media']['bannerImage']
+                cover = fetched_entry['media']['coverImage']['large']
+
+                prog = fetched_entry['progress']
+                prog_str = str(prog)
+                prog_old = old_entry['progress']
+                prog_old_inc_str = str(prog_old+1)
+                prog_delta = prog - prog_old
+
+                progVol = fetched_entry['progressVolumes']
+                progVol_str = str(progVol)
+                progVol_old = old_entry['progressVolumes']
+                progVol_old_inc_str = str(progVol_old+1)
+                progVol_delta = progVol - progVol_old
+
+                score = fetched_entry['score']
+                score_str = str(score)
+                score_old = old_entry['score']
+                score_old_str = str(score_old)
+
+                status = fetched_entry['status']
+                status_old = old_entry['status']
+
+                msg = ''
+                if 'score' in modified and not ('status' in modified and status == 'COMPLETED'):
+                # handle if score changed except if entry changed to completed since 
+                # changing to complete will show score if it's there
+                    msg = 'score of ' + title + ' changed: '
+                    if score_old == 0:
+                        msg += '-'
                     else:
-                        msg = 'added ' + fetched_entry['media']['title']['romaji'] + ' to ' + fetched_entry['status'].lower() + ' list'
+                        msg += score_old_str
+                    
+                    msg += '/' + scoreFormat + ' ➔ ' + score_str + '/' + scoreFormat
+                    
                     changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+
+                if 'status' in modified:
+                # handle changes of adding to lists where score/progress doesn't matter
+                    if status == 'PLANNING' or (prog == 0 and progVol == 0 and status in ['CURRENT', 'REPEATING']):
+                        msg = title + ' added to ' + status.lower() + ' list'
+                    elif status in ['DROPPED', 'PAUSED']:
+                        msg = status.lower() + ' ' + title
+                        if prog > 0:
+                            msg += ' on episode ' + prog_str
+                    elif status == 'COMPLETED':
+                        msg = status.lower() + ' ' + title
+                        if score > 0:
+                            msg += ' with a score of ' + score_str
+                    else:
+                        msg = ''
+
+                    if msg:
+                        changes['msgs'].append(msg)
+                        changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                        new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=False)
+                        continue
+
+                if prog_delta == 1:
+                # handle when progress is incremented by 1 i.e. read 1 chapter
+                    msg = ''
+                    if status == 'REPEATING':
+                        msg += 're'
+                    msg += 'read chapter ' + prog_str + ' of ' + title
+
+                    changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                elif prog_delta > 1:
+                # i'm not gonna handle if progress is reduced
+                    msg = ''
+                    if status == 'REPEATING':
+                        msg += 're'
+                    msg += 'read chapters ' + prog_old_inc_str + '-' + prog_str + ' of ' + title
+
+                    changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                else:
+                    pass
+
+                if progVol_delta == 1:
+                # handle when progress is incremented by 1 i.e. read 1 volume
+                    msg = ''
+                    if status == 'REPEATING':
+                        msg += 're'
+                    msg += 'read volume ' + progVol_str + ' of ' + title
+
+                    changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                elif progVol_delta > 1:
+                # i'm not gonna handle if progress is reduced
+                    msg = ''
+                    if status == 'REPEATING':
+                        msg += 're'
+                    msg += 'read volumes ' + progVol_old_inc_str + '-' + progVol_str + ' of ' + title
+
+                    changes['msgs'].append(msg)
+                    changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
+                else:
+                    pass
 
                 new_list[str(fetched_entry['mediaId'])] = Database.formListEntryFromAnilistEntry(fetched_entry, anime=False)
-                
+
         return { 'changes': changes, 'new_list': new_list }
 
 
@@ -210,7 +335,7 @@ class Updater(commands.Cog):
         if not (changes['animeChanges']['msgs'] or changes['mangaChanges']['msgs']):
             return
 
-        changes = self.limitChanges(changes, 8)
+        changes = self.limitChanges(changes, 6)
 
         # get all the guilds this user is apart of
         guildIdsWithUser = []
