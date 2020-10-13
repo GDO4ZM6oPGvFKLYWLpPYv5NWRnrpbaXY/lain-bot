@@ -457,7 +457,7 @@ class Updater(commands.Cog):
         try:
             nextUser = await self.cursor.to_list(length=1)
         except Exception as e:
-            print('--updater.py:al_update :: unable to get next user from db')
+            print('--'+__file__+' :: unable to get next user in db')
             print(e)
             return
 
@@ -470,15 +470,16 @@ class Updater(commands.Cog):
             # get anilist data
             try:
                 fetched_user = await Anilist2.getUserData(Client.session, user['anilistId'])
-            except:
-                print('update fail - either no user data or errors in query result')
-                print(fetched_user)
+            except Exception as e:
+                print('--'+__file__+' :: unable to fetch user data from anilist')
+                print(e)
                 return
             else:
                 # check for errors in query
                 if not fetched_user or 'errors' in fetched_user:
-                    print('update fail - either no user data or errors in query result')
+                    print('update fail - either no user data or errors in query result: ')
                     print(fetched_user)
+                    print('...continuing to next user')
                     return
 
             fetched_animeList = fetched_user['data']['animeList']
@@ -526,5 +527,5 @@ class Updater(commands.Cog):
                 if fmt == 'jpg' and int(round(time.time()*1000)) - int(t) > 60000:
                     os.remove(os.getcwd() + '/assets/img_gen/' + f)
         except Exception as e:
-            print('--updater.py:cleanup_img_gen :: unable to delete images')
+            print('--'+__file__+' :: unable to delete images')
             print(e)
