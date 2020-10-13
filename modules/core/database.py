@@ -176,18 +176,24 @@ class Database:
 		return new_entry
 
 
-	def userScoreFormat(user):
+	def userScoreFormat(user, fetched_user=None):
 		"""Get a user's score format as string i.e. their denominator for scoring
 
 			Args:
 				user (obj): The user to get the score format from
+				fetched_user (obj)[optional]: The fetched anilist user to get the score 
+					format from. Optional, will just get format from user if
+					not provided
 
 			Returns:
-				str: The scoring format. Will return 'XX' if any trouble
+				str: The scoring format. Will return 'XX' if any trouble and
+				'CHNG' if format differs between fetched_user and user
 		"""
 
 		try:
 			fmt = user['profile']['mediaListOptions']['scoreFormat']
+			if fetched_user and fmt != fetched_user['data']['User']['mediaListOptions']['scoreFormat']:
+				return 'CHNG'
 		except:
 			return 'XX'
 		else:
@@ -201,6 +207,38 @@ class Database:
 				return '5'
 			else:
 				return '3'
+
+	def scoreFormated(score, fmt):
+		"""Get formated score based on user's score format. e.g. 9.2/10, 5/5, etc
+
+			Args:
+				score (float, str): The score to be formated
+				fmt (str): The score format to use
+
+			Returns:
+				str: The fully formated score. Will return 'XX' if any trouble
+		"""
+		if fmt in ['XX', 'CHNG']:
+			return 'XX'
+
+		score = str(score)
+
+		if fmt != '3':
+			if score == '0':
+				return '-/' + fmt
+			else:
+				return str(score) + '/' + fmt
+		else:
+			if score == '0':
+				return '-'
+			elif score == '1':
+				return '🙁'
+			elif score == '2':
+				return '😐'
+			elif score == '3':
+				return '🙂'
+			else:
+				return 'XX'
 
 
 	async def storage_update_one(filter, update):

@@ -82,16 +82,11 @@ class Updater(commands.Cog):
                 status_old = old_entry['status']
 
                 msg = ''
-                if 'score' in modified and not ('status' in modified and status == 'COMPLETED'):
+                if scoreFormat != 'CHNG' and 'score' in modified and not ('status' in modified and status == 'COMPLETED'):
                 # handle if score changed except if entry changed to completed since 
                 # changing to complete will show score if it's there
                     msg = 'score of ' + title + ' changed: '
-                    if score_old == 0:
-                        msg += '-'
-                    else:
-                        msg += score_old_str
-                    
-                    msg += '/' + scoreFormat + ' ➔ ' + score_str + '/' + scoreFormat
+                    msg += Database.scoreFormated(score_old, scoreFormat) + ' ➔ ' + Database.scoreFormated(score, scoreFormat)
                     
                     changes['msgs'].append(msg)
                     changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
@@ -107,7 +102,7 @@ class Updater(commands.Cog):
                     elif status == 'COMPLETED':
                         msg = status.lower() + ' ' + title
                         if score > 0:
-                            msg += ' with a score of ' + score_str
+                            msg += ' with a score of ' + Database.scoreFormated(score, scoreFormat)
                     else:
                         msg = ''
 
@@ -188,16 +183,11 @@ class Updater(commands.Cog):
                 status_old = old_entry['status']
 
                 msg = ''
-                if 'score' in modified and not ('status' in modified and status == 'COMPLETED'):
+                if scoreFormat != 'CHNG' and 'score' in modified and not ('status' in modified and status == 'COMPLETED'):
                 # handle if score changed except if entry changed to completed since 
                 # changing to complete will show score if it's there
                     msg = 'score of ' + title + ' changed: '
-                    if score_old == 0:
-                        msg += '-'
-                    else:
-                        msg += score_old_str
-                    
-                    msg += '/' + scoreFormat + ' ➔ ' + score_str + '/' + scoreFormat
+                    msg += Database.scoreFormated(score_old, scoreFormat) + ' ➔ ' + Database.scoreFormated(score, scoreFormat)
                     
                     changes['msgs'].append(msg)
                     changes['imgUrls'].append({ 'banner': banner, 'cover': cover})
@@ -213,7 +203,7 @@ class Updater(commands.Cog):
                     elif status == 'COMPLETED':
                         msg = status.lower() + ' ' + title
                         if score > 0:
-                            msg += ' with a score of ' + score_str
+                            msg += ' with a score of ' + Database.scoreFormated(score, scoreFormat)
                     else:
                         msg = ''
 
@@ -495,8 +485,8 @@ class Updater(commands.Cog):
             fetched_mangaList = fetched_user['data']['mangaList']
 
             # find differences
-            animeSync = self.syncAnimeList(old_animeList, fetched_animeList, Database.userScoreFormat(user))
-            mangaSync = self.syncMangaList(old_managaList, fetched_mangaList, Database.userScoreFormat(user))
+            animeSync = self.syncAnimeList(old_animeList, fetched_animeList, Database.userScoreFormat(user, fetched_user))
+            mangaSync = self.syncMangaList(old_managaList, fetched_mangaList, Database.userScoreFormat(user, fetched_user))
 
             # only send messages for set users
             if user['status']:

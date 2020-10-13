@@ -880,16 +880,6 @@ def statusConversion(arg, listType):
 
 	return colors.get(arg, "X")
 
-def scoreFormat(user):
-	fmt = user['profile']['mediaListOptions']['scoreFormat']
-	if fmt == 'POINT_100':
-		return '100'
-	elif fmt == 'POINT_10_DECIMAL' or fmt == 'POINT_10':
-		return '10'
-	elif fmt == 'POINT_5':
-		return '5'
-	else:
-		return '3'
 
 async def embedScores(guild, showID, listType, maxDisplay, embed):
 		# get all users in db that are in this guild and have the show on their list
@@ -922,11 +912,11 @@ def userScoreEmbeder(user, showID, listType, embed):
 	status = statusConversion(userInfo['status'], listType)
 
 	score = userInfo['score']
-	scoreFmt = scoreFormat(user)
+	scoreFmt = Database.userScoreFormat(user)
 	if not score or score == 0:
 		embed.add_field(name=user['anilistName'], value="No Score ("+status+")", inline=True)
 	else:
-		embed.add_field(name=user['anilistName'], value=str(score)+"/"+scoreFmt+" ("+status+")", inline=True)
+		embed.add_field(name=user['anilistName'], value=Database.scoreFormated(score, scoreFmt)+" ("+status+")", inline=True)
 
 def generateLists(user):
 	lists = { 'animeList': {}, 'mangaList': {} }
