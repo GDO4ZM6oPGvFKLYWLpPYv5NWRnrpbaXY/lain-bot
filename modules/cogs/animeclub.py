@@ -2,6 +2,7 @@ import discord, re, datetime, pytz
 
 from discord.ext import commands
 from discord.ext.commands import has_any_role, CheckFailure
+from dateutil import parser
 
 from modules.core.database import Database
 
@@ -22,22 +23,27 @@ class AnimeClub(commands.Cog):
 		except:
 			pass
 
-	@commands.group(pass_context=True, aliases=['sced', 'sc'])
+	@commands.group(aliases=['sced', 'sc'])
 	@commands.check(is_anime_club_server)
 	async def schedule(self, ctx):
 		await ctx.trigger_typing()
 		if ctx.invoked_subcommand is None:
 			await self.show_shcedule(ctx, wed=True, sat=True)
 
-	@schedule.command(pass_context=True, aliases=['sat', 'SAT', 'Sat', 'Saturday'])
+	@schedule.command(aliases=['sat', 'SAT', 'Sat', 'Saturday'])
 	async def saturday(self, ctx):
 		await self.show_shcedule(ctx, sat=True)
 
-	@schedule.command(pass_context=True, aliases=['wed', 'WED', 'Wed', 'Wednesday'])
+	@schedule.group(aliases=['wed', 'WED', 'Wed', 'Wednesday'])
 	async def wednesday(self, ctx):
-		await self.show_shcedule(ctx, wed=True)
+		if ctx.invoked_subcommand is None:
+			await self.show_shcedule(ctx, wed=True)
 
-	@schedule.command(pass_context=True, name="set")
+	@wednesday.command()
+	async def all(self, ctx):
+		await self.show_all_wed(ctx)
+
+	@schedule.command(name="set")
 	@has_any_role(494979840470941712, 259557922726608896) # admin, executive council
 	async def set_(self, ctx, *args):
 		if not args:
@@ -113,6 +119,18 @@ class AnimeClub(commands.Cog):
 				else:
 					embed.add_field(name="Wednesday ({}/{})".format(nxt_wed.month, nxt_wed.day), value="*none*", inline=False)
 			await ctx.send(embed=embed)
+
+	async def show_all_wed(self, ctx):
+		embed=discord.Embed(description="Wednesday Schedule", color=0xd31f28)
+		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
+		data = await Database.storage_find_one({'id': 'schedule'})
+		if 'wednesday' not in data:
+			embed.add_field(name='Unavailable', value='unavailable')
+		else:
+			for meeting in data['wednesday']:
+				date = parser.parse(meeting)
+				embed.add_field(name="{}/{}".format(date.month, date.day), value='\n'.join(data['wednesday'][meeting]), inline=False)
+		await ctx.send(embed=embed)
 
 # get date of next wednesday with 10p being latest hour to be considered same wednesday
 def next_wednesday(start=None):
