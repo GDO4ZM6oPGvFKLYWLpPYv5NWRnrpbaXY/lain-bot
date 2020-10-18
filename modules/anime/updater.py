@@ -100,7 +100,12 @@ class Updater(commands.Cog):
                         if prog > 0:
                             msg += ' on episode ' + prog_str
                     elif status == 'COMPLETED':
-                        msg = status.lower() + ' ' + title
+                        msg = ''
+                        if status_old == 'REPEATING':
+                            msg = 'rewatched'
+                        else:
+                            msg = status.lower()
+                        msg += ' ' + title
                         if score > 0:
                             msg += ' with a score of ' + Database.scoreFormated(score, scoreFormat)
                     else:
