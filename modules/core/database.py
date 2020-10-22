@@ -1,4 +1,4 @@
-import motor.motor_asyncio, os
+import motor.motor_asyncio, os, logging
 
 class Database:
 	if not bool(os.getenv('NON_SRV_DB', default=False)):
@@ -255,6 +255,8 @@ class Database:
 		try:
 			res = await Database.storageCollection().update_one(filter, update)
 		except:
+			logging.warning('Exception finding storage item in db.', 
+				exc_info=True)
 			return None
 		else:
 			return res
@@ -274,6 +276,8 @@ class Database:
 		try:
 			res = await Database.storageCollection().find_one(filter, projection)
 		except:
+			logging.warning('Exception finding storage item in db.', 
+				exc_info=True)
 			return None
 		else:
 			return res

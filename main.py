@@ -1,4 +1,4 @@
-import os, logging
+import os, sys, logging, logging.handlers
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -7,17 +7,28 @@ from modules.core.events import Events
 from modules.core.cogs import Cogs
 #from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
-logging.basicConfig(level=logging.DEBUG, handlers=[logging.FileHandler('main.log', 'w', 'utf-8')])
+file_handler = logging.handlers.RotatingFileHandler(
+	'main.log', encoding='utf-8', maxBytes=2 * 1024**2, backupCount=5)
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.ERROR)
+logging.basicConfig(level=logging.DEBUG, handlers=[
+	stream_handler, file_handler])
+
+# Log unhandled exceptions
+def log_exception(exc_type, exc_value, tb):
+	if issubclass(exc_type, KeyboardInterrupt):
+		sys.__excepthook__(exc_type, exc_value, tb)
+		return
+	logging.critical(
+		"Uncaught exception", exc_info=(exc_type, exc_value, tb))
+sys.excepthook = log_exception
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project root
 
 TOKEN = os.getenv("BOT_TOKEN")
 
 if not TOKEN:
-	print('Not bot token provided')
+	logging.critical('No bot token provided.')
 else:
-	try:
-		Client.bot.run(TOKEN) #runs the Discord bot using one of the above tokens
-		Client.session.close_session() #close session after bot shuts down
-	except:
-		pass
+	Client.bot.run(TOKEN) #runs the Discord bot using one of the above tokens
+	Client.session.close_session() #close session after bot shuts down
