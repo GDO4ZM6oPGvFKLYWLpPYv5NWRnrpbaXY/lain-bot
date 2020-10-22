@@ -1,4 +1,5 @@
 import discord
+import logging
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
 
@@ -81,4 +82,5 @@ class Configuration(commands.Cog):
 			Config.cfgUpdate(str(ctx.guild.id), "welcomeMsg", msg)
 			await ctx.send("Updated welcome message!")
 		except:
+			logging.exception("Error sending error message.")
 			await ctx.send("Error!")
