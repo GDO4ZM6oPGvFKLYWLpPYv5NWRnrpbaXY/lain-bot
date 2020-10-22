@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, CheckFailure
-import os, random, asyncio
+import os, random, asyncio, logging
 from os import path
 from dotenv import load_dotenv
 from aiohttp import ClientResponseError	
@@ -25,7 +25,7 @@ class Anime(commands.Cog):
 		self.bot = bot
 
 	async def cog_command_error(self, ctx, err):
-		print(err)
+		logging.exception("Error during >al command")
 		if isinstance(err, discord.ext.commands.errors.CommandInvokeError):
 			err = err.original
 		try:
@@ -71,6 +71,10 @@ class Anime(commands.Cog):
 		# anilist command group
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid anilist command passed...')
+
+	@al.command(pass_context=True)
+	async def error(self, ctx):
+		raise RuntimeError
 
 	@al.command(pass_context=True)
 	async def help(self, ctx):
@@ -128,7 +132,7 @@ class Anime(commands.Cog):
 		try:
 			embed.set_author(name=str(anilistResults['data']['anime']['studios']['nodes'][0]['name']), url=str(anilistResults['data']['anime']['studios']['nodes'][0]['siteUrl']))
 		except IndexError:
-			print('empty studio name or URL\n')
+			logging.error('empty studio name or URL')
 
 		# if show is airing, cancelled, finished, or not released
 		status = anilistResults['data']['anime']['status']
@@ -150,7 +154,7 @@ class Anime(commands.Cog):
 					months = abs(anilistResults['data']['anime']['endDate']['month'] - anilistResults['data']['anime']['startDate']['month'])
 					days = abs(anilistResults['data']['anime']['endDate']['day'] - anilistResults['data']['anime']['startDate']['day'])
 				except TypeError:
-					print('Error calculating air time')
+					logging.error('Error calculating air time')
 					air = False
 
 				# get rid of anything with zero
@@ -219,7 +223,7 @@ class Anime(commands.Cog):
 					months = abs(anilistResults['data']['manga']['endDate']['month'] - anilistResults['data']['manga']['startDate']['month'])
 					days = abs(anilistResults['data']['manga']['endDate']['day'] - anilistResults['data']['manga']['startDate']['day'])
 				except TypeError:
-					print('Error calculating air time')
+					logging.error('Error calculating air time')
 					air = False
 
 				# get rid of anything with zero
@@ -261,7 +265,7 @@ class Anime(commands.Cog):
 		try:
 			embed.set_author(name=str(anilistResults['data']['character']['media']['nodes'][0]['title']['romaji']), url=str(anilistResults['data']['character']['media']['nodes'][0]['siteUrl']), icon_url=str(anilistResults['data']['character']['media']['nodes'][0]['coverImage']['medium']))
 		except IndexError:
-			print('Character had empty show name or url, or image')
+			logging.error('Character had empty show name or url, or image')
 
 		embed.set_footer(text=alts)
 
@@ -354,7 +358,7 @@ class Anime(commands.Cog):
 
 		search = await Anilist2.userSearch(Client.session, user)
 		if not search:
-			print('--search command err')
+			logging.error('--search command err')
 			ctx.send('Error! Probably an invalid username')
 			return
 
@@ -678,10 +682,10 @@ class Anime(commands.Cog):
 		try:
 			await ctx.send(embed=embed)
 		except Exception as e:
-			print(e)
-			print(anilistResults["bannerImage"])
-			print(anilistResults["avatar"]["large"])
-			print(anilistResults["siteUrl"])
+			logging.exception('%s; %s; %s', 
+				anilistResults["bannerImage"],
+				anilistResults["avatar"]["large"],
+				anilistResults["siteUrl"])
 			await ctx.send(e)
 
 	@commands.group(pass_context=True)
@@ -809,7 +813,7 @@ class Anime(commands.Cog):
 
 			await ctx.send(embed=embed)
 		except Exception as e:
-			print(e)
+			logging.exception('Exception looking up VN')
 			await ctx.send('VN not found (title usually has to be exact)')
 
 	@vn.command(pass_context=True)

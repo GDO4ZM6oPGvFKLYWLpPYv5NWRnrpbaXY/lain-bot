@@ -4,7 +4,7 @@ import praw
 import random
 import re
 
-import os
+import os, logging
 from dotenv import load_dotenv
 
 from modules.anime.anilist import Anilist
@@ -36,7 +36,7 @@ class Themes():
                     try:
                         big = song['song']['artist'] + ' - ' + song['song']['title']
                     except Exception as e:
-                        print(e)
+                        logging.exception('Exception looking up theme.')
                         big = 'Video'
                         #await ctx.send('Playing **' + opening + '** of *' + title + '*')
                     return {'big' : big, 'video' : video, 'found' : True, 'title': title, 'op/ed': opening}

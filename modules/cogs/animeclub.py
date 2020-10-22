@@ -1,3 +1,4 @@
+import logging
 import discord, re, datetime, pytz
 
 from discord.ext import commands
@@ -17,7 +18,7 @@ class AnimeClub(commands.Cog):
 		return ctx.guild.id in [254864526069989377]
 
 	async def cog_command_error(self, ctx, err):
-		print(err)
+		logging.exception("Error during Anime Club command.")
 		try:
 			await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
 		except:
