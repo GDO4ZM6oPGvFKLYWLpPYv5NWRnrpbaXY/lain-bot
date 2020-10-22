@@ -1,9 +1,7 @@
 import asyncpg
 import discord
 from discord.ext import tasks, commands
-import time
-import os
-import json
+import os, logging, json, time
 
 from datetime import datetime, timezone, timedelta
 
@@ -79,22 +77,20 @@ class Loop(commands.Cog):
                                                     await animeChannel.send(embed=embed)
                                                 if result["media"]["type"] == "MANGA":
                                                     await mangaChannel.send(embed=embed)
-                                                print(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+str(member.name))
+                                                logging.info(time.strftime("[%H:%M", time.gmtime())+"] Posting list updates of "+str(member.name))
                                             except Exception as e:
-                                                print("Exception with posting embed!")
-                                                print(e)
+                                                logging.exception('Exception with posting embed.')
                                         except Exception as e:
-                                            print("Exception with something else!")
-                                            print(e)
+                                            logging.exception('Other exception with updating')
                             except Exception as e:
-                                print(e)
+                                logging.exception('Exception during al update')
 
             # print(time.strftime("[%H:%M", time.gmtime())+"] Successfully checked AL for list updates!")
 
     @tasks.loop(seconds=60.0)
     async def al_timer(self):
         if self.update_count>0:
-            print(time.strftime("[%H:%M", time.gmtime())+"] Resetting anime update count.")
+            logging.info(time.strftime("[%H:%M", time.gmtime())+"] Resetting anime update count.")
             self.update_count=0
 
     @tasks.loop(seconds=900)
@@ -141,4 +137,4 @@ class Loop(commands.Cog):
 
                                 await channel.send(embed=embed)
                             except Exception as e:
-                                print(e)
+                                logging.exception('Exception checking airing')
