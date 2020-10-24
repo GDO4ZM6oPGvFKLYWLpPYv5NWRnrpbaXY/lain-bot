@@ -1,5 +1,6 @@
 import discord, os, sys, json, time, datetime, pytz, traceback, logging
 from discord.ext import tasks, commands
+logger = logging.getLogger(__name__)
 
 from modules.core.database import Database
 from modules.anime.anilist2 import Anilist2
@@ -462,7 +463,7 @@ class Updater(commands.Cog):
         try:
             nextUser = await self.cursor.to_list(length=1)
         except Exception as e:
-            logging.exception('--%s :: unable to get next user in db', __file__)
+            logger.exception('--%s :: unable to get next user in db', __file__)
             return
 
         if nextUser:
@@ -475,12 +476,12 @@ class Updater(commands.Cog):
             try:
                 fetched_user = await Anilist2.getUserData(Client.session, user['anilistId'])
             except Exception as e:
-                logging.exception('--%s :: unable to fetch user data from anilist', __file__)
+                logger.exception('--%s :: unable to fetch user data from anilist', __file__)
                 return
             else:
                 # check for errors in query
                 if not fetched_user or 'errors' in fetched_user:
-                    logging.error('update fail - either no user data or errors in query result: %s; ...continuing to next user', fetched_user)
+                    logger.error('update fail - either no user data or errors in query result: %s; ...continuing to next user', fetched_user)
                     return
 
             fetched_animeList = fetched_user['data']['animeList']
@@ -495,7 +496,7 @@ class Updater(commands.Cog):
                 try:
                     await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
                 except Exception as e:
-                    logging.exception('could not send changes')
+                    logger.exception('could not send changes')
 
             # update local user to match anilist
             await Database.user_update_one(
@@ -527,4 +528,4 @@ class Updater(commands.Cog):
                     os.remove(os.getcwd() + '/assets/img_gen/' + f)
         except Exception as e:
             print('--'+__file__+' :: unable to delete images')
-            logging.exception('Exception while cleaning up images.')
+            logger.exception('Exception while cleaning up images.')
