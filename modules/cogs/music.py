@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.utils import get
 import youtube_dl as ytdl
 import random, logging
+logger = logging.getLogger(__name__)
 
 from modules.core.client import Client
 from modules.music.radio import Radio
@@ -65,7 +66,7 @@ class Music(commands.Cog):
 
             await ctx.send(embed=embed)
         except:
-            logging.exception("Error during radio command.")
+            logger.exception("Error during radio command.")
             await ctx.send('Error retrieving data')
 
     @commands.command(pass_context=True)
@@ -103,7 +104,7 @@ class Music(commands.Cog):
 
                 await join(ctx, info['formats'][3]['url'])
         except Exception as e:
-            logging.exception('Error during youtube command')
+            logger.exception('Error during youtube command')
             await ctx.send(str(e))
 
     @commands.command(pass_context=True, aliases=['leave', 'radio stop', 'radio leave'])
@@ -120,7 +121,7 @@ class Music(commands.Cog):
         except AttributeError as a:
             await ctx.send('Not in a voice channel')
         except Exception as e:
-            logging.exception('Error in music stop command.')
+            logger.exception('Error in music stop command.')
             await ctx.send('Unexpected error')
 
     @commands.command(pass_context=True)
@@ -133,10 +134,10 @@ class Music(commands.Cog):
                 voice.pause()
                 await ctx.send('Paused')
         except AttributeError as a:
-            logging.exception('Not in a voice channel')
+            logger.exception('Not in a voice channel')
             await ctx.send('Not in a voice channel')
         except Exception as e:
-            logging.exception('Error pausing music.')
+            logger.exception('Error pausing music.')
             await ctx.send('Unexpected error')
 
     @commands.command(pass_context=True)
@@ -149,10 +150,10 @@ class Music(commands.Cog):
                 voice.resume()
                 await ctx.send('Resumed')
         except AttributeError as a:
-            logging.exception('Not in a voice channel')
+            logger.exception('Not in a voice channel')
             await ctx.send('Not in a voice channel')
         except Exception as e:
-            logging.exception('Error resuming music.')
+            logger.exception('Error resuming music.')
             await ctx.send('Unexpected error')
 
     @commands.command(pass_context=True, aliases=['next'])
@@ -167,10 +168,10 @@ class Music(commands.Cog):
             else:
                 await ctx.send('Nothing to skip')
         except AttributeError as a:
-            logging.exception('Not in a voice channel')
+            logger.exception('Not in a voice channel')
             await ctx.send('Not in a voice channel')
         except Exception as e:
-            logging.exception('Error skipping music.')
+            logger.exception('Error skipping music.')
             await ctx.send('Unexpected error')
 
     @commands.command(pass_context=True)
@@ -241,7 +242,7 @@ class Music(commands.Cog):
 
             await join(ctx, parts['video'])
         except Exception as e:
-            logging.exception("Exception with op command.")
+            logger.exception("Exception with op command.")
             found = True
 
         if found:
@@ -260,7 +261,7 @@ class Music(commands.Cog):
 
                 await join(ctx, parts['video'])
             except Exception as e:
-                logging.exception('*%s*, %s not found in database', english, select)
+                logger.exception('*%s*, %s not found in database', english, select)
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
     @commands.command(pass_context=True)
@@ -322,7 +323,7 @@ class Music(commands.Cog):
 
             await join(ctx, parts['video'])
         except Exception as e:
-            logging.exception('Error with ed command.')
+            logger.exception('Error with ed command.')
             found = True
 
         if found:
@@ -341,7 +342,7 @@ class Music(commands.Cog):
 
                 await join(ctx, parts['video'])
             except Exception as e:
-                logging.exception('*%s*, %s not found in database', english, select)
+                logger.exception('*%s*, %s not found in database', english, select)
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
 bot = Client.bot
@@ -365,10 +366,10 @@ async def join(ctx, url):
 
             await play(ctx, voice, url)
     except AttributeError as a:
-        logging.exception('User is not in a voice channel')
+        logger.exception('User is not in a voice channel')
         await ctx.send('User is not in a channel.')
     except Exception as e:
-        logging.exception('Error joining voice channel.')
+        logger.exception('Error joining voice channel.')
         await ctx.send('Unexpected error')
 
 async def play(ctx, voice, url):
@@ -407,12 +408,12 @@ def parse(ctx, num):
         show = str(ctx.message.content)[
             (len(ctx.prefix) + len('op ' + str(num) + ' ')):]
     except ValueError as v:
-        logging.exception('Error during music parsing')
+        logger.exception('Error during music parsing')
         if len(num) >= 2:
             num = '1'
             show = str(ctx.message.content)[(len(ctx.prefix) + len('op ')):]
             # await ctx.send('Choose which OP you want to play first (1, 2, 3...)')
     except IndexError as f:
-        logging.exception('Error during music parsing')
+        logger.exception('Error during music parsing')
 
     return {'show': show, 'num': num}
