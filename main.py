@@ -1,4 +1,4 @@
-import os, sys, logging, logging.handlers
+import os, sys, logging, logging.handlers, atexit
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -27,8 +27,15 @@ os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project roo
 
 TOKEN = os.getenv("BOT_TOKEN")
 
+# Clean up on close
+def exit_cleanup():
+	Client.session.close_session() #close session after bot shuts down
+	logging.info('Shut down.')
+
+atexit.register(exit_cleanup)
+
 if not TOKEN:
 	logging.critical('No bot token provided.')
 else:
+	logging.info("Starting up...")
 	Client.bot.run(TOKEN) #runs the Discord bot using one of the above tokens
-	Client.session.close_session() #close session after bot shuts down
