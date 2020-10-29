@@ -58,6 +58,9 @@ class Updater(commands.Cog):
                 modified = self.animeModified(old_entry, fetched_entry)
 
                 title = fetched_entry['media']['title']['romaji']
+                if modified:
+                    logger.debug("Entries %s, field %s modified." % (title, 
+                        modified))
                 if not title:
                     title = fetched_entry['media']['title']['english']
                 if not title:
@@ -158,6 +161,10 @@ class Updater(commands.Cog):
                 modified = self.mangaModified(old_entry, fetched_entry)
 
                 title = fetched_entry['media']['title']['romaji']
+
+                if modified:
+                    logger.debug("Entries %s, field %s modified." % (title, 
+                        modified))
                 if not title:
                     title = fetched_entry['media']['title']['english']
                 if not title:
@@ -331,6 +338,8 @@ class Updater(commands.Cog):
         if not (changes['animeChanges']['msgs'] or changes['mangaChanges']['msgs']):
             return
 
+        logger.debug('Will send list changes %s ; %s' % (
+            changes['animeChanges']['msgs'], changes['mangaChanges']['msgs']))
         changes = self.limitChanges(changes, 6)
 
         # get all the guilds this user is apart of
@@ -368,6 +377,11 @@ class Updater(commands.Cog):
                     del mangaOnlyChannels[i]
                     animeOnlyChannels.remove(aChn)
                     break
+
+        logger.debug('Will send AniList updates to %s, %s, %s' % (
+            comboChannels, animeOnlyChannels, mangaOnlyChannels
+        ))
+
 
         embeds = {
             'anime': discord.Embed(
@@ -454,6 +468,7 @@ class Updater(commands.Cog):
     # interate through each user in database keeping up to date with anilist
     @tasks.loop(seconds=float(os.getenv('UPDATE_INTERVAL', 10)))
     async def al_update(self):
+        logger.debug('Checking for AniList user list changes.')
         # wait until bot is ready
         if not self.bot.is_ready():
             print('--warming up')
