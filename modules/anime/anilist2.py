@@ -380,6 +380,10 @@ class Anilist2:
         if not resp:
             raise Anilist2.AnilistError(000, 'No response')
 
+        if resp.status == 500:
+            raise Anilist2.AnilistError(status=500, 
+                msg='AniList internal service error.')
+
         if resp.status == 503:
             raise Anilist2.AnilistDownError()
 
