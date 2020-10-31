@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 class Anilist2:
 
     class AnilistBadArguments(Exception):
@@ -359,6 +362,8 @@ class Anilist2:
     
     async def __request(session, query, variables):
         async with session.post(Anilist2.apiUrl, json={'query': query, 'variables': variables}, raise_for_status=False) as resp:
+            logger.debug("POST with vars %s returned status %s" % (variables, 
+                resp.status))
             return await Anilist2.__resolveResponse(resp)
 
 
