@@ -1,5 +1,6 @@
 import discord, os, sys, json, time, datetime, pytz, traceback, logging
 from discord.ext import tasks, commands
+logger = logging.getLogger(__name__)
 
 from modules.core.database import Database
 from modules.anime.anilist2 import Anilist2
@@ -57,6 +58,9 @@ class Updater(commands.Cog):
                 modified = self.animeModified(old_entry, fetched_entry)
 
                 title = fetched_entry['media']['title']['romaji']
+                if modified:
+                    logger.debug("Entries %s, field %s modified." % (title, 
+                        modified))
                 if not title:
                     title = fetched_entry['media']['title']['english']
                 if not title:
@@ -157,6 +161,10 @@ class Updater(commands.Cog):
                 modified = self.mangaModified(old_entry, fetched_entry)
 
                 title = fetched_entry['media']['title']['romaji']
+
+                if modified:
+                    logger.debug("Entries %s, field %s modified." % (title, 
+                        modified))
                 if not title:
                     title = fetched_entry['media']['title']['english']
                 if not title:
@@ -330,6 +338,8 @@ class Updater(commands.Cog):
         if not (changes['animeChanges']['msgs'] or changes['mangaChanges']['msgs']):
             return
 
+        logger.debug('Will send list changes %s ; %s' % (
+            changes['animeChanges']['msgs'], changes['mangaChanges']['msgs']))
         changes = self.limitChanges(changes, 6)
 
         # get all the guilds this user is apart of
@@ -367,6 +377,11 @@ class Updater(commands.Cog):
                     del mangaOnlyChannels[i]
                     animeOnlyChannels.remove(aChn)
                     break
+
+        logger.debug('Will send AniList updates to %s, %s, %s' % (
+            comboChannels, animeOnlyChannels, mangaOnlyChannels
+        ))
+
 
         embeds = {
             'anime': discord.Embed(
@@ -453,6 +468,7 @@ class Updater(commands.Cog):
     # interate through each user in database keeping up to date with anilist
     @tasks.loop(seconds=float(os.getenv('UPDATE_INTERVAL', 10)))
     async def al_update(self):
+        logger.debug('Checking for AniList user list changes.')
         # wait until bot is ready
         if not self.bot.is_ready():
             print('--warming up')
@@ -462,7 +478,7 @@ class Updater(commands.Cog):
         try:
             nextUser = await self.cursor.to_list(length=1)
         except Exception as e:
-            logging.exception('--%s :: unable to get next user in db', __file__)
+            logger.exception('--%s :: unable to get next user in db', __file__)
             return
 
         if nextUser:
@@ -475,12 +491,12 @@ class Updater(commands.Cog):
             try:
                 fetched_user = await Anilist2.getUserData(Client.session, user['anilistId'])
             except Exception as e:
-                logging.exception('--%s :: unable to fetch user data from anilist', __file__)
+                logger.exception('--%s :: unable to fetch user data from anilist', __file__)
                 return
             else:
                 # check for errors in query
                 if not fetched_user or 'errors' in fetched_user:
-                    logging.error('update fail - either no user data or errors in query result: %s; ...continuing to next user', fetched_user)
+                    logger.error('update fail - either no user data or errors in query result: %s; ...continuing to next user', fetched_user)
                     return
 
             fetched_animeList = fetched_user['data']['animeList']
@@ -495,7 +511,7 @@ class Updater(commands.Cog):
                 try:
                     await self.sendChanges(user, {'animeChanges': animeSync['changes'], 'mangaChanges': mangaSync['changes']})
                 except Exception as e:
-                    logging.exception('could not send changes')
+                    logger.exception('could not send changes')
 
             # update local user to match anilist
             await Database.user_update_one(
@@ -527,4 +543,4 @@ class Updater(commands.Cog):
                     os.remove(os.getcwd() + '/assets/img_gen/' + f)
         except Exception as e:
             print('--'+__file__+' :: unable to delete images')
-            logging.exception('Exception while cleaning up images.')
+            logger.exception('Exception while cleaning up images.')
