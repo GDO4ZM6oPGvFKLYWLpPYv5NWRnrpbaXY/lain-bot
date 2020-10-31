@@ -33,10 +33,7 @@ class Anime(commands.Cog):
 			if isinstance(err, discord.ext.commands.MissingPermissions):
 				await ctx.send("You lack the needed permissions!")
 			elif isinstance(err, Anilist2.AnilistError):
-				if issubclass(type(err), Anilist2.AnilistError):
-					await ctx.send(err.message)
-				else:
-					await ctx.send("Query request failed\nmsg: %s\nstatus: %i" % (err.message, err.status))	
+				await ctx.send(f"Query request failed\nmsg: {err.message}\nstatus: {err.status}")	
 			elif isinstance(err, HTTPError):	
 				await ctx.send(err.http_error_msg)
 			else:

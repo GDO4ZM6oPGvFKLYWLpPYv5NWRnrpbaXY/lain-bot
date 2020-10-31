@@ -61,12 +61,6 @@ class Updater(commands.Cog):
                 if modified:
                     logger.debug("Entries %s, field %s modified." % (title, 
                         modified))
-                if not title:
-                    title = fetched_entry['media']['title']['english']
-                if not title:
-                    title = fetched_entry['media']['title']['native']
-                if not title:
-                    title = ':COULD NOT GET VALID TITLE:'
 
                 banner = fetched_entry['media']['bannerImage']
                 cover = fetched_entry['media']['coverImage']['large']
