@@ -70,9 +70,6 @@ class Anime(commands.Cog):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid anilist command passed...')
 
-	@al.command(pass_context=True)
-	async def error(self, ctx):
-		raise RuntimeError
 
 	@al.command(pass_context=True)
 	async def help(self, ctx):
