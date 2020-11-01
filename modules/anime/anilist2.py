@@ -363,7 +363,7 @@ class Anilist2:
                 'Anilist is currently unreachable at the moment')
 
         if resp.status == 404:
-            raise Anilist2.AnilistError(503, 'Query yielded no results')
+            raise Anilist2.AnilistError(404, 'Query yielded no results')
 
         if resp.status != 200:
             raise Anilist2.AnilistError(resp.status, 'Response failure')
