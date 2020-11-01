@@ -365,6 +365,9 @@ class Anilist2:
         if resp.status == 404:
             raise Anilist2.AnilistError(404, 'Query yielded no results')
 
+        if resp.status == 429:
+            raise Anilist2.AnilistError(429, 'Too many requests')
+
         if resp.status != 200:
             raise Anilist2.AnilistError(resp.status, 'Response failure')
 
