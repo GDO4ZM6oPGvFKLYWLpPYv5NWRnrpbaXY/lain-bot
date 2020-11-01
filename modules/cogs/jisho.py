@@ -55,14 +55,29 @@ class Jisho(commands.Cog):
                 tags.append(f"`{tag}`")            
             
             r = {}
+            b = []
             for writing in result['japanese']:
-                word = writing['word']
-                reading = writing['reading']
-                if word in r:
-                    r[word].append(reading)
-                else:
-                    r[word] = [reading]
+                word = writing['word'] if 'word' in writing else None
+                reading = writing['reading'] if 'reading' in writing else None
+
+                if not word and not reading:
+                    continue
+
+                if word and reading:
+                    if word in r:
+                        r[word].append(reading)
+                    else:
+                        r[word] = [reading]
+                elif not reading:
+                    if word in r:
+                        r[word].append(reading)
+                    else:
+                        r[word] = []
+                elif not word:
+                    b.append(reading)
             
+            if b:
+                readings.append(f"{', '.join(b)}")
             for reading in r:
                 line = f"{reading} ({', '.join(r[reading])})"
                 readings.append(line)
