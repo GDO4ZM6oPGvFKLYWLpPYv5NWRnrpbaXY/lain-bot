@@ -100,7 +100,23 @@ class Jisho(commands.Cog):
             embed = discord.Embed(title="Result", description='', color=0x8abc83)
             embed.add_field(name="Readings", value='\n'.join(readings), inline=True)
             embed.add_field(name="Tags", value=' '.join(tags), inline=True)
-            embed.add_field(name="Definitions", value='\n'.join(definitions), inline=False)
-            embed.set_footer(text='info from jisho.org')
 
+            # limit field length
+            def_strs = []
+            tmp = ''
+            for d in definitions:
+                if len(tmp) + len(d) + 1 > 1024:
+                    def_strs.append(tmp)
+                    tmp = f"{d}\n"
+                else:
+                    tmp += f"{d}\n"
+            if tmp:
+                def_strs.append(tmp)
+
+            embed.add_field(name="Definitions", value=def_strs[0], inline=False)
+            embed.set_footer(text='info from jisho.org')
             await ctx.send(embed=embed)
+
+            for extra in def_strs[1:]:
+                embed = discord.Embed(title="Definitions (continued)", description=extra, color=0x8abc83)
+                await ctx.send(embed=embed)
