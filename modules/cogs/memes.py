@@ -1,14 +1,16 @@
+from modules.core.images import get_profile_picture
+from modules.core.client import Client
+from PIL import Image, ImageSequence
+from discord.ext.commands import has_permissions
+from discord.ext import commands
+import discord
 from itertools import zip_longest
-import os, io, asyncio, logging
+import os
+import io
+import asyncio
+import logging
 logger = logging.getLogger(__name__)
 
-import discord
-from discord.ext import commands
-from discord.ext.commands import has_permissions
-from PIL import Image, ImageSequence
-
-from modules.core.client import Client
-from modules.core.images import get_profile_picture
 
 class Memes(commands.Cog):
 
@@ -17,15 +19,15 @@ class Memes(commands.Cog):
 
     async def cog_command_error(self, ctx, err):
         logger.exception()
-		if isinstance(err, discord.ext.commands.errors.CommandInvokeError):
-			err = err.original
+        if isinstance(err, discord.ext.commands.errors.CommandInvokeError):
+            err = err.original
         try:
             if isinstance(err, discord.ext.commands.errors.MissingRequiredArgument):
-                await.send('Missing required argument.')
+                await ctx.send('Missing required argument.')
             else:
-				await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
-		except:
-			pass
+                await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+        except:
+            pass
 
     # @commands.group()
     # async def memes(ctx):
