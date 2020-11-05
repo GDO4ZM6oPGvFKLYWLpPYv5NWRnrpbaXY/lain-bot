@@ -8,6 +8,7 @@ from itertools import zip_longest
 import os
 import io
 import asyncio
+from aiohttp import ClientResponseError
 import logging
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,7 @@ class Memes(commands.Cog):
         self.bot = bot
 
     async def cog_command_error(self, ctx, err):
-        logger.exception()
+        logger.exception('Error in meme command.')
         if isinstance(err, discord.ext.commands.errors.CommandInvokeError):
             err = err.original
         try:
