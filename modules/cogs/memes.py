@@ -1,14 +1,34 @@
-import discord
-from discord.ext import commands
-from discord.ext.commands import has_permissions
-import os
-
+from modules.core.images import get_profile_picture
 from modules.core.client import Client
+from PIL import Image, ImageSequence
+from discord.ext.commands import has_permissions
+from discord.ext import commands
+import discord
+from itertools import zip_longest
+import os
+import io
+import asyncio
+from aiohttp import ClientResponseError
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Memes(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    async def cog_command_error(self, ctx, err):
+        logger.exception('Error in meme command.')
+        if isinstance(err, discord.ext.commands.errors.CommandInvokeError):
+            err = err.original
+        try:
+            if isinstance(err, discord.ext.commands.errors.MissingRequiredArgument):
+                await ctx.send('Missing required argument.')
+            else:
+                await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+        except:
+            pass
 
     # @commands.group()
     # async def memes(ctx):
@@ -64,3 +84,41 @@ class Memes(commands.Cog):
     async def bad(self, ctx, *args):
         if len(args) and args[0] in ['bot', 'bot!']:
             await ctx.send('https://files.catbox.moe/bde830.gif')
+
+    @commands.command(pass_context=True)
+    async def correct(self, ctx):
+        try:
+            user = ctx.message.mentions[0]
+        except IndexError:
+            await ctx.send("You need to mention a user.")
+            return
+
+        try:
+            user_pf = await get_profile_picture(Client.session, user)
+        except ClientResponseError:
+            await ctx.send("Couldn't get profile picture.")
+            
+
+        coords = ((242,58,370,186), (253,60,381,188), 
+            (263,68,391,196), (270,68,398,196), (270,73,398,201),
+            (272,73,400,201), (269,78,397,206), (270,83,398,211),
+            (270,83,398,211), (270,83,398,211), (64,90,192,218),
+            (32,70,160,198), (32,70,160,198))    
+        
+        frames = []
+        with Image.open(os.getcwd() + '/assets/memes/punch.gif') as im:
+            with Image.open(user_pf).convert('RGB') as prof_pic:
+                for frame, coords in zip_longest(ImageSequence.Iterator(im), coords):
+                    frame = frame.copy().convert('RGB')
+                    if coords:
+                        frame.paste(prof_pic, coords)
+                    frames.append(frame)
+
+        with io.BytesIO() as image_bin:
+            frames[0].save(image_bin, 'GIF', save_all=True, 
+                append_images=frames[1:], loop=True)
+            image_bin.seek(0)
+            await ctx.send(file=discord.File(image_bin, filename='image.gif'))
+
+        
+

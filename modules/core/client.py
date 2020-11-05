@@ -2,6 +2,7 @@ from discord.ext import commands
 from modules.core.session import Session
 
 class Client:
+	
 	session = Session(raise_for_status=True)
 	
 	prefix = ">"
