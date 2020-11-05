@@ -90,6 +90,7 @@ class Memes(commands.Cog):
         user = ctx.guild.get_member_named(user_arg)
         if not user:
             await ctx.send("Couldn't find that user.")
+            return
         try:
             user_pf = await get_profile_picture(Client.session, user)
         except ClientResponseError:
