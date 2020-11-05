@@ -86,11 +86,13 @@ class Memes(commands.Cog):
             await ctx.send('https://files.catbox.moe/bde830.gif')
 
     @commands.command(pass_context=True)
-    async def correct(self, ctx, user_arg):
-        user = ctx.guild.get_member_named(user_arg)
-        if not user:
-            await ctx.send("Couldn't find that user.")
+    async def correct(self, ctx):
+        try:
+            user = ctx.message.mentions[0]
+        except IndexError:
+            await ctx.send("You need to mention a user.")
             return
+
         try:
             user_pf = await get_profile_picture(Client.session, user)
         except ClientResponseError:
