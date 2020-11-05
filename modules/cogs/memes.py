@@ -97,6 +97,7 @@ class Memes(commands.Cog):
             user_pf = await get_profile_picture(Client.session, user)
         except ClientResponseError:
             await ctx.send("Couldn't get profile picture.")
+            return
             
 
         coords = ((242,58,370,186), (253,60,381,188), 
@@ -116,7 +117,7 @@ class Memes(commands.Cog):
 
         with io.BytesIO() as image_bin:
             frames[0].save(image_bin, 'GIF', save_all=True, 
-                append_images=frames[1:], loop=True)
+                append_images=frames[1:], loop=0)
             image_bin.seek(0)
             await ctx.send(file=discord.File(image_bin, filename='image.gif'))
 
