@@ -84,6 +84,7 @@ class Memes(commands.Cog):
 
     @commands.command(pass_context=True)
     async def correct(self, ctx):
+        await ctx.trigger_typing()
         try:
             user = ctx.message.mentions[0]
         except IndexError:
