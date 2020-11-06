@@ -1,12 +1,9 @@
-from modules.core.images import get_profile_picture
+from modules.core.images import get_profile_picture, insert_picture_in_gif
 from modules.core.client import Client
-from PIL import Image, ImageSequence
 from discord.ext.commands import has_permissions
 from discord.ext import commands
 import discord
-from itertools import zip_longest
 import os
-import io
 import asyncio
 from aiohttp import ClientResponseError
 import logging
@@ -99,26 +96,14 @@ class Memes(commands.Cog):
             await ctx.send("Couldn't get profile picture.")
             return
             
-
         coords = ((242,58,370,186), (253,60,381,188), 
             (263,68,391,196), (270,68,398,196), (270,73,398,201),
             (272,73,400,201), (269,78,397,206), (270,83,398,211),
             (270,83,398,211), (270,83,398,211), (64,90,192,218),
             (32,70,160,198), (32,70,160,198))    
         
-        frames = []
-        with Image.open(os.getcwd() + '/assets/memes/punch.gif') as im:
-            with Image.open(user_pf).convert('RGB') as prof_pic:
-                for frame, coords in zip_longest(ImageSequence.Iterator(im), coords):
-                    frame = frame.copy().convert('RGB')
-                    if coords:
-                        frame.paste(prof_pic, coords)
-                    frames.append(frame)
-
-        with io.BytesIO() as image_bin:
-            frames[0].save(image_bin, 'GIF', save_all=True, 
-                append_images=frames[1:], loop=0)
-            image_bin.seek(0)
+        base_img = os.getcwd() + '/assets/memes/punch.gif'
+        with insert_picture_in_gif(base_img, user_pf, coords) as image_bin:
             await ctx.send(file=discord.File(image_bin, filename='image.gif'))
 
         
