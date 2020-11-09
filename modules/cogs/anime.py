@@ -12,6 +12,7 @@ from modules.core.client import Client
 from modules.core.database import Database
 from modules.config.user import User
 from modules.anime.safebooru import Safebooru
+from modules.anime.doujin import Doujin
 from modules.anime.anilist import Anilist
 from modules.anime.anilist2 import Anilist2
 from modules.anime.mal import Mal
@@ -63,6 +64,85 @@ class Anime(commands.Cog):
 		embed.set_footer(text=safebooruTagsTogether)
 
 		await channel.send(embed=embed)
+
+	@commands.group(pass_context=True)
+	async def doujin(self, ctx):
+		if ctx.invoked_subcommand is None:
+			await ctx.send('Invalid doujin command passed...')
+
+	@doujin.command(pass_context=True)
+	async def search(self, ctx):
+		tags = ctx.message.content
+		links = Doujin.tagSearch(tags)
+		
+		await ctx.trigger_typing()
+		embed = discord.Embed(
+			title = 'Results',
+			color = discord.Color.red()
+		)
+		embed.set_thumbnail(url='https://e-hentai.org/favicon.png')
+
+		if links != None:
+			def check(reaction, user):
+				return user == ctx.message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣' or str(reaction.emoji) == '5️⃣' or str(reaction.emoji) == '6️⃣' or str(reaction.emoji) == '7️⃣' or str(reaction.emoji) == '8️⃣' or str(reaction.emoji) == '9️⃣')
+			
+			size = len(links)
+			if size == 0:
+				await ctx.send('No results, try different tags')
+				return
+			
+			i = 1
+			for d in links:
+				split = d.split('/')
+				id = split[4]
+				token = split[5]
+				meta = Doujin.metaSearch(id, token)
+				embed.add_field(name=str(i) + '. ' + meta['title'])
+				i += 1
+				if i == 10:
+					break
+			msg = await ctx.send(embed=embed)
+			# add reaction(s)
+			if size >= 1:
+				await msg.add_reaction('1️⃣')
+			if size >= 2:
+				await msg.add_reaction('2️⃣')
+			if size >= 3:
+				await msg.add_reaction('3️⃣')
+			if size >= 4:
+				await msg.add_reaction('4️⃣')
+			if size >= 5:
+				await msg.add_reaction('5️⃣')
+			if size >= 6:
+				await msg.add_reaction('6️⃣')
+			if size >= 7:
+				await msg.add_reaction('7️⃣')
+			if size >= 8:
+				await msg.add_reaction('8️⃣')
+			if size >= 9:
+				await msg.add_reaction('9️⃣')
+
+			try:
+				reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+			except asyncio.TimeoutError:
+				await ctx.send('Took too long, try again')
+			
+			else:
+				try:
+					chose = links[str(reaction.emoji)[:1] - 1]
+				except:
+					await ctx.send('Invalid reaction, try again')
+					return
+				
+				embed = discord.Embed(
+					title = 'Not done yet lol',
+					color = discord.Color.red(),
+					url=chose
+				)
+				await ctx.send(embed=embed)
+
+		else:
+			await ctx.send('Error getting data')
 
 	@commands.group(pass_context=True)
 	async def al(self, ctx):
