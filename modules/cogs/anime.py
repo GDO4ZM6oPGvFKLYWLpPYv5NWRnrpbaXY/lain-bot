@@ -72,7 +72,7 @@ class Anime(commands.Cog):
 
 	@doujin.command(pass_context=True)
 	async def search(self, ctx):
-		tags = ctx.message.content
+		tags = str(ctx.message.content)[(len(ctx.prefix) + len('doujin search ')):]
 		links = Doujin.tagSearch(tags)
 		
 		await ctx.trigger_typing()
