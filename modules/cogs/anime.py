@@ -4,20 +4,20 @@ from discord.ext.commands import has_permissions, CheckFailure
 import os, random, asyncio, logging
 from os import path
 from dotenv import load_dotenv
-from aiohttp import ClientResponseError	
+from aiohttp import ClientResponseError
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
 from modules.core.client import Client
 from modules.core.database import Database
-from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.doujin import Doujin
 from modules.anime.anilist import Anilist
 from modules.anime.anilist2 import Anilist2
 from modules.anime.mal import Mal
 from modules.anime.vndb import Vndb
-from modules.config.config import Config
+#from modules.config.user import User
+#from modules.config.config import Config
 
 class Anime(commands.Cog):
 
@@ -34,14 +34,14 @@ class Anime(commands.Cog):
 			if isinstance(err, discord.ext.commands.MissingPermissions):
 				await ctx.send("You lack the needed permissions!")
 			elif isinstance(err, Anilist2.AnilistError):
-				await ctx.send(f"Query request failed\nmsg: {err.message}\nstatus: {err.status}")	
-			elif isinstance(err, HTTPError):	
+				await ctx.send(f"Query request failed\nmsg: {err.message}\nstatus: {err.status}")
+			elif isinstance(err, HTTPError):
 				await ctx.send(err.http_error_msg)
 			else:
 				await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
 		except:
 			pass
-		
+
 	@commands.command(pass_context=True)
 	async def safebooru(self, ctx, tags):
 		"""Look up images on safebooru"""
@@ -74,7 +74,7 @@ class Anime(commands.Cog):
 	async def search(self, ctx):
 		tags = str(ctx.message.content)[(len(ctx.prefix) + len('doujin search ')):]
 		links = Doujin.tagSearch(tags)
-		
+
 		await ctx.trigger_typing()
 		embed = discord.Embed(
 			title = 'Results',
@@ -85,12 +85,12 @@ class Anime(commands.Cog):
 		if links != None:
 			def check(reaction, user):
 				return user == ctx.message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣' or str(reaction.emoji) == '5️⃣' or str(reaction.emoji) == '6️⃣' or str(reaction.emoji) == '7️⃣' or str(reaction.emoji) == '8️⃣' or str(reaction.emoji) == '9️⃣')
-			
+
 			size = len(links)
 			if size == 0:
 				await ctx.send('No results, try different tags')
 				return
-			
+
 			i = 1
 			for d in links:
 				split = d.split('/')
@@ -126,14 +126,14 @@ class Anime(commands.Cog):
 				reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
 			except asyncio.TimeoutError:
 				await ctx.send('Took too long, try again')
-			
+
 			else:
 				try:
 					chose = links[str(reaction.emoji)[:1] - 1]
 				except:
 					await ctx.send('Invalid reaction, try again')
 					return
-				
+
 				embed = discord.Embed(
 					title = 'Not done yet lol',
 					color = discord.Color.red(),
@@ -413,6 +413,45 @@ class Anime(commands.Cog):
 		await ctx.send("Manga messages disabled for this channel!")
 
 	@al.group(pass_context=True)
+	async def r18(self, ctx):
+		"""Commands for toggling R18 on/off, only for admins! Currently does not work and Hentai is diabled by default!"""
+		if ctx.invoked_subcommand is None:
+			guild = await Database.guild_find_one({'id': str(ctx.guild.id)})
+			if guild:
+				print(guild["r18Enabled"])
+			await ctx.send('Invalid r18 command passed...\nTry \"\>al r18 enable\" to enable manga updates on this channel or use disable.')
+
+	@r18.command(pass_context=True, name="enable")
+	@has_permissions(administrator=True)
+	async def r18_enable(self, ctx):
+		"""Enables r18 update messages in this channel!"""
+		# sorry if any issues arise from this!
+
+		res = await Database.guild_update_one(
+			{'id': str(ctx.guild.id) },
+			{'$set': { 'r18Enabled': True}},
+			upsert=True
+		)
+		if res.upserted_id:
+			await Database.guild_update_one(
+				{ '_id': res.upserted_id },
+				{ '$set': { 'name': ctx.guild.name, 'r18Enabled': [] } }
+		)
+		await ctx.send("Enabled R18 Manga messages in manga channels!")
+
+	@r18.command(pass_context=True, name="disable")
+	@has_permissions(administrator=True)
+	async def r18_disable(self, ctx):
+		"""Disables R18 update messages in this channel!"""
+		await Database.guild_update_one(
+			{'id': str(ctx.guild.id)},
+			{'$set': { 'r18Enabled': False}},
+		)
+		await ctx.send("R18 messages disabled!")
+
+
+
+	@al.group(pass_context=True)
 	async def user(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid Anilist user command passed...')
@@ -424,7 +463,7 @@ class Anime(commands.Cog):
 		if not user:
 			await ctx.send('Please provide a username')
 			return
-		
+
 		if len(user[0]) < 2:
 			await ctx.send('Usernames are 2 or more characters')
 			return
@@ -545,7 +584,7 @@ class Anime(commands.Cog):
 				if userData['animeList'][entry]['status'] == 'REPEATING':
 					rewatchingList.append(e)
 					continue
-			
+
 			if not (watchingList or rewatchingList):
 				await ctx.send('They do not have anything on their watch/rewatch list at the moment.')
 				return
@@ -757,7 +796,7 @@ class Anime(commands.Cog):
 		try:
 			await ctx.send(embed=embed)
 		except Exception as e:
-			logger.exception('%s; %s; %s', 
+			logger.exception('%s; %s; %s',
 				anilistResults["bannerImage"],
 				anilistResults["avatar"]["large"],
 				anilistResults["siteUrl"])
@@ -1014,7 +1053,7 @@ def limitLength(lst):
 	orgLen = len('\n'.join(lst))
 	if orgLen <= 1024:
 		return lst
-	   
+
 	lst.append('+#### others!')
 	tLen = len('\n'.join(lst))
 	lst = lst[:-1]
