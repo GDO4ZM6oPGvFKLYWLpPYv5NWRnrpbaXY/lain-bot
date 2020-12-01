@@ -60,7 +60,7 @@ class Updater(commands.Cog):
                 except:
                     hentai = False
 
-                if hentai:
+                if not hentai:
                 # set up data differences
                     old_entry = old_list.get(str(fetched_entry['mediaId']))
                     if not old_entry:
@@ -168,7 +168,7 @@ class Updater(commands.Cog):
                 except:
                     hentai = False
 
-                if hentai:
+                if not hentai:
                     # set up data differences
                     old_entry = old_list.get(str(fetched_entry['mediaId']))
                     if not old_entry:
