@@ -50,7 +50,13 @@ class Updater(commands.Cog):
 
         for lst in fetched_list['lists']:
             for fetched_entry in lst['entries']:
-                if "Hentai" not in fetched_entry['media']['genres']:
+                # temp
+                try:
+                    genres = fetched_entry['media']['genres']
+                except:
+                    genres = None
+
+                if "Hentai" not in genres or genres==None:
                 # set up data differences
                     old_entry = old_list.get(str(fetched_entry['mediaId']))
                     if not old_entry:
@@ -148,8 +154,13 @@ class Updater(commands.Cog):
 
         for lst in fetched_list['lists']:
             for fetched_entry in lst['entries']:
-                # TEMP hentai filter
-                if "Hentai" not in fetched_entry['media']['genres']:
+                # temp
+                try:
+                    genres = fetched_entry['media']['genres']
+                except:
+                    genres = None
+
+                if "Hentai" not in genres or genres==None:
                     # set up data differences
                     old_entry = old_list.get(str(fetched_entry['mediaId']))
                     if not old_entry:
