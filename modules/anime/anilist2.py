@@ -166,13 +166,13 @@ class Anilist2:
 
     mediaQuery = '''
         query(
-            $id: Int,
-            $search: String,
-            $asHtml: Boolean,
-            $isManga: Boolean!,
-            $isAnime: Boolean!,
-            $isCharacter: Boolean!,
-            $isMain: Boolean,
+            $id: Int, 
+            $search: String, 
+            $asHtml: Boolean, 
+            $isManga: Boolean!, 
+            $isAnime: Boolean!, 
+            $isCharacter: Boolean!, 
+            $isMain: Boolean, 
             $format_not_in: [MediaFormat]
         ) {
             manga: Media(id: $id, search: $search, type: MANGA) @include(if: $isManga) {
@@ -251,7 +251,7 @@ class Anilist2:
             siteUrl
         }
         '''
-
+    
     async def aniSearch(session, search, isManga=False, isAnime=False, isCharacter=False):
         """Search anilist for manga, anime, and/or character
 
@@ -261,8 +261,8 @@ class Anilist2:
             isManga (bool): If the results should contain a manga entry
             isAnime (bool): If the results should contain an anime entry
             isCharacter (bool): If the results should contain a character entry
-
-        Returns:
+        
+        Returns: 
             A valid anilist query response.
 
         Raises:
@@ -271,7 +271,7 @@ class Anilist2:
         """
         if not (session and (isManga or isAnime or isCharacter)):
             raise Anilist2.AnilistBadArguments()
-
+            
         v = {
             'search': search,
             'isManga': isManga,
@@ -285,19 +285,19 @@ class Anilist2:
         if isAnime:
             v['asHtml'] = False
             v['isMain'] = True
-            v['format_not_in'] = ['MANGA', 'NOVEL', 'ONE_SHOT']
+            v['format_not_in'] = ['MANGA', 'NOVEL', 'ONE_SHOT']   
 
-        return await Anilist2.__request(session, Anilist2.mediaQuery, v)
+        return await Anilist2.__request(session, Anilist2.mediaQuery, v)       
 
-
+    
     async def getUserData(session, id):
         """Gets user data from anilist via anilist id
 
         Args:
             session (aiohttp.ClientSession): A session for making post requests. Expected to be from aiohttp.ClientSession()
             id (int): The anilist id to get data for
-
-        Returns:
+        
+        Returns: 
             A valid anilist query response.
 
         Raises:
@@ -317,8 +317,8 @@ class Anilist2:
         Args:
             session (aiohttp.ClientSession): A session for making post requests. Expected to be from aiohttp.ClientSession()
             name (str): The anilist username to search with
-
-        Returns:
+        
+        Returns: 
             A valid anilist query response.
 
         Raises:
@@ -331,16 +331,16 @@ class Anilist2:
 
         return await Anilist2.__request(session, Anilist2.userSearchQuery, {'name': name})
 
-
+    
     async def __request(session, query, variables):
         async with session.post(Anilist2.apiUrl, json={'query': query, 'variables': variables}, raise_for_status=False) as resp:
-            logger.debug("POST with vars %s returned status %s" % (variables,
+            logger.debug("POST with vars %s returned status %s" % (variables, 
                 resp.status))
             return await Anilist2.__resolveResponse(resp)
 
 
     async def __resolveResponse(resp):
-        """Tries to resolve response into well-formatted json derived dictionary.
+        """Tries to resolve response into well-formatted json derived dictionary. 
 
         Args:
             resp (aiohttp.ClientResponse): The response to resolve
@@ -359,7 +359,7 @@ class Anilist2:
             raise Anilist2.AnilistError(500, 'AniList internal service error')
 
         if resp.status == 503:
-            raise Anilist2.AnilistError(503,
+            raise Anilist2.AnilistError(503, 
                 'Anilist is currently unreachable at the moment')
 
         if resp.status == 404:

@@ -1,3 +1,4 @@
+# from modules.core.loop import Loop
 from modules.core.client import Client
 
 from modules.cogs.anime import Anime
