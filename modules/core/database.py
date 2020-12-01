@@ -21,31 +21,28 @@ class Database:
 	"""
 	def userCollection():
 		return Database.client['lain-bot']['users']
-
-
+	
+	
 	"""
 	guild model:
-		_id						mongodb generated id
+		_id						mongodb generated id	
 		id						int - discord id for guild
 		animeMessageChannels	[str] - channel ids where anime messages are enabled
 		mangaMessageChannels	[str] - channel ids where manga messages are enabled
-		r18Enabled				bool - bool to toggle whether or not hentai are enabled in manga channels
 		name					str - name of guild (not really needed, just there for debugging)
 	"""
-	# Tatsu - I'd make a r18 channel thing but I suck at coding and don't care enough
-
 	def guildCollection():
 		return Database.client['lain-bot']['guilds']
 
 	"""
 	storage model:
-		_id						mongodb generated id
+		_id						mongodb generated id	
 		id						str - string to name storage item
 	"""
 	def storageCollection():
 		return Database.client['lain-bot']['storage']
 
-
+	
 	async def user_update_one(filter, update, upsert=False):
 		"""Update a user in db
 
@@ -176,7 +173,7 @@ class Database:
 			new_entry['progressVolumes'] = anilistEntry['progressVolumes']
 			new_entry['chapters'] = anilistEntry['media']['chapters']
 			new_entry['volumes'] = anilistEntry['media']['volumes']
-
+		
 		return new_entry
 
 
@@ -185,7 +182,7 @@ class Database:
 
 			Args:
 				user (obj): The user to get the score format from
-				fetched_user (obj)[optional]: The fetched anilist user to get the score
+				fetched_user (obj)[optional]: The fetched anilist user to get the score 
 					format from. Optional, will just get format from user if
 					not provided
 
@@ -259,7 +256,7 @@ class Database:
 		try:
 			res = await Database.storageCollection().update_one(filter, update)
 		except:
-			logger.warning('Exception finding storage item in db.',
+			logger.warning('Exception finding storage item in db.', 
 				exc_info=True)
 			return None
 		else:
@@ -280,7 +277,7 @@ class Database:
 		try:
 			res = await Database.storageCollection().find_one(filter, projection)
 		except:
-			logger.warning('Exception finding storage item in db.',
+			logger.warning('Exception finding storage item in db.', 
 				exc_info=True)
 			return None
 		else:
