@@ -53,14 +53,10 @@ class Updater(commands.Cog):
                 # temp
                 try:
                     genres = fetched_entry['media']['genres']
-                    if "Hentai" in genres:
-                        hentai = True
-                    else:
-                        hentai = False
                 except:
-                    hentai = False
+                    genres = None
 
-                if hentai:
+                if "Hentai" not in genres or genres==None:
                 # set up data differences
                     old_entry = old_list.get(str(fetched_entry['mediaId']))
                     if not old_entry:
@@ -161,14 +157,10 @@ class Updater(commands.Cog):
                 # temp
                 try:
                     genres = fetched_entry['media']['genres']
-                    if "Hentai" in genres:
-                        hentai = True
-                    else:
-                        hentai = False
                 except:
-                    hentai = False
+                    genres = None
 
-                if hentai:
+                if "Hentai" not in genres or genres==None:
                     # set up data differences
                     old_entry = old_list.get(str(fetched_entry['mediaId']))
                     if not old_entry:
