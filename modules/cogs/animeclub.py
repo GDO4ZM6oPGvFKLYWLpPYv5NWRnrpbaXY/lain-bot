@@ -1,10 +1,11 @@
-import logging
-import discord, re, datetime, pytz
+import logging, discord, re, datetime, pytz, os, openpyxl
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
-from discord.ext.commands import has_any_role, CheckFailure
+from discord.ext.commands import has_any_role
 from dateutil import parser
+from openpyxl import load_workbook
+from tempfile import NamedTemporaryFile
 
 from modules.core.database import Database
 
@@ -32,75 +33,69 @@ class AnimeClub(commands.Cog):
 		if ctx.invoked_subcommand is None:
 			await self.show_shcedule(ctx, wed=True, sat=True)
 
-	@schedule.command(aliases=['sat', 'SAT', 'Sat', 'Saturday'])
+	@schedule.group(aliases=['sat', 'SAT', 'Sat', 'Saturday'])
 	async def saturday(self, ctx):
-		await self.show_shcedule(ctx, sat=True)
+		if ctx.invoked_subcommand is None:
+			await self.show_shcedule(ctx, sat=True)
 
 	@schedule.group(aliases=['wed', 'WED', 'Wed', 'Wednesday'])
 	async def wednesday(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await self.show_shcedule(ctx, wed=True)
 
-	@wednesday.command()
-	async def all(self, ctx):
+	@schedule.command(name='all')
+	async def all_both(self, ctx):
 		await self.show_all_wed(ctx)
+		await self.show_all_sat(ctx)
+
+	@saturday.command(name='all')
+	async def all_sat(self,ctx):
+		await self.show_all_sat(ctx)
+
+	@wednesday.command(name='all')
+	async def all_wed(self, ctx):
+		await self.show_all_wed(ctx)
+
+	@schedule.command(name='future')
+	async def future_both(self, ctx):
+		await self.show_all_wed(ctx, only_future=True)
+		await self.show_all_sat(ctx, only_future=True)
+
+	@saturday.command(name='future')
+	async def future_sat(self,ctx):
+		await self.show_all_sat(ctx, only_future=True)
+
+	@wednesday.command(name='future')
+	async def future_wed(self, ctx):
+		await self.show_all_wed(ctx, only_future=True)
 
 	@schedule.command(name="set")
 	@has_any_role(494979840470941712, 259557922726608896) # admin, executive council
 	async def set_(self, ctx, *args):
-		if not args:
-			await ctx.send('Invalid command. Try `>schedule set sat <show1><show2><show3>` (the < and > are needed). To set wednesday, use <timeX: showX> in the command.')
-		elif args[0] in ['wed', 'WED', 'Wed', 'Wednesday', 'wednesday']:
-			if args[1] == 'bulk':
-				await self.set_wed_bulk(ctx)
-			else:
-				await self.set_wed(ctx, args[1:])
-		elif args[0] in ['sat', 'SAT', 'Sat', 'Saturday', 'saturday']:
-			await self.set_sat(ctx, args[1:])
-		else:
-			await ctx.send('Invalid command. Try `>schedule set sat <show1><show2><show3>` (the < and > are needed). To set wednesday, use <timeX: showX> in the command.')
+		if not args or args[0] not in ['sat', 'wed']:
+			await ctx.send('Bad usage. Try `>sc set wed` or similar')
 
-	async def set_sat(self, ctx, args):
-		data = re.findall('<[^>]*>',' '.join(args))
-		for i in range(0,3):
-			if not data[i]:
-				await ctx.send('Error setting saturday schedule!')
+		if not ctx.message.attachments:
+			await ctx.send('Provide an attachment by pressing the icon to the left of the input box and then doing the command in the message popup')
+
+		k = 'Wednesday'
+		n = 7
+		if args[0] == 'sat':
+			k = 'Saturday'
+			n = 6
+		
+		with NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
+			await ctx.message.attachments[0].save(tmp.name)
+			try:
+				sched = extract_schedule(tmp.name, n)
+			except Exception as e:
+				await ctx.send(f"Failed to extract schedule from file.\n{e.message}")
 				return
-			data[i] = str(6+i) + '-' + str(7+i) + "p: " + data[i][1:-1:1]
-		data.append('9-11p: Social Time')
-		res = await Database.storage_update_one({'id': 'schedule'}, {'$set': {'saturday': data}})
-		if not res:
-			await ctx.send('Error setting Saturday schedule!')
-		else:
-			await ctx.send('Saturday schedule has been updated!')
-
-
-	async def set_wed(self, ctx, args):
-		data = re.findall('<[^:]*:[^>]*>',' '.join(args))
-		nxt_wed = next_wednesday()
-		data = [e[1:-1:1] for e in data]
-		res = await Database.storage_update_one({'id': 'schedule'}, {'$set': {'wednesday.'+str(nxt_wed): data}})
-		if not res:
-			await ctx.send('Error setting Wednesday schedule!')
-		else:
-			await ctx.send('Wednesday schedule for {}-{} has been updated!'.format(nxt_wed.month, nxt_wed.day))
-
-	async def set_wed_bulk(self, ctx):
-		lines = list(filter(None, ctx.message.content.split('\n')))[1:]
-		update = {}
-		date = str(to_date(lines[0][3:]))
-		update[date] = []
-		for e in lines[1:]:
-			if e.startswith('d::'):
-				date = str(to_date(e[3:]))
-				update[date] = []
-				continue
-			update[date].append(e)
-		res = await Database.storage_update_one({'id': 'schedule'}, {'$set': {'wednesday': update}})
-		if not res:
-			await ctx.send('Error setting Wednesday schedule!')
-		else:
-			await ctx.send('Wednesday schedules have been updated!')
+			res = await Database.storage_update_one({'id': 'sched_v2'}, {'$set': {k: sched}})
+			if not res:
+				await ctx.send(f"Error setting {k} schedule!")
+			else:
+				await ctx.send(f"{k} schedules have been updated!")
 
 	async def show_shcedule(self, ctx, wed=False, sat=False):
 		if not wed and not sat:
@@ -108,45 +103,182 @@ class AnimeClub(commands.Cog):
 		else:
 			embed=discord.Embed(description="Club Schedule", color=0xd31f28)
 			embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
-			data = await Database.storage_find_one({'id': 'schedule'})
+			data = await Database.storage_find_one({'id': 'sched_v2'})
+
 			if sat:
-				if 'saturday' in data and data['saturday']:
-					embed.add_field(name="Saturday", value='\n'.join(data['saturday']), inline=False)
+				nxt_sat = next_day(day=5)
+				lines = saturday_lines(data['Saturday'].get(str(nxt_sat)))
+				if lines:
+					embed.add_field(name=f"Saturday ({nxt_sat.month}/{nxt_sat.day})", value='\n'.join(lines), inline=False)
 				else:
-					embed.add_field(name="Saturday", value="*none*", inline=False)
+					embed.add_field(name=f"Saturday ({nxt_sat.month}/{nxt_sat.day})", value="*none*", inline=False)
 			if wed:
-				nxt_wed = next_wednesday()
-				if 'wednesday' in data and str(nxt_wed) in data['wednesday']:
-					embed.add_field(name="Wednesday ({}/{})".format(nxt_wed.month, nxt_wed.day), value='\n'.join(data['wednesday'][str(nxt_wed)]), inline=True)
+				nxt_wed = next_day(day=2)
+				lines = wednesday_lines(data['Wednesday'].get(str(nxt_wed)))
+
+				if lines:
+					embed.add_field(name=f"Wednesday ({nxt_wed.month}/{nxt_wed.day})", value='\n'.join(lines), inline=True)
 				else:
-					embed.add_field(name="Wednesday ({}/{})".format(nxt_wed.month, nxt_wed.day), value="*none*", inline=False)
+					embed.add_field(name=f"Wednesday ({nxt_wed.month}/{nxt_wed.day})", value="*none*", inline=False)
+
 			await ctx.send(embed=embed)
 
-	async def show_all_wed(self, ctx):
+	async def show_all_wed(self, ctx, only_future=False):
 		embed=discord.Embed(description="Wednesday Schedule", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
-		data = await Database.storage_find_one({'id': 'schedule'})
-		if 'wednesday' not in data:
-			embed.add_field(name='Unavailable', value='unavailable')
+
+		data = await Database.storage_find_one({'id': 'sched_v2'})
+		if 'Wednesday' not in data:
+			embed.add_field(name='Unavailable', value='could not find Wednesday data')
 		else:
-			for meeting in data['wednesday']:
+			for meeting in data['Wednesday']:
 				date = parser.parse(meeting)
-				embed.add_field(name="{}/{}".format(date.month, date.day), value='\n'.join(data['wednesday'][meeting]), inline=False)
+				if only_future and date < datetime.datetime.now():
+					continue
+				lines = wednesday_lines(data['Wednesday'][meeting])
+				if lines:
+					embed.add_field(name=f"{date.month}/{date.day}", value='\n'.join(lines), inline=False)
+
 		await ctx.send(embed=embed)
 
-# get date of next wednesday with 10p being latest hour to be considered same wednesday
-def next_wednesday(start=None):
-	if not start:
-		start = datetime.datetime.now()
-	days_ahead = 2 - start.weekday()
-	if days_ahead < 0:
-		days_ahead += 7
-	elif days_ahead == 0:
-		if start.hour >= 22:
-			days_ahead = 7
-	return datetime.datetime(start.year, start.month, start.day, hour=22, tzinfo=tz) + datetime.timedelta(days_ahead)
+	async def show_all_sat(self, ctx, only_future=False):
+		embed=discord.Embed(description="Wednesday Schedule", color=0xd31f28)
+		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
+
+		data = await Database.storage_find_one({'id': 'sched_v2'})
+		if 'Saturday' not in data:
+			embed.add_field(name='Unavailable', value='could not find Saturday data')
+		else:
+			for meeting in data['Saturday']:
+				date = parser.parse(meeting)
+				if only_future and date < datetime.datetime.now():
+					continue
+				lines = saturday_lines(data['Saturday'][meeting])
+				if lines:
+					embed.add_field(name=f"{date.month}/{date.day}", value='\n'.join(lines), inline=False)
+
+		await ctx.send(embed=embed)
+
+def wednesday_lines(data):
+    lines = []
+    if not data:
+        return lines
+
+    for showtime in data:
+        if showtime['title']:
+            lines.append(f"{showtime['start']}-{showtime['end']}: {showtime['title']}")
+    return lines
+
+def saturday_lines(data):
+    lines = []
+    if not data:
+        return lines
+
+    shows = {} # python 3.6+ dicts keep insertion order 🎉
+    for showtime in data:
+        if not showtime['title']:
+            continue
+
+        try:
+            if showtime['title'].lower() == 'craptacular':
+                lines.append('🎉💩 Craptacular 💩🎉')
+                break
+        except:
+            pass
+
+        if showtime['title'] in shows:
+            shows[showtime['title']] += 1
+        else:
+            shows[showtime['title']] = 1
+
+    n = 1
+    for show in shows:
+        lines.append(f"Slot {n}: {show} (x{shows[show]})") # order from dict
+        n += 1
+
+    return lines
+
+def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: int = 12):
+    """Get date of next day of week following given date
+
+    Args:
+        start: date to search from. Defaults to datetime.datetime.now().
+        day: day of the week: mon=0, ..., sun=6. Defaults to 0.
+        latest_same_day_hour: latest hour to consider next day to be that day 
+            i.e. if set to 6, anytime after 6 it will get the following week 
+            while 6 or before will get that day. Defaults to 12.
+
+    Returns:
+        datetime.datetime: date with year. month, and day set
+    """
+    days_ahead = day - start.weekday()
+    if days_ahead < 0:
+        days_ahead += 7
+    elif days_ahead == 0:
+        if start.hour >= latest_same_day_hour:
+            days_ahead = 7
+    return datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(days_ahead)
 
 # month-day-year string to datetimes
 def to_date(s):
 	t = s.split('-')
 	return datetime.datetime(int(t[2]), int(t[0]), int(t[1]), hour=22, tzinfo=tz)
+
+def extract_schedule(file, start_hour):
+    class Time:
+        def __init__(self, hour, min):
+            self.hour = hour
+            self.min = min
+
+        def incr(self, min):
+            hours = max(1, min // 60)
+            if self.min + min >= 60:
+                self.hour += hours
+                self.min = self.min + min - (hours*60)
+            else:
+                self.min += min
+
+        def __str__(self):
+            return f"{self.hour}{':'+str(self.min) if self.min else ''}"
+    
+    wb = load_workbook(filename=file)
+    sheet = wb.active
+    data = {}
+    # go through all rows starting form second (1-based indexing)
+    for row in sheet.iter_rows(2):
+        # ignore if date isn't 1st column element (0-based indexing here)
+        if not isinstance(row[0].value, datetime.datetime):
+            continue
+
+        entries = []
+
+        prev = row[1].value
+        entry = {
+            'title': prev,
+            'start': str(start_hour),
+            'end': ''
+        }
+        time = Time(start_hour, 0)
+        # get showtime data
+        for cell in row[2:]:
+            time.incr(10)
+
+            if isinstance(cell, openpyxl.cell.cell.MergedCell) or (cell.value == None and entry['title'] == None):
+                continue
+
+            entry['end'] = str(time)
+            entries.append(entry)
+            entry = {
+                'title': cell.value,
+                'start': str(time),
+                'end': ''
+            }
+            prev == cell.value
+
+
+        time.incr(10)
+        entry['end'] = str(time)
+        entries.append(entry)
+
+        data[str(row[0].value)] = entries
+    return data
