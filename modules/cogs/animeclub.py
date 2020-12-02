@@ -17,7 +17,7 @@ class AnimeClub(commands.Cog):
 		self.bot = bot
 
 	def is_anime_club_server(ctx):
-		return ctx.guild.id in [254864526069989377]
+		return ctx.guild.id in [254864526069989377, 259896980308754432]
 
 	async def cog_command_error(self, ctx, err):
 		logger.exception("Error during Anime Club command.")
@@ -31,7 +31,10 @@ class AnimeClub(commands.Cog):
 	async def schedule(self, ctx):
 		await ctx.trigger_typing()
 		if ctx.invoked_subcommand is None:
-			await self.show_shcedule(ctx, wed=True, sat=True)
+			if ctx.message.content in ['>sc', '>sced']:
+				await self.show_shcedule(ctx, wed=True, sat=True)
+			else:
+				await ctx.send('Bad usage. Try `>sc` `>sc wed` or `>sc wed future`. Can replace wed with sat as well')
 
 	@schedule.group(aliases=['sat', 'SAT', 'Sat', 'Saturday'])
 	async def saturday(self, ctx):
@@ -124,7 +127,7 @@ class AnimeClub(commands.Cog):
 			await ctx.send(embed=embed)
 
 	async def show_all_wed(self, ctx, only_future=False):
-		embed=discord.Embed(description="Wednesday Schedule", color=0xd31f28)
+		embed=discord.Embed(description="Wednesday Schedules", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 
 		data = await Database.storage_find_one({'id': 'sched_v2'})
@@ -142,7 +145,7 @@ class AnimeClub(commands.Cog):
 		await ctx.send(embed=embed)
 
 	async def show_all_sat(self, ctx, only_future=False):
-		embed=discord.Embed(description="Wednesday Schedule", color=0xd31f28)
+		embed=discord.Embed(description="Saturday Schedules", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 
 		data = await Database.storage_find_one({'id': 'sched_v2'})
@@ -206,7 +209,7 @@ def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: 
 		day: day of the week: mon=0, ..., sun=6. Defaults to 0.
 		latest_same_day_hour: latest hour to consider next day to be that day 
 			i.e. if set to 6, anytime after 6 it will get the following week 
-			while 6 or before will get that day. Defaults to 12.
+			while 6 or before will get that day. Defaults to 21.
 
 	Returns:
 		datetime.datetime: date with year. month, and day set
@@ -219,11 +222,6 @@ def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: 
 		if start.hour >= latest_same_day_hour:
 			days_ahead = 7
 	return datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(days_ahead)
-
-# month-day-year string to datetimes
-def to_date(s):
-	t = s.split('-')
-	return datetime.datetime(int(t[2]), int(t[0]), int(t[1]), hour=22, tzinfo=tz)
 
 def extract_schedule(file, start_hour):
 	class Time:
