@@ -160,64 +160,65 @@ class AnimeClub(commands.Cog):
 		await ctx.send(embed=embed)
 
 def wednesday_lines(data):
-    lines = []
-    if not data:
-        return lines
+	lines = []
+	if not data:
+		return lines
 
-    for showtime in data:
-        if showtime['title']:
-            lines.append(f"{showtime['start']}-{showtime['end']}: {showtime['title']}")
-    return lines
+	for showtime in data:
+		if showtime['title']:
+			lines.append(f"{showtime['start']}-{showtime['end']}: {showtime['title']}")
+	return lines
 
 def saturday_lines(data):
-    lines = []
-    if not data:
-        return lines
+	lines = []
+	if not data:
+		return lines
 
-    shows = {} # python 3.6+ dicts keep insertion order 🎉
-    for showtime in data:
-        if not showtime['title']:
-            continue
+	shows = {} # python 3.6+ dicts keep insertion order 🎉
+	for showtime in data:
+		if not showtime['title']:
+			continue
 
-        try:
-            if showtime['title'].lower() == 'craptacular':
-                lines.append('🎉💩 Craptacular 💩🎉')
-                break
-        except:
-            pass
+		try:
+			if showtime['title'].lower() == 'craptacular':
+				lines.append('🎉💩 Craptacular 💩🎉')
+				break
+		except:
+			pass
 
-        if showtime['title'] in shows:
-            shows[showtime['title']] += 1
-        else:
-            shows[showtime['title']] = 1
+		if showtime['title'] in shows:
+			shows[showtime['title']] += 1
+		else:
+			shows[showtime['title']] = 1
 
-    n = 1
-    for show in shows:
-        lines.append(f"Slot {n}: {show} (x{shows[show]})") # order from dict
-        n += 1
+	n = 1
+	for show in shows:
+		lines.append(f"Slot {n}: {show} (x{shows[show]})") # order from dict
+		n += 1
 
-    return lines
+	return lines
 
-def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: int = 12):
-    """Get date of next day of week following given date
+def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: int = 21):
+	"""Get date of next day of week following given date
 
-    Args:
-        start: date to search from. Defaults to datetime.datetime.now().
-        day: day of the week: mon=0, ..., sun=6. Defaults to 0.
-        latest_same_day_hour: latest hour to consider next day to be that day 
-            i.e. if set to 6, anytime after 6 it will get the following week 
-            while 6 or before will get that day. Defaults to 12.
+	Args:
+		start: date to search from. Defaults to datetime.datetime.now().
+		day: day of the week: mon=0, ..., sun=6. Defaults to 0.
+		latest_same_day_hour: latest hour to consider next day to be that day 
+			i.e. if set to 6, anytime after 6 it will get the following week 
+			while 6 or before will get that day. Defaults to 12.
 
-    Returns:
-        datetime.datetime: date with year. month, and day set
-    """
-    days_ahead = day - start.weekday()
-    if days_ahead < 0:
-        days_ahead += 7
-    elif days_ahead == 0:
-        if start.hour >= latest_same_day_hour:
-            days_ahead = 7
-    return datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(days_ahead)
+	Returns:
+		datetime.datetime: date with year. month, and day set
+	"""
+	start = tz.localize(start)
+	days_ahead = day - start.weekday()
+	if days_ahead < 0:
+		days_ahead += 7
+	elif days_ahead == 0:
+		if start.hour >= latest_same_day_hour:
+			days_ahead = 7
+	return datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(days_ahead)
 
 # month-day-year string to datetimes
 def to_date(s):
@@ -225,60 +226,60 @@ def to_date(s):
 	return datetime.datetime(int(t[2]), int(t[0]), int(t[1]), hour=22, tzinfo=tz)
 
 def extract_schedule(file, start_hour):
-    class Time:
-        def __init__(self, hour, min):
-            self.hour = hour
-            self.min = min
+	class Time:
+		def __init__(self, hour, min):
+			self.hour = hour
+			self.min = min
 
-        def incr(self, min):
-            hours = max(1, min // 60)
-            if self.min + min >= 60:
-                self.hour += hours
-                self.min = self.min + min - (hours*60)
-            else:
-                self.min += min
+		def incr(self, min):
+			hours = max(1, min // 60)
+			if self.min + min >= 60:
+				self.hour += hours
+				self.min = self.min + min - (hours*60)
+			else:
+				self.min += min
 
-        def __str__(self):
-            return f"{self.hour}{':'+str(self.min) if self.min else ''}"
-    
-    wb = load_workbook(filename=file)
-    sheet = wb.active
-    data = {}
-    # go through all rows starting form second (1-based indexing)
-    for row in sheet.iter_rows(2):
-        # ignore if date isn't 1st column element (0-based indexing here)
-        if not isinstance(row[0].value, datetime.datetime):
-            continue
+		def __str__(self):
+			return f"{self.hour}{':'+str(self.min) if self.min else ''}"
+	
+	wb = load_workbook(filename=file)
+	sheet = wb.active
+	data = {}
+	# go through all rows starting form second (1-based indexing)
+	for row in sheet.iter_rows(2):
+		# ignore if date isn't 1st column element (0-based indexing here)
+		if not isinstance(row[0].value, datetime.datetime):
+			continue
 
-        entries = []
+		entries = []
 
-        prev = row[1].value
-        entry = {
-            'title': prev,
-            'start': str(start_hour),
-            'end': ''
-        }
-        time = Time(start_hour, 0)
-        # get showtime data
-        for cell in row[2:]:
-            time.incr(10)
+		prev = row[1].value
+		entry = {
+			'title': prev,
+			'start': str(start_hour),
+			'end': ''
+		}
+		time = Time(start_hour, 0)
+		# get showtime data
+		for cell in row[2:]:
+			time.incr(10)
 
-            if isinstance(cell, openpyxl.cell.cell.MergedCell) or (cell.value == None and entry['title'] == None):
-                continue
+			if isinstance(cell, openpyxl.cell.cell.MergedCell) or (cell.value == None and entry['title'] == None):
+				continue
 
-            entry['end'] = str(time)
-            entries.append(entry)
-            entry = {
-                'title': cell.value,
-                'start': str(time),
-                'end': ''
-            }
-            prev == cell.value
+			entry['end'] = str(time)
+			entries.append(entry)
+			entry = {
+				'title': cell.value,
+				'start': str(time),
+				'end': ''
+			}
+			prev == cell.value
 
 
-        time.incr(10)
-        entry['end'] = str(time)
-        entries.append(entry)
+		time.incr(10)
+		entry['end'] = str(time)
+		entries.append(entry)
 
-        data[str(row[0].value)] = entries
-    return data
+		data[str(row[0].value)] = entries
+	return data
