@@ -136,7 +136,7 @@ class AnimeClub(commands.Cog):
 		else:
 			for meeting in data['Wednesday']:
 				date = parser.parse(meeting)
-				if only_future and date < datetime.datetime.now():
+				if only_future and date < next_day(day=2):
 					continue
 				lines = wednesday_lines(data['Wednesday'][meeting])
 				if lines:
@@ -154,7 +154,7 @@ class AnimeClub(commands.Cog):
 		else:
 			for meeting in data['Saturday']:
 				date = parser.parse(meeting)
-				if only_future and date < datetime.datetime.now():
+				if only_future and date < next_day(day=5):
 					continue
 				lines = saturday_lines(data['Saturday'][meeting])
 				if lines:
