@@ -1,8 +1,6 @@
-import discord
+import discord, youtube_dl as ytdl, random, logging
 from discord.ext import commands
 from discord.utils import get
-import youtube_dl as ytdl
-import random, logging
 logger = logging.getLogger(__name__)
 
 from modules.music.radio import Radio

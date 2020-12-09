@@ -1,9 +1,7 @@
+import discord, os, logging
 from modules.core.resources import Resources
 from discord.ext import commands
-import discord
-import os
 from aiohttp import ClientResponseError
-import logging
 logger = logging.getLogger(__name__)
 
 
