@@ -7,4 +7,4 @@ class Description:
     profile = MALProfile
     query = MyAnimeListQuery
     link_fn = lambda id: f"https://myanimelist.net/profile/{id}"
-    time_between_queries = 60
+    time_between_queries = 30

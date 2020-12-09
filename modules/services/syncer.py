@@ -126,7 +126,7 @@ class Syncer:
                 return
             
             # display for each of those guilds based on its settings
-            async for guild in Resources.guild_col.find({'guild_id': {'$in': disaply_guild_ids}}):
+            async for guild in Resources.guild2_col.find({'guild_id': {'$in': disaply_guild_ids}}):
                 # go through all the channels it displays updates for
                 for ch in guild['settings']['updates']:
                     channel = self.bot.get_channel(int(ch))
@@ -197,7 +197,7 @@ class Syncer:
             fn = f"{hash(imgs)}.jpg"
             fp = img_stash.get(fn)
             if not fp:
-                fp = await Resources.img_gen.combineUrl(Resources.session, self.bot.loop, imgs)
+                fp = await Resources.img_gen.combineUrl(Resources.syncer_session, self.bot.loop, imgs)
                 img_stash[fn] = fp
             else:
                 fp.seek(0)

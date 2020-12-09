@@ -208,7 +208,7 @@ class AnilistQuery(Query):
             return UserSearch(status=ResultStatus.ERROR, data='No username provided')
 
         try:
-            async with Resources.session.post('https://graphql.anilist.co', json={'query':self._serach_query(username)}, raise_for_status=False, timeout=aiohttp.ClientTimeout(total=5)) as resp:
+            async with Resources.syncer_session.post('https://graphql.anilist.co', json={'query':self._serach_query(username)}, raise_for_status=False, timeout=aiohttp.ClientTimeout(total=5)) as resp:
                 # handle non 200 status
                 if resp.status == 404:
                     return UserSearch(status=ResultStatus.NOTFOUND, data=None)
@@ -263,7 +263,7 @@ class AnilistQuery(Query):
             q = self._build_query(query_ids)
             if not q: return {} # all the users failed
             try:
-                async with Resources.session.post('https://graphql.anilist.co', json={'query':q}, raise_for_status=False, timeout=aiohttp.ClientTimeout(total=20)) as resp:
+                async with Resources.syncer_session.post('https://graphql.anilist.co', json={'query':q}, raise_for_status=False, timeout=aiohttp.ClientTimeout(total=20)) as resp:
 
                     # too many request but still have more tries -> try next time anilist says it'll accept request
                     if tries and resp.status == 429:
