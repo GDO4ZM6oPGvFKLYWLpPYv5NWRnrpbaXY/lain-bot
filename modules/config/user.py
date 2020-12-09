@@ -1,5 +1,4 @@
-import json
-import os
+import json, os
 
 class User:
 	def userUpdate(userID, dict, entry):

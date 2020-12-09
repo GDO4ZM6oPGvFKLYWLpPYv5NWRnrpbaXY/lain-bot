@@ -1,6 +1,6 @@
+import io, logging
 from PIL import Image, ImageSequence
 from itertools import zip_longest
-import io, logging, asyncio
 logger = logging.getLogger(__name__)
 
 class ImageGenerator:

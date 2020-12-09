@@ -131,7 +131,7 @@ class ServiceCommands(commands.Cog):
 
     async def _filter(self, ctx, onlyImages=False):
         await ctx.trigger_typing()
-        selectors = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+        selectors = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'] # needs expanding if possible options exceed 9
         selections = {}
 
         embed = discord.Embed(

@@ -1,4 +1,4 @@
-import logging, discord, re, datetime, pytz, os, openpyxl
+import logging, discord, datetime, os, openpyxl
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
