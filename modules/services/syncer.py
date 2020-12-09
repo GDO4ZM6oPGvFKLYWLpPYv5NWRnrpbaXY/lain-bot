@@ -165,14 +165,18 @@ class Syncer:
         if not msgs:
             return
 
+        nick = ''
+        for member in channel.members:
+            if str(member.id) == user.discord_id:
+                nick = member.nick if member.nick else member.name
+                break
         try:
-            name = user.profile.name
+            name = f"{user.profile.name} ({nick})"
         except:
-            name = '*unknown*'
-            for member in channel.members:
-                if str(member.id) == user.discord_id:
-                    name = member.nick
-                    break
+            if nick:
+                name = nick
+            else:
+                name = '*unknown*'
 
         embed = discord.Embed(
             title = name,
