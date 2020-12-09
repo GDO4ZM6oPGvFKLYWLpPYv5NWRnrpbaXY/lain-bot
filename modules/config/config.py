@@ -1,10 +1,5 @@
-import discord
 import json
 import os
-
-from modules.core.client import Client
-
-bot = Client.bot
 
 class Config:
 

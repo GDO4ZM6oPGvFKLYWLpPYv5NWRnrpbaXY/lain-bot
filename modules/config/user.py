@@ -1,8 +1,5 @@
-import discord
 import json
 import os
-
-from modules.core.client import Client
 
 class User:
 	def userUpdate(userID, dict, entry):
