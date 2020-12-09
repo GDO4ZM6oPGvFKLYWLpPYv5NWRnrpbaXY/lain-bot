@@ -1,9 +1,9 @@
-import logging, discord
+import logging, discord, os
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
 
-from modules.core.client import Client
+from modules.core.resources import Resources
 
 class Jisho(commands.Cog):
 
@@ -24,7 +24,7 @@ class Jisho(commands.Cog):
         if not search:
             return await ctx.send('I need something to search')
 
-        async with Client.session.get('https://jisho.org/api/v1/search/words?keyword='+search) as resp:
+        async with Resources.session.get('https://jisho.org/api/v1/search/words?keyword='+search) as resp:
             if resp.status != 200:
                 return await ctx.send('I could not contact jisho.org')
             
@@ -34,7 +34,7 @@ class Jisho(commands.Cog):
                 return await ctx.send('I could not read the jisho.org response')
             else:
                 if 'data' not in j:
-                    return await ctx.send('I could not read the jisho.org response')
+                    return await ctx.send('I could not find data in jisho.org response')
 
             if not j['data']:
                 return await ctx.send('No results')

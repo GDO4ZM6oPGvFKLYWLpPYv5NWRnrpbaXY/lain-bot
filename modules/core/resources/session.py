@@ -1,10 +1,5 @@
 import aiohttp, asyncio, sys
 
-class SessionSetException(Exception):
-	def __init__(self, message="Session can only be set upon instantiation"):
-		self.message = message
-		super().__init__(self.message)
-
 class Session(aiohttp.ClientSession):
 
 	def __init__(self, *args, **kwargs):
