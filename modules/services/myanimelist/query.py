@@ -20,7 +20,7 @@ class MyAnimeListQuery(Query):
             return UserSearch(status=ResultStatus.ERROR, data='No username provided')
 
         data = None
-        async with Resources.session.get(f"https://api.jikan.moe/v3/user/{username}", raise_for_status=False) as resp:
+        async with Resources.syncer_session.get(f"https://api.jikan.moe/v3/user/{username}", raise_for_status=False) as resp:
             if resp.status == 404:
                 return UserSearch(status=ResultStatus.ERROR, data='I couldn\'t find a user on mal with that name')
             if resp.status == 500:
@@ -149,7 +149,7 @@ class MyAnimeListQuery(Query):
 
     async def _fetch_partial_list(self, id, kind, page):
         """get list from myanimelist via jikan api"""
-        async with Resources.session.get(f"https://api.jikan.moe/v3/user/{id}/{kind}list/all/{page}", raise_for_status=True) as resp:
+        async with Resources.syncer_session.get(f"https://api.jikan.moe/v3/user/{id}/{kind}list/all/{page}", raise_for_status=True) as resp:
             if resp.status != 200:
                 raise Exception('Bad response from myanimelist Jikan call')
             data = await resp.json()
@@ -157,7 +157,7 @@ class MyAnimeListQuery(Query):
 
     async def _fetch_profile(self, id):
         """get profile from myanimelist via jikan api"""
-        async with Resources.session.get(f"https://api.jikan.moe/v3/user/{id}", raise_for_status=True) as resp:
+        async with Resources.syncer_session.get(f"https://api.jikan.moe/v3/user/{id}", raise_for_status=True) as resp:
             if resp.status != 200:
                 raise Exception('Bad response from myanimelist Jikan call')
             return await resp.json()
