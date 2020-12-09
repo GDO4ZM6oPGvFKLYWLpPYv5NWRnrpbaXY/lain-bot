@@ -34,14 +34,22 @@ class ImageGenerator:
         images = []
 
         for url in urls:
-            async with session.get(url) as resp:
-                images.append(Image.open(io.BytesIO(await resp.read())))
+            try:
+                async with session.get(url) as resp:
+                    images.append(Image.open(io.BytesIO(await resp.read())))
+            except:
+                pass
 
-        return await loop.run_in_executor(
+        combined =  await loop.run_in_executor(
             None, 
             ImageGenerator.mergeImagesHorizontal,
             images
         )
+
+        for image in images:
+            image.close()
+
+        return combined
 
     @staticmethod
     async def get_profile_picture(session, user):
