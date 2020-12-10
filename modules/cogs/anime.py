@@ -1,22 +1,19 @@
-import discord, os, random, asyncio, logging
+import discord, os, random, asyncio, logging, statistics
 from discord.ext import commands
-from dotenv import load_dotenv
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
-from modules.core.client import Client
-from modules.config.user import User
 from modules.anime.safebooru import Safebooru
 from modules.anime.doujin import Doujin
-from modules.anime.anilist import Anilist
 from modules.anime.anilist2 import Anilist2
 from modules.anime.vndb import Vndb
 
 from modules.core.resources import Resources
 
-class Anime(commands.Cog):
+from modules.services.anilist.enums import ScoreFormat, Status
+from modules.services import Service
 
-	load_dotenv()
+class Anime(commands.Cog):
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -169,8 +166,7 @@ class Anime(commands.Cog):
 		await ctx.trigger_typing()
 		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
 		# retrieve json file
-		anilistResults = await Anilist2.aniSearch(Client.session, show, isAnime=True)
-		showID = anilistResults["data"]["anime"]["id"]
+		anilistResults = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['anime']['description']))
@@ -237,7 +233,7 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Aired', value=tyme, inline=False)
 
-		await embedScores(ctx.guild, showID, 'animeList', 9, embed)
+		await embedScores(ctx.guild, anilistResults["data"]["anime"]["id"], anilistResults["data"]["anime"]["idMal"], 'anime', 9, embed)
 
 		await ctx.send(embed=embed)
 
@@ -247,8 +243,7 @@ class Anime(commands.Cog):
 		await ctx.trigger_typing()
 		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
 		# retrieve json file
-		anilistResults = await Anilist2.aniSearch(Client.session, comic, isManga=True)
-		mangaID = anilistResults["data"]["manga"]["id"]
+		anilistResults = await Anilist2.aniSearch(Resources.session, comic, isManga=True)
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['manga']['description']))
@@ -306,7 +301,7 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Released', value=tyme, inline=False)
 
-		await embedScores(ctx.guild, mangaID, 'mangaList', 9, embed)
+		await embedScores(ctx.guild, anilistResults["data"]["anime"]["id"], anilistResults["data"]["anime"]["idMal"], 'manga', 9, embed)
 
 		await ctx.send(embed=embed)
 
@@ -314,7 +309,7 @@ class Anime(commands.Cog):
 	async def char(self, ctx):
 		"""Search for a character on anilist"""
 		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
-		anilistResults = await Anilist2.aniSearch(Client.session, c, isCharacter=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, c, isCharacter=True)
 
 		embed = discord.Embed(
 				title = str(anilistResults['data']['character']['name']['full']),
@@ -352,38 +347,38 @@ class Anime(commands.Cog):
 		search = {}
 		if len(user):
 			# username given
-			user = user[0].strip()
+			user = user[0].rstrip()
 			if user.startswith('<@!'):
 				userLen = len(user)-1
 				atUser = user[3:userLen]
-				search = {'discordId': atUser }
-			elif user.startswith('<@'):
-				userLen = len(user)-1
-				atUser = user[2:userLen]
-				search = {'discordId': atUser }
-			elif len(user) > 5 and user[len(user)-5]=="#":
-				userId = ctx.guild.get_member_named(user)
+				search = {'discord_id': atUser }
+			elif user[len(user)-5]=="#":
+				userId = ctx.guild.get_member_named(user).id
 				if userId:
 					# found in guild
-					search = {'discordId': str(userId.id) }
+					search = {'discord_id': str(userId) }
 				else:
 					# not found
 					await ctx.send('Sorry. I could not find that user in this server.')
 					return
 			else:
-				search = {'anilistName': user }
+				search = {'profile.name': user }
 		else:
 			#no username given -> retrieve message creator's info
-			search = {'discordId': str(ctx.message.author.id)}
+			search = {'discord_id': str(ctx.message.author.id)}
 
-		userData = await Resources.users_col.find_one(
+		# technically a user could register both anilist and myanimelist services
+		# rn it'll just use what ever db query finds first (which'll be the least recently set one)
+		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
+		search['status'] = 1
+
+		userData = await Resources.user2_col.find_one(
 			search,
 			{
-				'anilistId': 1,
-				'anilistName': 1,
-				'animeList': 1,
-				'profile.avatar.large': 1,
-				'profile.bannerImage': 1
+				'service': 1,
+				'service_id': 1,
+				'profile': 1,
+				'lists.anime': 1
 			}
 		)
 
@@ -391,20 +386,15 @@ class Anime(commands.Cog):
 			watchingList = []
 			rewatchingList = []
 
-			for entry in userData['animeList']:
-				e = '• ' + userData['animeList'][entry]['title'] + ' (' + str(userData['animeList'][entry]['progress']) + '/'
-				if userData['animeList'][entry]['episodes']:
-					e = e + str(userData['animeList'][entry]['episodes']) + ')'
-				else:
-					e = e + '-)'
+			for e in userData['lists']['anime'].values():
+				if e['status'] == Status.CURRENT:
+					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes' if e['episodes'] else '-']})"
+					watchingList.append(s)
 
-				if userData['animeList'][entry]['status'] == 'CURRENT':
-					watchingList.append(e)
-					continue
-				if userData['animeList'][entry]['status'] == 'REPEATING':
-					rewatchingList.append(e)
-					continue
-			
+				if e['status'] == Status.REPEATING:
+					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes' if e['episodes'] else '-']})"
+					rewatchingList.append(s)
+
 			if not (watchingList or rewatchingList):
 				await ctx.send('They do not have anything on their watch/rewatch list at the moment.')
 				return
@@ -414,11 +404,11 @@ class Anime(commands.Cog):
 
 			# found
 			embed = discord.Embed(
-				title = userData['anilistName'],
+				title = userData['profile']['name'],
 				color = discord.Color.teal(),
-				url = 'https://anilist.co/user/'+str(userData['anilistId']),
+				url = Service(userData['service']).link(userData['service_id'])
 			)
-			embed.set_thumbnail(url=userData['profile']['avatar']['large'])
+			embed.set_thumbnail(url=userData['profile']['avatar'])
 
 			embed.set_image(url='https://files.catbox.moe/ixivqn.png') # mobile width fix
 
@@ -431,7 +421,7 @@ class Anime(commands.Cog):
 			await ctx.send(embed=embed)
 		else:
 			# not found
-			if 'anilistName' in search:
+			if 'profile.name' in search:
 				await ctx.send('Sorry. I do not support searches on users not registered with me')
 				await ctx.send('...yet')
 			else:
@@ -448,167 +438,74 @@ class Anime(commands.Cog):
 			if user.startswith('<@!'):
 				userLen = len(user)-1
 				atUser = user[3:userLen]
-				search = {'discordId': atUser }
+				search = {'discord_id': atUser }
 			elif user[len(user)-5]=="#":
 				userId = ctx.guild.get_member_named(user).id
 				if userId:
 					# found in guild
-					search = {'discordId': str(userId) }
+					search = {'discord_id': str(userId) }
 				else:
 					# not found
 					await ctx.send('Sorry. I could not find that user in this server.')
 					return
 			else:
-				search = {'anilistName': user }
+				search = {'profile.name': user }
 		else:
 			#no username given -> retrieve message creator's info
-			search = {'discordId': str(ctx.message.author.id)}
+			search = {'discord_id': str(ctx.message.author.id)}
 
-		userData = await Resources.users_col.find_one(
+		# technically a user could register both anilist and myanimelist services
+		# rn it'll just use what ever db query finds first
+		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
+		search['status'] = 1
+
+		userData = await Resources.user2_col.find_one(
 			search,
 			{
-				'anilistId': 1,
-				'anilistName': 1,
+				'service': 1,
+				'service_id': 1,
 				'profile': 1,
+				'lists.anime': 1
 			}
 		)
 		if userData:
 			# found
 			embed = discord.Embed(
-				title = userData['anilistName'],
+				title = userData['profile']['name'],
 				color = discord.Color.teal(),
-				url = 'https://anilist.co/user/'+str(userData['anilistId'])
+				url = Service(userData['service']).link(userData['service_id'])
 			)
-			animeGenres = None
-			genreData = userData['profile']['statistics']['anime']['genres']
-			if genreData and len(genreData):
-				animeGenres=', '.join(map(lambda x: x['genre'], genreData))
 
-			animeFavs = None
-			favData = userData['profile']['favourites']['anime']['nodes']
-			if favData and len(favData):
-				animeFavs=', '.join(map(lambda x: x['title']['romaji'], favData))
+			animeGenres = ', '.join(userData['profile']['genres'])
+			animeFavs = ', '.join(userData['profile']['favourites'])
 
-			if userData['profile']["bannerImage"]:
-				embed.set_image(url=userData['profile']["bannerImage"])
-			if userData['profile']["avatar"]["large"]:
-				embed.set_thumbnail(url=userData['profile']["avatar"]["large"])
+			if userData['profile']["banner"]:
+				embed.set_image(url=userData['profile']["banner"])
+			if userData['profile']["avatar"]:
+				embed.set_thumbnail(url=userData['profile']["avatar"])
 			if userData['profile']['about']:
 				embed.add_field(name="About:", value=str(userData['profile']['about']), inline=False)
 
-			embed.add_field(name="Anime count:", value=str(userData['profile']["statistics"]["anime"]["count"]), inline=True)
-			embed.add_field(name="Mean anime score:", value=str(userData['profile']["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
+			count = len([u for u in userData['lists']['anime'].values() if u['status'] in [Status.COMPLETED, Status.REPEATING]])
+			embed.add_field(name="Anime completed:", value=f"{count}", inline=True)
+
+			mean = statistics.fmean([e['score'] for e in userData['lists']['anime'].values() if e['score']])
+			mean = round(mean, 2)
+			embed.add_field(name="Mean anime score:", value=ScoreFormat(userData['profile']['score_format']).formatted_score(mean), inline=True)
 
 			if animeFavs:
-				embed.add_field(name="Some favourites:", value=animeFavs, inline=False)
+				embed.add_field(name="Favourites:", value=animeFavs, inline=False)
 
 			if animeGenres:
-				embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
+				embed.add_field(name="Top genres (by mean score):", value=animeGenres, inline=False)
 
 			await ctx.send(embed=embed)
 		else:
 			# not found
-			if 'anilistName' in search:
+			if 'profile.name' in search:
 				await ctx.send('Sorry. I do not support searches on users not registered with me.')
 			else:
 				await ctx.send('Sorry. I could not find that user')
-
-	# al user
-	@user.command()
-	async def profile_old(self, ctx, user):
-		user = str(ctx.message.content)[(len(ctx.prefix) + len('al user profile ')):]
-		# when the message contents are something like "@Sigurd#6070", converts format into "<@!user_id>"
-
-		atLen = len(user)-5
-		if user == "":
-			try:
-				user = User.userRead(str(ctx.message.author.id), "alName")
-			except:
-				user = None
-		elif user.startswith("<@!"):
-			userLen = len(user)-1
-			atUser = user[3:userLen]
-			try:
-				user = User.userRead(str(atUser), "alName")
-			except:
-				user = None
-		# re.findall(".+#[0-9]{4}", txt)
-		elif user[atLen]=="#":
-			for users in self.bot.users:
-				usersSearch = users.name+"#"+users.discriminator
-				if usersSearch == user:
-					try:
-						user = User.userRead(str(users.id), "alName")
-					except:
-						return None
-
-		try:
-			anilistResults = Anilist.userSearch(user)["data"]["User"]
-		except:
-			print(user)
-			if user == None:
-				await ctx.send("Error! Make sure you've set your profile using ``>al user set``!")
-			else:
-				await ctx.send("Error! Make sure you're spelling everything correctly!")
-		try:
-			color = colorConversion(anilistResults["options"]["profileColor"])
-		except:
-			color = discord.Color.teal()
-		userUrl = anilistResults["siteUrl"]
-
-		embed = discord.Embed(
-			title = anilistResults["name"],
-			color = color,
-			url = userUrl
-		)
-
-		try:
-			animeGenres = anilistResults["statistics"]["anime"]["genres"][0]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][1]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][2]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][3]["genre"]+", "+anilistResults["statistics"]["anime"]["genres"][4]["genre"]
-		except:
-			animeGenres = "None"
-
-		# core user fields
-
-
-		if anilistResults["bannerImage"]!=None:
-			try:
-				embed.set_image(url=anilistResults["bannerImage"])
-			except:
-				pass
-		try:
-			embed.set_thumbnail(url=anilistResults["avatar"]["large"])
-		except:
-			pass
-		try:
-			embed.add_field(name="About:", value=str(anilistResults["about"]), inline=False)
-		except:
-			pass
-		try:
-			embed.set_footer(text="Last update: "+str(anilistResults["updatedAt"]))
-		except:
-			pass
-
-		# anime fields
-		try:
-			embed.add_field(name="Anime count:", value=str(anilistResults["statistics"]["anime"]["count"]), inline=True)
-		except:
-			pass
-		try:
-			embed.add_field(name="Mean anime score:", value=str(anilistResults["statistics"]["anime"]["meanScore"])+"/100.00", inline=True)
-		except:
-			pass
-		try:
-			embed.add_field(name="Top anime genres:", value=animeGenres, inline=False)
-		except:
-			pass
-		try:
-			await ctx.send(embed=embed)
-		except Exception as e:
-			logger.exception('%s; %s; %s', 
-				anilistResults["bannerImage"],
-				anilistResults["avatar"]["large"],
-				anilistResults["siteUrl"])
-			await ctx.send(e)
 
 	@commands.group(pass_context=True)
 	async def vn(self, ctx):
@@ -793,71 +690,66 @@ def colorConversion(arg):
 
 def statusConversion(arg, listType):
 	colors = {
-		"CURRENT": "W",
-		"PLANNING": "P",
-		"COMPLETED": "C",
-		"DROPPED": "D",
-		"PAUSED": "H",
-		"REPEATING": "R"
+		Status.CURRENT: "W",
+		Status.PLANNING: "P",
+		Status.COMPLETED: "C",
+		Status.DROPPED: "D",
+		Status.PAUSED: "H",
+		Status.REPEATING: "R"
 	}
 	if listType == 'mangaList':
-		colors['CURRENT'] = "R"
-		colors['REPEATING'] = "RR"
+		colors[Status.CURRENT] = "R"
+		colors[Status.REPEATING] = "RR"
 
 	return colors.get(arg, "X")
 
 
-async def embedScores(guild, showID, listType, maxDisplay, embed):
+async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 		# get all users in db that are in this guild and have the show on their list
 		userIdsInGuild = [str(u.id) for u in guild.members]
-		users = [d async for d in Resources.users_col.find(
+
+		users = [d async for d in Resources.user2_col.find(
 			{
-				'discordId': { '$in': userIdsInGuild },
-				listType+'.'+str(showID): { '$exists': True }
+				'discord_id': {'$in': userIdsInGuild},
+				'status': 1,
+				'$or': [
+					{
+						'$and': [{'service': 'anilist'}, {f"lists.{listType}.{anilistId}": {'$exists': True}}]
+					},
+					{
+						'$and': [{'service': 'myanimelist'}, {f"lists.{listType}.{malId}": {'$exists': True}}]
+					}
+				]        
 			},
 			{
-				'anilistName': 1,
-				listType+'.'+str(showID): 1,
-				'profile.mediaListOptions': 1
+				'service': 1,
+				'profile.name': 1,
+				'profile.score_format': 1,
+				f"lists.{listType}.{anilistId}": 1,
+				f"lists.{listType}.{malId}": 1
 			}
 			)
 		]
 
 		usrLen = len(users)
 		for i in range(0, min(usrLen, maxDisplay-1)):
-			userScoreEmbeder(users[i], showID, listType, embed)
+			userScoreEmbeder(users[i], anilistId if users[i]['service'] == 'anilist' else malId, listType, embed)
 
 		# either load last or say there are '+XX others'
 		if usrLen == maxDisplay:
-			userScoreEmbeder(users[maxDisplay-1], showID, listType, embed)
+			userScoreEmbeder(users[maxDisplay-1], anilistId if users[maxDisplay-1]['service'] == 'anilist' else malId, listType, embed)
 		elif usrLen > maxDisplay:
 			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
 
 def userScoreEmbeder(user, showID, listType, embed):
-	return
-	userInfo = user[listType][str(showID)]
-	status = statusConversion(userInfo['status'], listType)
-
-	score = userInfo['score']
-	scoreFmt = Database.userScoreFormat(user)
+	entry = user['lists'][listType][str(showID)]
+	status = statusConversion(entry['status'], listType)
+	
+	score = entry['score']
 	if not score or score == 0:
-		embed.add_field(name=user['anilistName'], value="No Score ("+status+")", inline=True)
+		embed.add_field(name=user['profile']['name'], value="No Score ("+status+")", inline=True)
 	else:
-		embed.add_field(name=user['anilistName'], value=Database.scoreFormated(score, scoreFmt)+" ("+status+")", inline=True)
-
-def generateLists(user):
-	return
-	lists = { 'animeList': {}, 'mangaList': {} }
-
-	for lst in user['data']['animeList']['lists']:
-		for entry in lst['entries']:
-			lists['animeList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=True)
-
-	for lst in user['data']['mangaList']['lists']:
-		for entry in lst['entries']:
-			lists['mangaList'][str(entry['mediaId'])] = Database.formListEntryFromAnilistEntry(entry, anime=False)
-
-	return lists
+		embed.add_field(name=user['profile']['name'], value=ScoreFormat(user['profile']['score_format']).formatted_score(score)+" ("+status+")", inline=True)
 
 def limitLength(lst):
 	orgLen = len('\n'.join(lst))
