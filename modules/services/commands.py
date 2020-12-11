@@ -32,7 +32,7 @@ class ServiceCommands(commands.Cog):
             if inactive:
                 embed.add_field(name='__Unavailable (WIP/Brokey)__', value='\n'.join(inactive), inline=True)
 
-            guild = await Resources.guild_col.find_one({'guild_id': str(ctx.guild.id)})
+            guild = await Resources.guild2_col.find_one({'guild_id': str(ctx.guild.id)})
             
             update_channels = guild['settings']['updates'] if guild else guild
 
@@ -139,7 +139,7 @@ class ServiceCommands(commands.Cog):
             description='React to the corresponding emoji to apply the ignore filter, the others will the displaying. Hit ✅ to confirm or ❌ to cancel.'
         )
 
-        current = await Resources.guild_col.find_one({'guild_id': str(ctx.guild.id)})
+        current = await Resources.guild2_col.find_one({'guild_id': str(ctx.guild.id)})
         ignore_flags = EntryAttributes(current['settings']['entry_ignore_attributes']) if current else EntryAttributes.adult
         ignore_img_flags = EntryAttributes(current['settings']['image_ignore_attributes']) if current else EntryAttributes.adult
         msgs = []
@@ -186,7 +186,7 @@ class ServiceCommands(commands.Cog):
                 if onlyImages:
                     path = 'settings.image_ignore_attributes'
                 if not current:
-                    await Resources.guild_col.update_one(
+                    await Resources.guild2_col.update_one(
                         {'guild_id': str(ctx.guild.id)}, 
                         {
                             '$set': {
