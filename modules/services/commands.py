@@ -11,6 +11,7 @@ class ServiceCommands(commands.Cog):
 
     @commands.command()
     async def services(self, ctx, *args):
+        '''For list update stuff. Use '>services' for details'''
         await ctx.trigger_typing()
         if not args:
             embed = discord.Embed(
@@ -235,7 +236,7 @@ class ServiceCommands(commands.Cog):
         try:
             reaction, author = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
         except asyncio.TimeoutError:
-            pass # do nothing
+            return await ctx.send('Timed out. Details NOT updated')
         else:
             if str(reaction.emoji) == '✅':
                 new_user = User(
