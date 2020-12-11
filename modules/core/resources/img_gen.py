@@ -40,7 +40,7 @@ class ImageGenerator:
             except:
                 pass
 
-        combined =  await loop.run_in_executor(
+        combined = await loop.run_in_executor(
             None, 
             ImageGenerator.mergeImagesHorizontal,
             images
