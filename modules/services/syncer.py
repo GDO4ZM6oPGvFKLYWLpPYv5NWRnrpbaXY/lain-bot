@@ -13,6 +13,7 @@ import asyncio, discord, datetime
 from .models.user import User, UserStatus
 from .models.data import ResultStatus, Image
 from modules.core.resources import Resources
+import time
 
 class Syncer:
 
@@ -27,9 +28,18 @@ class Syncer:
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
             cursor = Resources.user2_col.find({'status': UserStatus.ACTIVE, 'service': self.service})
-            users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
+            try:
+                users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
+            except:
+                users = []
+                print(f'initial batch fail for {self.service}')
+
             while users:
                 users = [User(**user) for user in users] # format document to User
+                names = [u.profile.name for u in users]
+                
+                # print(f"{self.service}::{names}")
+                fetch_start = time.time()
                 fetched_data = await self.query.fetch(users) # query new data for users
 
                 # handle each user
@@ -37,6 +47,7 @@ class Syncer:
                     user_data = fetched_data.get(user._id)
 
                     if not user_data: # query didn't populate this user
+                        print(f"no user data for {names}")
                         continue # skip
                     
                     # generate changes and get all entries from each list that have (pruned) changes
@@ -64,13 +75,19 @@ class Syncer:
                         {'$set': user.dict}
                     )
             
+                users_end = time.time()
                 # ready new batch from db
-                users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
-                await asyncio.sleep(self.sleep_time)
+                try:
+                    users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
+                except:
+                    print(f'new batch fail for {self.service}')
+                    users = []
+                finally:
+                    sleep_corrected = max(0, self.sleep_time - (users_end-fetch_start))
+                    await asyncio.sleep(sleep_corrected)
         
             # done with all the batches, start new round of batches
             await cursor.close()
-            await asyncio.sleep(self.sleep_time)
 
     @staticmethod
     def _comprehend(user: User, data: FetchData) -> Dict[str, List[ListEntry]]:
