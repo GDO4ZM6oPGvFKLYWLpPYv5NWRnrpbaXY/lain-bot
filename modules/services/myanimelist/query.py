@@ -1,4 +1,5 @@
 from __future__ import annotations
+import logging
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import List, Dict
@@ -10,7 +11,9 @@ from ..models.data import EntryAttributes, FetchData, QueryResult, ResultStatus,
 from ..anilist.entry import AnimeEntry, MangaEntry
 from .profile import MALProfile
 from ..anilist.enums import ScoreFormat, Status
-import asyncio, datetime
+import asyncio, datetime, logging
+
+logger = logging.getLogger(__name__)
 
 class MyAnimeListQuery(Query):
     MAX_USERS_PER_QUERY = 1
@@ -82,7 +85,7 @@ class MyAnimeListQuery(Query):
                 )
             }
         except Exception as e:
-            print(e)
+            logger.exception(str(e))
             return {}
 
     async def _gen_profile(self, user: User, animelist, mangalist) -> QueryResult:

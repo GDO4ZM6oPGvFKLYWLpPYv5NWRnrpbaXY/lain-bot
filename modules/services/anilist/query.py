@@ -4,13 +4,16 @@ if TYPE_CHECKING:
     from typing import List, Dict, Any
     from ..models.user import User
 
-import re, asyncio, aiohttp
+import re, asyncio, aiohttp, logging
+
 from ..models.query import Query, user_id
 from ..models.data import FetchData, QueryResult, ResultStatus, UserSearch, EntryAttributes
 from .entry import AnimeEntry, MangaEntry
 from .profile import WeebProfile
 from .enums import ScoreFormat, Status
 from modules.core.resources import Resources
+
+logger = logging.getLogger(__name__)
 
 mangaListFields = '''
     {
@@ -249,8 +252,8 @@ class AnilistQuery(Query):
             return UserSearch(status=ResultStatus.ERROR, data="Connecting to anilist took to long. Try again later")
         except aiohttp.ClientError as e:
             return UserSearch(status=ResultStatus.ERROR, data=f"I couln't connect to anilist: {e.message}")
-        except Exception:
-            # TODO: logger
+        except Exception as e:
+            logger.exception(str(e))
             return UserSearch(status=ResultStatus.ERROR, data=f"I failed")
 
     async def fetch(self, users: List[User] = [], tries: int = 3) -> Dict[user_id, FetchData]:
@@ -277,7 +280,7 @@ class AnilistQuery(Query):
                     # bad request that probably won't work after retry
                     # maybe API changed so query needs updating, anilist down, etc.
                     if resp.status not in [200, 404]: 
-                        # TODO: log
+                        logger.warning(f"Bad anilist request [{resp.status}]")
                         return {}
 
                     data = None
@@ -285,7 +288,7 @@ class AnilistQuery(Query):
                     except: pass
 
                     if not data: # parsing failed or got gobbledygook 
-                        # TODO: log
+                        logger.warning(f"JSON parsing failure for anilist")
                         await asyncio.sleep(10) # we'll just try again after a little bit of time and see what happends
                         continue 
                     
@@ -300,7 +303,7 @@ class AnilistQuery(Query):
                             if locations:
                                 idx = (locations[0]['line'] - 2) // lines_per_user # which index in query_id array is this location associated with
                                 if 0 <= idx < len(query_ids): # just being careful
-                                    # TODO: log
+                                    logger.error(f"Anilist user (discord_id={query_ids[idx]}) has error: {error}")
                                     bad_ids.append(query_ids[idx])
 
                     if bad_ids:
@@ -311,7 +314,7 @@ class AnilistQuery(Query):
 
                     if not data: # lack of data where it should be
                         # I don't see this actually happening so we'll just stop trying and return blanks
-                        # TODO: log
+                        logger.error('Anilist json was parsed but didn\'t have \'data\' key')
                         return {}
 
                     try:

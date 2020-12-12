@@ -8,12 +8,14 @@ if TYPE_CHECKING:
     from modules.services.models.entry import ListEntry
     from io import BytesIO
     
+import asyncio, discord, datetime, logging, time
+
 from . import Service
-import asyncio, discord, datetime
 from .models.user import User, UserStatus
 from .models.data import ResultStatus, Image
 from modules.core.resources import Resources
-import time
+
+logger = logging.getLogger(__name__)
 
 class Syncer:
 
@@ -32,7 +34,7 @@ class Syncer:
                 users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
             except:
                 users = []
-                print(f'initial batch fail for {self.service}')
+                logger.exception(f"initial batch fail for {self.service}")
 
             while users:
                 users = [User(**user) for user in users] # format document to User
@@ -47,7 +49,7 @@ class Syncer:
                     user_data = fetched_data.get(user._id)
 
                     if not user_data: # query didn't populate this user
-                        print(f"no user data for {names}")
+                        logger.info(f"no user data for {names}")
                         continue # skip
                     
                     # generate changes and get all entries from each list that have (pruned) changes
@@ -80,7 +82,7 @@ class Syncer:
                 try:
                     users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
                 except:
-                    print(f'new batch fail for {self.service}')
+                    logger.exception(f'new batch fail for {self.service}')
                     users = []
                 finally:
                     sleep_corrected = max(0, self.sleep_time - (users_end-fetch_start))
@@ -132,7 +134,7 @@ class Syncer:
         
         combined_images = {} # rudimentary caching for generated images
         try:
-            disaply_guild_ids = []
+            disaply_guild_ids = ['259896980308754432']
             for guild in self.bot.guilds:
                 # check if this guild contains that user
                 try: member = await guild.fetch_member(int(user.discord_id))
@@ -170,8 +172,7 @@ class Syncer:
                             msgs[lst] = m
                     await self._embed(channel, user, msgs, imgs, combined_images)
         except Exception as e:
-            # TODO: log display didn't work
-            print(e.message)
+            logger.exception(str(e))
         finally:
             # free up resources used
             # gc will eventually close 'em but might as well be cleaner
