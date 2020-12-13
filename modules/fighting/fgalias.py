@@ -1,5 +1,4 @@
-import os
-import json
+import os, json
 
 class FgAlias():
 

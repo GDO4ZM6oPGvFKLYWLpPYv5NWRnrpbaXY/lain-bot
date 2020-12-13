@@ -1,12 +1,7 @@
-from modules.core.images import get_profile_picture, insert_picture_in_gif
-from modules.core.client import Client
-from discord.ext.commands import has_permissions
+import discord, os, logging
+from modules.core.resources import Resources
 from discord.ext import commands
-import discord
-import os
-import asyncio
 from aiohttp import ClientResponseError
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -92,7 +87,7 @@ class Memes(commands.Cog):
             return
 
         try:
-            user_pf = await get_profile_picture(Client.session, user)
+            user_pf = await Resources.img_gen.get_profile_picture(Resources.session, user)
         except ClientResponseError:
             await ctx.send("Couldn't get profile picture.")
             return
@@ -104,5 +99,5 @@ class Memes(commands.Cog):
             (32,70,160,198), (32,70,160,198))
 
         base_img = os.getcwd() + '/assets/memes/punch.gif'
-        with insert_picture_in_gif(base_img, user_pf, coords) as image_bin:
+        with Resources.img_gen.insert_picture_in_gif(base_img, user_pf, coords) as image_bin:
             await ctx.send(file=discord.File(image_bin, filename='image.gif'))

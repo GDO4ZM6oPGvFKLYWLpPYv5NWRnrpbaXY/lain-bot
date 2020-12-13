@@ -4,7 +4,8 @@ load_dotenv()
 
 from modules.core.client import Client
 from modules.core.events import Events
-from modules.core.cogs import Cogs
+
+from modules.core.resources import Resources
 #from modules.esportsclub import EsportsClub # for commands / features for UW-Madison Esports Club
 
 file_handler = logging.handlers.RotatingFileHandler(
@@ -29,7 +30,7 @@ TOKEN = os.getenv("BOT_TOKEN")
 
 # Clean up on close
 def exit_cleanup():
-	Client.session.close_session() #close session after bot shuts down
+	Resources.session.close_session() #close session after bot shuts down
 	logging.info('Shut down.')
 
 atexit.register(exit_cleanup)

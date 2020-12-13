@@ -1,11 +1,8 @@
-import discord
 import logging
 from discord.ext import commands
-from discord.ext.commands import has_permissions, CheckFailure
+from discord.ext.commands import has_permissions
 logger = logging.getLogger(__name__)
 
-from modules.core.client import Client
-from modules.core.database import Database
 from modules.config.config import Config
 
 class Configuration(commands.Cog):
@@ -17,27 +14,6 @@ class Configuration(commands.Cog):
 	async def config(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid config command passed...')
-
-	@config.command(pass_context=True)
-	@has_permissions(administrator=True)
-	async def details(self, ctx):
-		guildDetails = await Database.guild_find_one({'id': str(ctx.guild.id)})
-		if guildDetails:
-			embed = discord.Embed(title ='Lain-bot details', description='details on which channels are enabled to recieve anime or manga list update messages\n')
-			if len(guildDetails['animeMessageChannels']):
-				embed.add_field(name='Anime', value='\n'.join(map(lambda x: '<#' + str(x) + '>',guildDetails['animeMessageChannels'])), inline=True)
-			else:
-				embed.add_field(name='Anime', value='none', inline=True)
-
-			if len(guildDetails['mangaMessageChannels']):
-				embed.add_field(name='Manga', value='\n'.join(map(lambda x: '<#' + str(x) + '>',guildDetails['mangaMessageChannels'])), inline=True)
-			else:
-				embed.add_field(name='Manga', value='none', inline=True)
-			await ctx.send(embed=embed)
-		else:
-			embed = discord.Embed(title ='Lain-bot details', description='currently no channels are set up to recieve anime or manga messages')
-			await ctx.send(embed=embed)
-
 
 	@config.command(pass_context=True)
 	@has_permissions(administrator=True)

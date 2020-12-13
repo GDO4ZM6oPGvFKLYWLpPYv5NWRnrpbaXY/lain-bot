@@ -1,10 +1,4 @@
-import json
-import requests
-import praw
-import random
-import re
-
-import os, logging
+import requests, praw, re, os, logging
 from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
 

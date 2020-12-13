@@ -3,7 +3,6 @@ from discord.ext import commands
 
 from modules.fighting.fginfo import FgInfo
 from modules.fighting.fgalias import FgAlias
-from modules.core.client import Client
 
 class Fighting(commands.Cog):
 

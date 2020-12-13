@@ -1,15 +1,9 @@
-import discord
-from discord.ext import commands, tasks
-import asyncio
-import sqlite3
-import json
-import os
+import discord, json, os
 from os import path
 
 from modules.core.client import Client
 from modules.config.config import Config
 from modules.config.user import User
-from modules.anime.safebooru import Safebooru
 
 bot = Client.bot
 
