@@ -134,7 +134,7 @@ class Syncer:
         
         combined_images = {} # rudimentary caching for generated images
         try:
-            disaply_guild_ids = ['259896980308754432']
+            disaply_guild_ids = []
             for guild in self.bot.guilds:
                 # check if this guild contains that user
                 try: member = await guild.fetch_member(int(user.discord_id))
