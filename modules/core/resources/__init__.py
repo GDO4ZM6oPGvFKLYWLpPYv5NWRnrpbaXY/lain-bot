@@ -16,5 +16,5 @@ class Resources:
     storage_col = Database(db_url, 'lain-bot', 'storage')
     users_col = Database(db_url, 'lain-bot', 'users')
     guilds_col = Database(db_url, 'lain-bot', 'guilds')
-    timezone = pytz.timezone('America/Chicago')
+    timezone = pytz.timezone('US/Central')
     img_gen = img_gen
