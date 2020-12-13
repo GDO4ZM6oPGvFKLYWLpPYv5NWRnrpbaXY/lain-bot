@@ -65,7 +65,7 @@ userFields = '''
         }
         statistics {
             anime {
-                genres(sort:MEAN_SCORE_DESC) {
+                genres(sort:COUNT_DESC) {
                     genre
                 }
             }
@@ -96,7 +96,7 @@ userFieldsId = '''
         }
         statistics {
             anime {
-                genres(sort:MEAN_SCORE_DESC) {
+                genres(sort:COUNT_DESC) {
                     genre
                 }
             }

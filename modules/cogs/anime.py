@@ -497,7 +497,7 @@ class Anime(commands.Cog):
 				embed.add_field(name="Favourites:", value=animeFavs, inline=False)
 
 			if animeGenres:
-				embed.add_field(name="Top genres (by mean score):", value=animeGenres, inline=False)
+				embed.add_field(name="Top genres (by count):", value=animeGenres, inline=False)
 
 			await ctx.send(embed=embed)
 		else:
