@@ -1,11 +1,8 @@
-import discord
+import discord, youtube_dl as ytdl, random, logging
 from discord.ext import commands
 from discord.utils import get
-import youtube_dl as ytdl
-import random, logging
 logger = logging.getLogger(__name__)
 
-from modules.core.client import Client
 from modules.music.radio import Radio
 from modules.music.themes import Themes
 from modules.anime.anilist import Anilist
@@ -25,7 +22,7 @@ class Music(commands.Cog):
         await ctx.send('Starting radio')
         # r/a/dio link
         url = 'https://stream.r-a-d.io/main.mp3'
-        await join(ctx, url)
+        await join(self.bot, ctx, url)
 
     @radio.command(pass_context=True)
     async def info(self, ctx):
@@ -102,7 +99,7 @@ class Music(commands.Cog):
                     text='YouTube', icon_url='https://www.thermalwoodcanada.com/images/youtube-play-button-transparent-background-4.png')
                 await ctx.send(embed=embed)
 
-                await join(ctx, info['formats'][3]['url'])
+                await join(self.bot, ctx, info['formats'][3]['url'])
         except Exception as e:
             logger.exception('Error during youtube command')
             await ctx.send(str(e))
@@ -111,7 +108,7 @@ class Music(commands.Cog):
     async def stop(self, ctx):
         try:
             channel = ctx.author.voice.channel
-            voice = get(bot.voice_clients, guild=ctx.guild)
+            voice = get(self.bot.voice_clients, guild=ctx.guild)
 
             if voice and voice.is_connected():
                 await voice.disconnect()
@@ -128,7 +125,7 @@ class Music(commands.Cog):
     async def pause(self, ctx):
         try:
             channel = ctx.author.voice.channel
-            voice = get(bot.voice_clients, guild=ctx.guild)
+            voice = get(self.bot.voice_clients, guild=ctx.guild)
 
             if voice and voice.is_connected() and voice.is_playing():
                 voice.pause()
@@ -144,7 +141,7 @@ class Music(commands.Cog):
     async def resume(self, ctx):
         try:
             channel = ctx.author.voice.channel
-            voice = get(bot.voice_clients, guild=ctx.guild)
+            voice = get(self.bot.voice_clients, guild=ctx.guild)
 
             if voice and voice.is_connected() and voice.is_paused():
                 voice.resume()
@@ -160,7 +157,7 @@ class Music(commands.Cog):
     async def skip(self, ctx):
         try:
             channel = ctx.author.voice.channel
-            voice = get(bot.voice_clients, guild=ctx.guild)
+            voice = get(self.bot.voice_clients, guild=ctx.guild)
 
             if voice and voice.is_connected() and (voice.is_playing() or voice.is_paused):
                 voice.stop()
@@ -240,7 +237,7 @@ class Music(commands.Cog):
                 text=parts['op/ed'], icon_url='https://openings.moe/assets/logo/512px.png')
             await ctx.send(embed=embed)
 
-            await join(ctx, parts['video'])
+            await join(self.bot, ctx, parts['video'])
         except Exception as e:
             logger.exception("Exception with op command.")
             found = True
@@ -259,7 +256,7 @@ class Music(commands.Cog):
                     text=select, icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico')
                 await ctx.send(embed=embed)
 
-                await join(ctx, parts['video'])
+                await join(self.bot, ctx, parts['video'])
             except Exception as e:
                 logger.exception('*%s*, %s not found in database', english, select)
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
@@ -321,7 +318,7 @@ class Music(commands.Cog):
                 text=parts['op/ed'], icon_url='https://openings.moe/assets/logo/512px.png')
             await ctx.send(embed=embed)
 
-            await join(ctx, parts['video'])
+            await join(self.bot, ctx, parts['video'])
         except Exception as e:
             logger.exception('Error with ed command.')
             found = True
@@ -340,15 +337,13 @@ class Music(commands.Cog):
                     text=select, icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico')
                 await ctx.send(embed=embed)
 
-                await join(ctx, parts['video'])
+                await join(self.bot, ctx, parts['video'])
             except Exception as e:
                 logger.exception('*%s*, %s not found in database', english, select)
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
-bot = Client.bot
-
 # join a voice channel and play link
-async def join(ctx, url):
+async def join(bot, ctx, url):
     global voice
     try:
         # get voice channel

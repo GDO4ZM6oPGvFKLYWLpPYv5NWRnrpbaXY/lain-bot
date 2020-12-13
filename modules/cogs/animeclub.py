@@ -1,4 +1,4 @@
-import logging, discord, re, datetime, pytz, os, openpyxl
+import logging, discord, datetime, os, openpyxl
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
@@ -7,9 +7,7 @@ from dateutil import parser
 from openpyxl import load_workbook
 from tempfile import NamedTemporaryFile
 
-from modules.core.database import Database
-
-tz = pytz.timezone('US/Central') 
+from modules.core.resources import Resources
 
 class AnimeClub(commands.Cog):
 
@@ -73,7 +71,7 @@ class AnimeClub(commands.Cog):
 		await self.show_all_wed(ctx, only_future=True)
 
 	@schedule.command(name="set")
-	@has_any_role(494979840470941712, 259557922726608896) # admin, executive council
+	@has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
 	async def set_(self, ctx, *args):
 		if not args or args[0] not in ['sat', 'wed']:
 			await ctx.send('Bad usage. Try `>sc set wed` or similar')
@@ -94,7 +92,7 @@ class AnimeClub(commands.Cog):
 			except Exception as e:
 				await ctx.send(f"Failed to extract schedule from file.\n{e.message}")
 				return
-			res = await Database.storage_update_one({'id': 'sched_v2'}, {'$set': {k: sched}})
+			res = await Resources.storage_col.update_one({'id': 'sched_v2'}, {'$set': {k: sched}})
 			if not res:
 				await ctx.send(f"Error setting {k} schedule!")
 			else:
@@ -106,7 +104,7 @@ class AnimeClub(commands.Cog):
 		else:
 			embed=discord.Embed(description="Club Schedule", color=0xd31f28)
 			embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
-			data = await Database.storage_find_one({'id': 'sched_v2'})
+			data = await Resources.storage_col.find_one({'id': 'sched_v2'})
 
 			if sat:
 				nxt_sat = next_day(day=5)
@@ -130,7 +128,7 @@ class AnimeClub(commands.Cog):
 		embed=discord.Embed(description="Wednesday Schedules", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 
-		data = await Database.storage_find_one({'id': 'sched_v2'})
+		data = await Resources.storage_col.find_one({'id': 'sched_v2'})
 		if 'Wednesday' not in data:
 			embed.add_field(name='Unavailable', value='could not find Wednesday data')
 		else:
@@ -148,7 +146,7 @@ class AnimeClub(commands.Cog):
 		embed=discord.Embed(description="Saturday Schedules", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 
-		data = await Database.storage_find_one({'id': 'sched_v2'})
+		data = await Resources.storage_col.find_one({'id': 'sched_v2'})
 		if 'Saturday' not in data:
 			embed.add_field(name='Unavailable', value='could not find Saturday data')
 		else:
@@ -214,7 +212,7 @@ def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: 
 	Returns:
 		datetime.datetime: date with year. month, and day set
 	"""
-	start = tz.localize(start)
+	start = Resources.timezone.localize(start)
 	days_ahead = day - start.weekday()
 	if days_ahead < 0:
 		days_ahead += 7

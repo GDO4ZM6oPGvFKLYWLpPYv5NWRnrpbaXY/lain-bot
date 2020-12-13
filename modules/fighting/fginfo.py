@@ -1,5 +1,4 @@
-import os
-import json
+import os, json
 from .fgalias import FgAlias
 
 class FgInfo():
