@@ -200,7 +200,7 @@ class Syncer:
             title = name,
             url = Service(user.service).link(user.service_id)
         )
-        embed.set_footer(text='This message was generated ' + Resources.timezone.localize(datetime.datetime.now()).strftime('%b %d, %Y at %I:%M %p (CT)'))
+        embed.set_footer(text='This message was generated ' + datetime.datetime.now(Resources.timezone).strftime('%b %d, %Y at %I:%M %p (CT)'))
         try: embed.set_thumbnail(url=user.profile.avatar)
         except: pass
 
