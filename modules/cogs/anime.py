@@ -301,7 +301,7 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Released', value=tyme, inline=False)
 
-		await embedScores(ctx.guild, anilistResults["data"]["anime"]["id"], anilistResults["data"]["anime"]["idMal"], 'manga', 9, embed)
+		await embedScores(ctx.guild, anilistResults["data"]["manga"]["id"], anilistResults["data"]["manga"]["idMal"], 'manga', 9, embed)
 
 		await ctx.send(embed=embed)
 
