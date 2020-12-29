@@ -84,7 +84,8 @@ def rationalizer(self, user: User, latest_profile: WeebProfile = None) -> None:
         if status_change.new in [Status.DROPPED, Status.PAUSED]:
             # have dropped/paused status overrule any progress changes
             ignore_progress_changes()
-            status_change.msg = f"{status_change.msg} on {self.progress}"
+            if self.has_progress:
+                status_change.msg = f"{status_change.msg} on {self.progress}"
         if status_change.new == Status.COMPLETED:
             # have completed status overrule any progress or score changes
             if score_change: score_change.ignore = True
@@ -101,7 +102,10 @@ def rationalizer(self, user: User, latest_profile: WeebProfile = None) -> None:
     if score_change:
         old = old_score_format.formatted_score(score_change.old)
         new = new_score_format.formatted_score(score_change.new)
-        score_change.msg = f"score of {self['title']} changed: {old} ➔ {new}"
+        if score_change.old == 0:
+            score_change.msg = f"score of {self['title']} set to {new}"
+        else:
+            score_change.msg = f"score of {self['title']} changed: {old} ➔ {new}"
 
 def img(self) -> List[Image]:
     if self['banner'] and self['cover']:
@@ -134,6 +138,10 @@ class AnimeEntry(ListEntry):
     def progress(self) -> str:
         return f"episode {self['episode_progress']}"
 
+    @property
+    def has_progress(self) -> bool:
+        return bool(self['episode_progress'])
+
     rationalize_changes = rationalizer
 
     images = img
@@ -163,6 +171,10 @@ class MangaEntry(ListEntry):
             return f"volume {self['volume_progress']}"
         else:
             return f"chapter {self['chapter_progress']}"
+
+    @property
+    def has_progress(self) -> bool:
+        return bool(self['volume_progress']) or bool(self['chapter_progress'])
 
     rationalize_changes = rationalizer
 
