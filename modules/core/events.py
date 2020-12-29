@@ -4,6 +4,7 @@ from os import path
 from modules.core.client import Client
 from modules.config.config import Config
 from modules.config.user import User
+from modules.core.resources import Resources
 
 bot = Client.bot
 
@@ -71,12 +72,30 @@ class Events:
 			welcomeMsgFormatted = welcomeMsg.format(member=member.mention)
 			await bot.get_channel(Config.cfgRead(str(member.guild.id), "welcomeChannel")).send(welcomeMsgFormatted)
 
+	def determine_reaction(msg, reactions):
+		print(reactions)
+		for reaction in reactions:
+			if msg == reaction['trigger']:
+				return reaction['response']
+		return None
+
 	@bot.event
 	async def on_message(msg):
-		if msg.content in ['good bot', 'good bot!']:
-			await msg.channel.send('https://files.catbox.moe/jkhrji.png')
+		try:
+			# hard coded will have fastest response time and are global
+			if msg.content in ['good bot', 'good bot!', 'good lain']:
+				await msg.channel.send('https://files.catbox.moe/jkhrji.png')
 
-		if msg.content in ['bad bot', 'bad bot!']:
-			await msg.channel.send('https://files.catbox.moe/bde830.gif')
+			if msg.content in ['bad bot', 'bad bot!', 'bad lain']:
+				await msg.channel.send('https://files.catbox.moe/bde830.gif')
+
+			# slower response but on the fly changes and per guild
+			reactions = await Resources.guild2_col.find_one({'guild_id': str(msg.guild.id), 'reactions': {'$exists': True}}, {'reactions': 1})
+			if reactions:
+				reaction = await bot.loop.run_in_executor(None, Events.determine_reaction, msg.content, reactions['reactions'])
+				if reaction:
+					await msg.channel.send(reaction)
+		except:
+			pass
 
 		await bot.process_commands(msg)
