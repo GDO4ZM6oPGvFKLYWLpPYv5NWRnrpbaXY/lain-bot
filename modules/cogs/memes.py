@@ -99,5 +99,5 @@ class Memes(commands.Cog):
             (32,70,160,198), (32,70,160,198))
 
         base_img = os.getcwd() + '/assets/memes/punch.gif'
-        with Resources.img_gen.insert_picture_in_gif(base_img, user_pf, coords) as image_bin:
+        with await Resources.img_gen.insert_picture_in_gif(self.bot.loop, base_img, user_pf, coords) as image_bin:
             await ctx.send(file=discord.File(image_bin, filename='image.gif'))
