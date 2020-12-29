@@ -73,7 +73,6 @@ class Events:
 			await bot.get_channel(Config.cfgRead(str(member.guild.id), "welcomeChannel")).send(welcomeMsgFormatted)
 
 	def determine_reaction(msg, reactions):
-		print(reactions)
 		for reaction in reactions:
 			if msg == reaction['trigger']:
 				return reaction['response']
