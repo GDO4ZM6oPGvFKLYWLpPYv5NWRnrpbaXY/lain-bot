@@ -62,14 +62,8 @@ class ImageGenerator:
             return(io.BytesIO(await resp.content.read()))
 
     @staticmethod
-    def insert_picture_in_gif(gif, ins_pic, coords) -> io.BytesIO:
-        '''
-        Insert a picture `ins_pic` into a gif `gif` with the upper left and
-        lower right coords of the the image to be inserted on each frame as
-        acollection of 4-tuples `coords`. Both `ins_pic` and `gif` must be
-        able to be passed to Pillow's image open function (ex.: a path or
-        byterepresentation of an image).
-        '''
+    def gen_gif(gif, ins_pic, coords) -> io.BytesIO:
+        print('inserting')
         frames = []
         with Image.open(gif) as im:
             with Image.open(ins_pic).convert('RGB') as ins_pic:
@@ -84,4 +78,24 @@ class ImageGenerator:
         frames[0].save(image_bin, 'GIF', save_all=True,
                     append_images=frames[1:], loop=0)
         image_bin.seek(0)
+        return image_bin
+
+    @staticmethod
+    async def insert_picture_in_gif(loop, gif, ins_pic, coords) -> io.BytesIO:
+        '''
+        Insert a picture `ins_pic` into a gif `gif` with the upper left and
+        lower right coords of the the image to be inserted on each frame as
+        acollection of 4-tuples `coords`. Both `ins_pic` and `gif` must be
+        able to be passed to Pillow's image open function (ex.: a path or
+        byterepresentation of an image).
+        '''
+
+        image_bin = await loop.run_in_executor(
+            None, 
+            ImageGenerator.gen_gif,
+            gif,
+            ins_pic,
+            coords
+        )
+
         return image_bin
