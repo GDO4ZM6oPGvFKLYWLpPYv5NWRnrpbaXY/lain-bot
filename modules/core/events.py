@@ -1,4 +1,4 @@
-import discord, json, os
+import discord, json, os, string, re
 from os import path
 
 from modules.core.client import Client
@@ -74,29 +74,35 @@ class Events:
 
 	def determine_reaction(msg, reactions):
 		for reaction in reactions:
-			if msg == reaction['trigger']:
-				return reaction['response']
+			if reaction['type'] == 'exact':
+				if msg == reaction['trigger']:
+					return reaction['response']
+			elif reaction['type'] == 'in':
+				clean_msg = msg.translate(str.maketrans('', '', string.punctuation))
+				if re.search(f"(^| |\n){reaction['trigger']}($| |\n)", clean_msg):
+					return reaction['response']
 		return None
 
 	@bot.event
 	async def on_message(msg):
 		try:
-			# hard coded will have fastest response time and are global
-			if msg.content in ['good bot', 'good bot!', 'good lain']:
-				await msg.channel.send('https://files.catbox.moe/jkhrji.png')
+			if not msg.author.bot:
+				# hard coded will have fastest response time and are global
+				if msg.content in ['good bot', 'good bot!', 'good lain']:
+					await msg.channel.send('https://files.catbox.moe/jkhrji.png')
 
-			if msg.content in ['bad bot', 'bad bot!', 'bad lain']:
-				await msg.channel.send('https://files.catbox.moe/bde830.gif')
+				if msg.content in ['bad bot', 'bad bot!', 'bad lain']:
+					await msg.channel.send('https://files.catbox.moe/bde830.gif')
 
-			# slower response but on the fly changes and per guild
-			reactions = await Resources.guild2_col.find_one({'guild_id': str(msg.guild.id), 'reactions': {'$exists': True}}, {'reactions': 1})
-			if reactions:
-				try:
-					reaction = await bot.loop.run_in_executor(None, Events.determine_reaction, msg.content, reactions['reactions'])
-					if reaction:
-						await msg.channel.send(reaction)
-				except:
-					pass
+				# slower response but on the fly changes and per guild
+				reactions = await Resources.guild2_col.find_one({'guild_id': str(msg.guild.id), 'reactions': {'$exists': True}}, {'reactions': 1})
+				if reactions:
+					try:
+						reaction = await bot.loop.run_in_executor(None, Events.determine_reaction, msg.content, reactions['reactions'])
+						if reaction:
+							await msg.channel.send(reaction)
+					except:
+						pass
 		except:
 			pass
 
