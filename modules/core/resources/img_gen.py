@@ -63,7 +63,6 @@ class ImageGenerator:
 
     @staticmethod
     def gen_gif(gif, ins_pic, coords) -> io.BytesIO:
-        print('inserting')
         frames = []
         with Image.open(gif) as im:
             with Image.open(ins_pic).convert('RGB') as ins_pic:

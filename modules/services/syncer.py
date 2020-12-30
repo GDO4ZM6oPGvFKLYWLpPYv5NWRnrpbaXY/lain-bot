@@ -28,68 +28,75 @@ class Syncer:
 
     async def loop(self) -> None:
         await self.bot.wait_until_ready()
-        while not self.bot.is_closed():
-            cursor = Resources.user2_col.find({'status': UserStatus.ACTIVE, 'service': self.service})
-            try:
-                users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
-            except:
-                users = []
-                logger.exception(f"initial batch fail for {self.service}")
-
-            while users:
-                users = [User(**user) for user in users] # format document to User
-                names = [u.profile.name for u in users]
-                
-                # print(f"{self.service}::{names}")
-                fetch_start = time.time()
-                fetched_data = await self.query.fetch(users) # query new data for users
-
-                # handle each user
-                for user in users:
-                    user_data = fetched_data.get(user._id)
-
-                    if not user_data: # query didn't populate this user
-                        logger.info(f"no user data for {names}")
-                        continue # skip
-                    
-                    # generate changes and get all entries from each list that have (pruned) changes
-                    comprehensions = await self.bot.loop.run_in_executor(
-                        None, 
-                        self._comprehend,
-                        user,
-                        user_data
-                    )
-
-                    # send changes
-                    await self._display(user, comprehensions)
-
-                    # # update db
-                    if user_data.profile.status == ResultStatus.OK:
-                        user.profile = user_data.profile.data
-                    for lst in user_data.lists:
-                        if user_data.lists[lst].status == ResultStatus.OK:
-                            k = {}
-                            for entry in user_data.lists[lst].data:
-                                k[str(entry['id'])] = entry.dict
-                            user.lists[lst] = k
-                    await Resources.user2_col.update_one(
-                        {'discord_id': user.discord_id, 'service': user.service},
-                        {'$set': user.dict}
-                    )
-            
-                users_end = time.time()
-                # ready new batch from db
+        try:
+            while not self.bot.is_closed():
+                cursor = Resources.user2_col.find({'status': UserStatus.ACTIVE, 'service': self.service})
                 try:
                     users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
+                except asyncio.CancelledError:
+                    raise
                 except:
-                    logger.exception(f'new batch fail for {self.service}')
                     users = []
-                finally:
-                    sleep_corrected = max(0, self.sleep_time - (users_end-fetch_start))
-                    await asyncio.sleep(sleep_corrected)
-        
-            # done with all the batches, start new round of batches
-            await cursor.close()
+                    logger.exception(f"initial batch fail for {self.service}")
+
+                while users:
+                    users = [User(**user) for user in users] # format document to User
+                    names = [u.profile.name for u in users]
+                    
+                    # print(f"{self.service}::{names}")
+                    fetch_start = time.time()
+                    fetched_data = await self.query.fetch(users) # query new data for users
+
+                    # handle each user
+                    for user in users:
+                        user_data = fetched_data.get(user._id)
+
+                        if not user_data: # query didn't populate this user
+                            logger.info(f"no user data for {names}")
+                            continue # skip
+                        
+                        # generate changes and get all entries from each list that have (pruned) changes
+                        comprehensions = await self.bot.loop.run_in_executor(
+                            None, 
+                            self._comprehend,
+                            user,
+                            user_data
+                        )
+
+                        # send changes
+                        await self._display(user, comprehensions)
+
+                        # # update db
+                        if user_data.profile.status == ResultStatus.OK:
+                            user.profile = user_data.profile.data
+                        for lst in user_data.lists:
+                            if user_data.lists[lst].status == ResultStatus.OK:
+                                k = {}
+                                for entry in user_data.lists[lst].data:
+                                    k[str(entry['id'])] = entry.dict
+                                user.lists[lst] = k
+                        await Resources.user2_col.update_one(
+                            {'discord_id': user.discord_id, 'service': user.service},
+                            {'$set': user.dict}
+                        )
+                
+                    users_end = time.time()
+                    # ready new batch from db
+                    try:
+                        users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
+                    except asyncio.CancelledError:
+                        raise
+                    except:
+                        logger.exception(f'new batch fail for {self.service}')
+                        users = []
+                    finally:
+                        sleep_corrected = max(0, self.sleep_time - (users_end-fetch_start))
+                        await asyncio.sleep(sleep_corrected)
+            
+                # done with all the batches, start new round of batches
+                await cursor.close()
+        except (asyncio.CancelledError, RuntimeError):
+            pass
 
     @staticmethod
     def _comprehend(user: User, data: FetchData) -> Dict[str, List[ListEntry]]:
