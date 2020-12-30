@@ -26,7 +26,11 @@ class Anime(commands.Cog):
 			if isinstance(err, discord.ext.commands.MissingPermissions):
 				await ctx.send("You lack the needed permissions!")
 			elif isinstance(err, Anilist2.AnilistError):
-				await ctx.send(f"Query request failed\nmsg: {err.message}\nstatus: {err.status}")	
+				if err.status == 404:
+					await ctx.send('https://files.catbox.moe/b7drrm.jpg')
+					await ctx.send('*no results*')
+				else:
+					await ctx.send(f"Query request failed\nmsg: {err.message}\nstatus: {err.status}")	
 			elif isinstance(err, HTTPError):	
 				await ctx.send(err.http_error_msg)
 			else:
