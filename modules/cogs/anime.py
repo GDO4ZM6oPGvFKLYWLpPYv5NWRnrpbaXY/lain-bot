@@ -233,9 +233,22 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Aired', value=tyme, inline=False)
 
-		await embedScores(ctx.guild, anilistResults["data"]["anime"]["id"], anilistResults["data"]["anime"]["idMal"], 'anime', 9, embed)
+		extra = await embedScores(ctx.guild, anilistResults["data"]["anime"]["id"], anilistResults["data"]["anime"]["idMal"], 'anime', 9, embed)
 
-		await ctx.send(embed=embed)
+		msg = await ctx.send(embed=embed)
+
+		if extra:
+			def check(reaction, user):
+				return user != msg.author and str(reaction.emoji) == '➕'
+
+			await msg.add_reaction('➕')
+
+			try:
+				reaction, author = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+			except asyncio.TimeoutError:
+				await msg.clear_reactions()
+			else:
+				await ctx.send(embed=extra)
 
 	@al.command(pass_context=True)
 	async def manga(self, ctx):
@@ -301,9 +314,22 @@ class Anime(commands.Cog):
 
 					embed.add_field(name='Released', value=tyme, inline=False)
 
-		await embedScores(ctx.guild, anilistResults["data"]["manga"]["id"], anilistResults["data"]["manga"]["idMal"], 'manga', 9, embed)
+		extra = await embedScores(ctx.guild, anilistResults["data"]["manga"]["id"], anilistResults["data"]["manga"]["idMal"], 'manga', 9, embed)
 
-		await ctx.send(embed=embed)
+		msg = await ctx.send(embed=embed)
+
+		if extra:
+			def check(reaction, user):
+				return user != msg.author and str(reaction.emoji) == '➕'
+
+			await msg.add_reaction('➕')
+
+			try:
+				reaction, author = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+			except asyncio.TimeoutError:
+				await msg.clear_reactions()
+			else:
+				await ctx.send(embed=extra)
 
 	@al.command(pass_context=True)
 	async def char(self, ctx):
@@ -738,8 +764,15 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 		# either load last or say there are '+XX others'
 		if usrLen == maxDisplay:
 			userScoreEmbeder(users[maxDisplay-1], anilistId if users[maxDisplay-1]['service'] == 'anilist' else malId, listType, embed)
+			return None
 		elif usrLen > maxDisplay:
 			embed.add_field(name='+'+str(usrLen-maxDisplay+1)+' others', value="...", inline=True)
+			extraEmbed = discord.Embed(color=discord.Color.blue())
+			for i in range(maxDisplay-1, usrLen):
+				userScoreEmbeder(users[i], anilistId if users[i]['service'] == 'anilist' else malId, listType, extraEmbed)
+			return extraEmbed
+		else:
+			return None
 
 def userScoreEmbeder(user, showID, listType, embed):
 	entry = user['lists'][listType][str(showID)]
