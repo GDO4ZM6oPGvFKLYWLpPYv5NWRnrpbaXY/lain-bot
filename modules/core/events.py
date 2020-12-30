@@ -91,9 +91,12 @@ class Events:
 			# slower response but on the fly changes and per guild
 			reactions = await Resources.guild2_col.find_one({'guild_id': str(msg.guild.id), 'reactions': {'$exists': True}}, {'reactions': 1})
 			if reactions:
-				reaction = await bot.loop.run_in_executor(None, Events.determine_reaction, msg.content, reactions['reactions'])
-				if reaction:
-					await msg.channel.send(reaction)
+				try:
+					reaction = await bot.loop.run_in_executor(None, Events.determine_reaction, msg.content, reactions['reactions'])
+					if reaction:
+						await msg.channel.send(reaction)
+				except:
+					pass
 		except:
 			pass
 
