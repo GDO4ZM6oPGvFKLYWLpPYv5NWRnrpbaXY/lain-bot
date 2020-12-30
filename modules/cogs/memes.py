@@ -68,16 +68,6 @@ class Memes(commands.Cog):
         await ctx.send("Allow me to set the stage. It's 3:00 AM, you're lying awake at night waiting for your brain to collapse in on itself so that you can finally escape this post modernist world for 3 or 4 hours. Suddenly, during your 4th prayer of the night a hole opens up in your vision from which a welcoming hand is extended. It hands you a letter with a beautiful hand pressed wax stamp, you open this letter and written by the great lord himself reads \"shove your fingers up your ass.\" This is what watching milky holmes is like. The devout understand, the sinners understand, but only true artists can appreciate the lengths that Milk and her homies will go for a laugh. When Ghandi said that the secret to true peace lies within ones soul, he meant this show's soul. Not you, not him, this is the one show who's soul can grant you inner peace in these trying times. After completing this 13 episode transcendental journey I was awarded with a PHD in modern philosophy and I was never bothered by the entropy of the universe again. In essence I became the closest being to god that exists, as I am now above that which I do not understand nor have a need to understand.")
 
     @commands.command(pass_context=True)
-    async def good(self, ctx, *args):
-        if len(args) and args[0] in ['bot', 'bot!']:
-            await ctx.send('https://files.catbox.moe/jkhrji.png')
-
-    @commands.command(pass_context=True)
-    async def bad(self, ctx, *args):
-        if len(args) and args[0] in ['bot', 'bot!']:
-            await ctx.send('https://files.catbox.moe/bde830.gif')
-
-    @commands.command(pass_context=True)
     async def correct(self, ctx):
         await ctx.trigger_typing()
         try:
