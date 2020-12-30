@@ -34,6 +34,7 @@ class Anilist2:
             anime: Media(id: $id, search: $search, type: ANIME, format_not_in: $format_not_in) @include(if: $isAnime) {
                 ...genericMediaFields
                 episodes
+                duration
                 studios(isMain: $isMain) {
                     nodes {
                         name
