@@ -1,4 +1,4 @@
-import logging, discord, datetime, os, openpyxl
+import logging, discord, datetime, os, openpyxl, re
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
@@ -159,6 +159,9 @@ class AnimeClub(commands.Cog):
 					embed.add_field(name=f"{date.month}/{date.day}", value='\n'.join(lines), inline=False)
 
 		await ctx.send(embed=embed)
+def clean_title(title):
+    title = title.strip()    
+    return re.sub('\d+$|\(\d+\)$', '', title)
 
 def wednesday_lines(data):
 	lines = []
@@ -187,10 +190,12 @@ def saturday_lines(data):
 		except:
 			pass
 
-		if showtime['title'] in shows:
-			shows[showtime['title']] += 1
+		title = clean_title(showtime['title'])
+
+		if title in shows:
+			shows[title] += 1
 		else:
-			shows[showtime['title']] = 1
+			shows[title] = 1
 
 	n = 1
 	for show in shows:
