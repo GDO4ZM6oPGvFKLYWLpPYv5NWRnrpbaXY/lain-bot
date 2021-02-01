@@ -159,9 +159,22 @@ class AnimeClub(commands.Cog):
 					embed.add_field(name=f"{date.month}/{date.day}", value='\n'.join(lines), inline=False)
 
 		await ctx.send(embed=embed)
-def clean_title(title):
-    title = title.strip()    
-    return re.sub('\d+$|\(\d+\)$', '', title)
+
+def parse_title(title):
+    # returns array of [title, episode]. if no episode, it will be None
+
+    title = title.strip()
+
+    ep = re.search('\d+$', title)
+
+    if ep:
+        return [re.sub('\d+$', '', title), ep.group()]
+    else:
+        ep = re.search('\(\d+\)$', title)
+        if ep:
+            return [re.sub('\(\d+\)$', '', title), ep.group()[1:-1]]
+        else:
+            return [title, None]
 
 def wednesday_lines(data):
 	lines = []
@@ -178,6 +191,7 @@ def saturday_lines(data):
 	if not data:
 		return lines
 
+    # title: [start ep, end ep, time start]
 	shows = {} # python 3.6+ dicts keep insertion order 🎉
 	for showtime in data:
 		if not showtime['title']:
@@ -190,17 +204,15 @@ def saturday_lines(data):
 		except:
 			pass
 
-		title = clean_title(showtime['title'])
+		title = parse_title(showtime['title'])
 
-		if title in shows:
-			shows[title] += 1
+		if title[0] in shows:
+			shows[title[0]][1] = title[1]
 		else:
-			shows[title] = 1
+			shows[title[0]] = [title[1], title[1], showtime['start']]
 
-	n = 1
 	for show in shows:
-		lines.append(f"Slot {n}: {show} (x{shows[show]})") # order from dict
-		n += 1
+		lines.append(f"{shows[show][2]}pm: {show} ({shows[show][0]}-{shows[show][1]})") # order from dict
 
 	return lines
 
