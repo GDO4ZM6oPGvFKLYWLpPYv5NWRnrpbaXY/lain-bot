@@ -216,7 +216,7 @@ def saturday_lines(data):
 
 	return lines
 
-def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: int = 21):
+def next_day(start=datetime.datetime.now(Resources.timezone), day: int = 0, latest_same_day_hour: int = 21):
 	"""Get date of next day of week following given date
 
 	Args:
@@ -229,7 +229,7 @@ def next_day(start=datetime.datetime.now(), day: int = 0, latest_same_day_hour: 
 	Returns:
 		datetime.datetime: date with year. month, and day set
 	"""
-	start = Resources.timezone.localize(start)
+	# start = Resources.timezone.localize(start)
 	days_ahead = day - start.weekday()
 	if days_ahead < 0:
 		days_ahead += 7
