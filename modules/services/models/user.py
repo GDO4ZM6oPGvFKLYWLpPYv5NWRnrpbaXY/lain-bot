@@ -8,8 +8,8 @@ if TYPE_CHECKING:
 from .. import Service
 
 class UserStatus:
-    INACTIVE = 0
-    ACTIVE = 1
+    INACTIVE = int(0)
+    ACTIVE = int(1)
 
 class User:
     """User from database
