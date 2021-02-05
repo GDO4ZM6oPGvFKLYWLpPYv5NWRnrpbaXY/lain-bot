@@ -11,10 +11,8 @@ if not bool(os.getenv('NON_SRV_DB', default=False)):
 class Resources:
     session = Session(raise_for_status=True)
     syncer_session = Session()
-    user2_col = Database(db_url, 'v2', 'users')
-    guild2_col = Database(db_url, 'v2', 'guilds')
+    user_col = Database(db_url, 'v2', 'users')
+    guild_col = Database(db_url, 'v2', 'guilds')
     storage_col = Database(db_url, 'lain-bot', 'storage')
-    users_col = Database(db_url, 'lain-bot', 'users')
-    guilds_col = Database(db_url, 'lain-bot', 'guilds')
     timezone = pytz.timezone('US/Central')
     img_gen = img_gen

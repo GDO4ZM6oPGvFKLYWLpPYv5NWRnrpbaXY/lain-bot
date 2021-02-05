@@ -402,7 +402,7 @@ class Anime(commands.Cog):
 		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
 		search['status'] = 1
 
-		userData = await Resources.user2_col.find_one(
+		userData = await Resources.user_col.find_one(
 			search,
 			{
 				'service': 1,
@@ -489,7 +489,7 @@ class Anime(commands.Cog):
 		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
 		search['status'] = 1
 
-		userData = await Resources.user2_col.find_one(
+		userData = await Resources.user_col.find_one(
 			search,
 			{
 				'service': 1,
@@ -738,7 +738,7 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 		# get all users in db that are in this guild and have the show on their list
 		userIdsInGuild = [str(u.id) for u in guild.members]
 
-		users = [d async for d in Resources.user2_col.find(
+		users = [d async for d in Resources.user_col.find(
 			{
 				'discord_id': {'$in': userIdsInGuild},
 				'status': 1,

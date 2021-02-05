@@ -30,7 +30,7 @@ class Syncer:
         await self.bot.wait_until_ready()
         try:
             while not self.bot.is_closed():
-                cursor = Resources.user2_col.find({'status': UserStatus.ACTIVE, 'service': self.service})
+                cursor = Resources.user_col.find({'status': UserStatus.ACTIVE, 'service': self.service})
                 try:
                     users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
                 except asyncio.CancelledError:
@@ -75,7 +75,7 @@ class Syncer:
                                 for entry in user_data.lists[lst].data:
                                     k[str(entry['id'])] = entry.dict
                                 user.lists[lst] = k
-                        await Resources.user2_col.update_one(
+                        await Resources.user_col.update_one(
                             {'discord_id': user.discord_id, 'service': user.service},
                             {'$set': user.dict}
                         )
@@ -152,7 +152,7 @@ class Syncer:
                 return
             
             # display for each of those guilds based on its settings
-            async for guild in Resources.guild2_col.find({'guild_id': {'$in': disaply_guild_ids}}):
+            async for guild in Resources.guild_col.find({'guild_id': {'$in': disaply_guild_ids}}):
                 # go through all the channels it displays updates for
                 for ch in guild['settings']['updates']:
                     channel = self.bot.get_channel(int(ch))

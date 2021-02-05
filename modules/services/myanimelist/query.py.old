@@ -90,49 +90,73 @@ class MyAnimeListQuery(Query):
 
     async def _gen_profile(self, user: User, animelist, mangalist) -> QueryResult:
         diff = datetime.datetime.now() - user.profile.last_profile_update
-        # data used for profile rarely changes so don't fetch more than once per 24hrs to reduce api calls
-        if not(diff.days or diff.seconds > 86400):
+        # data used for profile rarely changes so don't fetch more than once per 24hrs*2 to reduce api calls
+        if not(diff.days or diff.seconds > 86400*2):
+            if animelist.status == ResultStatus.OK:
+                user.profile.last_anime_update = datetime.datetime.now()
+            if mangalist.status == ResultStatus.OK:
+                user.profile.last_manga_update = datetime.datetime.now()
             return QueryResult(status=ResultStatus.OK, data=user.profile)
 
         data = await self._fetch_profile(user.service_id)
         data = self._profile(data)
         if data.status != ResultStatus.OK:
+            if animelist.status == ResultStatus.OK:
+                user.profile.last_anime_update = datetime.datetime.now()
+            if mangalist.status == ResultStatus.OK:
+                user.profile.last_manga_update = datetime.datetime.now()
             return QueryResult(status=ResultStatus.OK, data=user.profile)
         else:
+            if animelist.status == ResultStatus.OK:
+                data.data.last_anime_update = datetime.datetime.now()
+            if mangalist.status == ResultStatus.OK:
+                data.data.last_manga_update = datetime.datetime.now()
             data.data.last_profile_update = datetime.datetime.now()
             return data
 
     async def _gen_animelist(self, user: User) -> QueryResult:
+        diff = datetime.datetime.now() - user.profile.last_anime_update
+        # jikan caches request for an hour so there's no point in fetching any faster
+        if not(diff.days or diff.seconds > 3600):
+            return QueryResult(status=ResultStatus.SKIP, data=None)
+
         data = await self._fetch_list(user.service_id, 'anime')
         return self._animelist(data)
 
     async def _gen_mangalist(self, user: User) -> QueryResult:
+        diff = datetime.datetime.now() - user.profile.last_manga_update
+        # jikan caches request for an hour so there's no point in fetching any faster
+        if not(diff.days or diff.seconds > 3600):
+            return QueryResult(status=ResultStatus.SKIP, data=None)
+
         data = await self._fetch_list(user.service_id, 'manga')
         return self._mangalist(data)
 
     async def _fetch_list(self, id, kind: str):
         """get well-formated list from myanimelist"""
         lst = []
-        # mal sends up to 300 entries in a response
-        # build complete list by combinig entries from multiple responses
-        page = 0
+        # jikan paginates lists into groups of 300
+        # build complete list by combinig list from each page
+        page = 1
         partial_lst = await self._fetch_partial_list(id, kind, page)
         limit = 50  # safety for preventing infinite loop, theoretically this could go up to a list with 15000 entries
-        while page < limit:
-            page += 1
+        while limit:
+            limit -= 1
             if not partial_lst: # good request but empty list, we have all the list data
                 break
             lst.extend(partial_lst)
-            # await asyncio.sleep(0.5) # idk rate limits for this endpoint
-            partial_lst = await self._fetch_partial_list(id, kind, page*300)
+            await asyncio.sleep(4) # adhere to jikan rate limits
+            page += 1
+            partial_lst = await self._fetch_partial_list(id, kind, page)
         return lst
 
     async def _fetch_partial_list(self, id, kind, page):
         """get list from myanimelist via jikan api"""
-        async with Resources.syncer_session.get(f"https://myanimelist.net/{kind}list/{id}/load.json?offset={page}", raise_for_status=True) as resp:
+        async with Resources.syncer_session.get(f"https://api.jikan.moe/v3/user/{id}/{kind}list/all/{page}", raise_for_status=True) as resp:
             if resp.status != 200:
-                raise Exception('Bad response from myanimelist call')
-            return await resp.json()
+                raise Exception('Bad response from myanimelist Jikan call')
+            data = await resp.json()
+            return data.get(kind)
 
     async def _fetch_profile(self, id):
         """get profile from myanimelist via jikan api"""
@@ -149,18 +173,18 @@ class MyAnimeListQuery(Query):
         try:
             for entry in data:
                 media = AnimeEntry()
-                media['id'] = entry.get('anime_id')
-                media['cover'] = entry.get('anime_image_path')
-                media['title'] = entry.get('anime_title')
-                media['episodes'] = entry.get('anime_num_episodes')
+                media['id'] = entry.get('mal_id')
+                media['cover'] = entry.get('image_url')
+                media['title'] = entry.get('title')
+                media['episodes'] = entry.get('total_episodes')
                 media['score'] = entry.get('score')
-                media['episode_progress'] = entry.get('num_watched_episodes')
-                media['status'] = self._convert_status(entry.get('status'))
+                media['episode_progress'] = entry.get('watched_episodes')
+                media['status'] = self._convert_status(entry.get('watching_status'))
                 media['attributes'] = 0
-                if entry['anime_media_type_string'] == 'Music':
+                if entry['type'] == 'Music':
                     media['attributes'] = media['attributes'] | EntryAttributes.song
-                if entry['anime_mpaa_rating_string'] == 'Rx': 
-                # ['R', 'R+', 'Rx'] also exist but for reference Attack on Titan is R and Akira is R+ on MAL
+                if entry['rating'] == 'Rx': 
+                # ['R', 'R+', 'Rx'] also exist but for reference Attack on Titan is R on MAL
                     media['attributes'] = media['attributes'] | EntryAttributes.adult
                 lst.append(media)
         except Exception as e:
@@ -182,19 +206,19 @@ class MyAnimeListQuery(Query):
         try:
             for entry in data:
                 media = MangaEntry()
-                media['id'] = entry.get('manga_id')
-                media['cover'] = entry.get('manga_image_path')
-                media['title'] = entry.get('manga_title')
-                media['chapters'] = entry.get('manga_num_chapters')
-                media['volumes'] = entry.get('manga_num_volumes')
+                media['id'] = entry.get('mal_id')
+                media['cover'] = entry.get('image_url')
+                media['title'] = entry.get('title')
+                media['chapters'] = entry.get('total_chapters')
+                media['volumes'] = entry.get('total_volumes')
                 media['score'] = entry.get('score')
-                media['chapter_progress'] = entry.get('num_read_chapters')
-                media['volume_progress'] = entry.get('num_read_volumes')
-                media['status'] = self._convert_status(entry.get('status'))
+                media['chapter_progress'] = entry.get('read_chapters')
+                media['volume_progress'] = entry.get('read_volumes')
+                media['status'] = self._convert_status(entry.get('reading_status'))
                 media['attributes'] = 0
-                if entry['manga_media_type_string'] == 'Manhwa':
+                if entry['type'] == 'Manhwa':
                     media['attributes'] = media['attributes'] | EntryAttributes.manhwa
-                if entry['manga_media_type_string'] == 'Manhua':
+                if entry['type'] == 'Manhua':
                     media['attributes'] = media['attributes'] | EntryAttributes.manhua
                 # if entry['type'] == 'Doujinshi':
                 #     media['attributes'] = media['attributes'] | EntryAttributes.adult
