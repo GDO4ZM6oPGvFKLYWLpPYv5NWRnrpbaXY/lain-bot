@@ -7,13 +7,39 @@ if TYPE_CHECKING:
 
 from modules.core.resources import Resources
 from ..models.query import Query, user_id
-from ..models.data import EntryAttributes, FetchData, QueryResult, ResultStatus, UserSearch
+from ..models.data import EntryAttributes, FetchData, QueryResult, ResultStatus, UserSearch, Image
 from ..anilist.entry import AnimeEntry, MangaEntry
 from .profile import MALProfile
 from ..anilist.enums import ScoreFormat, Status
-import asyncio, datetime, logging
+import datetime, logging, types
 
 logger = logging.getLogger(__name__)
+
+def img_a(self) -> List[Image]:
+    if self['cover']:
+        try:
+            link = self['cover']
+            link = link.split('.jpg?s')[0]
+            link = link.split('/')
+            link = f"https://cdn.myanimelist.net/images/anime/{link[-2]}/{link[-1]}l.webp"
+            return [Image(narrow=link, wide=link)]
+        except:
+            return []
+    else:
+        return []
+
+def img_m(self) -> List[Image]:
+    if self['cover']:
+        try:
+            link = self['cover']
+            link = link.split('.jpg?s')[0]
+            link = link.split('/')
+            link = f"https://cdn.myanimelist.net/images/manga/{link[-2]}/{link[-1]}l.webp"
+            return [Image(narrow=link, wide=link)]
+        except:
+            return []
+    else:
+        return []
 
 class MyAnimeListQuery(Query):
     MAX_USERS_PER_QUERY = 1
@@ -149,6 +175,7 @@ class MyAnimeListQuery(Query):
         try:
             for entry in data:
                 media = AnimeEntry()
+                media.images = types.MethodType(img_a, media)
                 media['id'] = entry.get('anime_id')
                 media['cover'] = entry.get('anime_image_path')
                 media['title'] = entry.get('anime_title')
@@ -182,6 +209,7 @@ class MyAnimeListQuery(Query):
         try:
             for entry in data:
                 media = MangaEntry()
+                media.images = types.MethodType(img_m, media)
                 media['id'] = entry.get('manga_id')
                 media['cover'] = entry.get('manga_image_path')
                 media['title'] = entry.get('manga_title')
