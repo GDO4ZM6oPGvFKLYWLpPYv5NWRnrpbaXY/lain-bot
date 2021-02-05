@@ -33,7 +33,7 @@ class ServiceCommands(commands.Cog):
             if inactive:
                 embed.add_field(name='__Unavailable (WIP/Brokey)__', value='\n'.join(inactive), inline=True)
 
-            guild = await Resources.guild2_col.find_one({'guild_id': str(ctx.guild.id)})
+            guild = await Resources.guild_col.find_one({'guild_id': str(ctx.guild.id)})
             
             update_channels = guild['settings']['updates'] if guild else guild
 
@@ -43,7 +43,7 @@ class ServiceCommands(commands.Cog):
             else:
                 embed.add_field(name='__Active in this guild__', value='*None*', inline=True)
 
-            user_services = Resources.user2_col.find({'discord_id': str(ctx.author.id), 'status': UserStatus.ACTIVE}, {'service': 1})
+            user_services = Resources.user_col.find({'discord_id': str(ctx.author.id), 'status': UserStatus.ACTIVE}, {'service': 1})
             user_services = await user_services.to_list(length=None)
 
             if user_services:
@@ -140,7 +140,7 @@ class ServiceCommands(commands.Cog):
             description='React to the corresponding emoji to apply the ignore filter, the others will the displaying. Hit ✅ to confirm or ❌ to cancel.'
         )
 
-        current = await Resources.guild2_col.find_one({'guild_id': str(ctx.guild.id)})
+        current = await Resources.guild_col.find_one({'guild_id': str(ctx.guild.id)})
         ignore_flags = EntryAttributes(current['settings']['entry_ignore_attributes']) if current else EntryAttributes.adult
         ignore_img_flags = EntryAttributes(current['settings']['image_ignore_attributes']) if current else EntryAttributes.adult
         msgs = []
@@ -187,7 +187,7 @@ class ServiceCommands(commands.Cog):
                 if onlyImages:
                     path = 'settings.image_ignore_attributes'
                 if not current:
-                    await Resources.guild2_col.update_one(
+                    await Resources.guild_col.update_one(
                         {'guild_id': str(ctx.guild.id)}, 
                         {
                             '$set': {
@@ -256,7 +256,7 @@ class ServiceCommands(commands.Cog):
                                 k[str(entry['id'])] = entry.dict
                             new_user.lists[lst] = k
 
-                await Resources.user2_col.update_one(
+                await Resources.user_col.update_one(
                     {
                         'discord_id': new_user.discord_id,
                         'service': new_user.service
@@ -270,7 +270,7 @@ class ServiceCommands(commands.Cog):
 
 
     async def _rem_user(self, ctx, service):
-        res = await Resources.user2_col.update_one(
+        res = await Resources.user_col.update_one(
             {
                 'discord_id': str(ctx.author.id),
                 'service': service
