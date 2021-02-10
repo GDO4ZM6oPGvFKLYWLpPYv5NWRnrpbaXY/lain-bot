@@ -1,4 +1,4 @@
-import logging, discord, datetime, os, openpyxl, re
+import logging, discord, datetime, os, openpyxl, re, pendulum
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
@@ -107,15 +107,15 @@ class AnimeClub(commands.Cog):
 			data = await Resources.storage_col.find_one({'id': 'sched_v2'})
 
 			if sat:
-				nxt_sat = next_day(day=5)
-				lines = saturday_lines(data['Saturday'].get(str(nxt_sat)))
+				nxt_sat = next_day(day=pendulum.SATURDAY)
+				lines = saturday_lines(data['Saturday'].get(nxt_sat.format('YYYY-MM-DD HH:mm:ss')))
 				if lines:
 					embed.add_field(name=f"Saturday ({nxt_sat.month}/{nxt_sat.day})", value='\n'.join(lines), inline=False)
 				else:
 					embed.add_field(name=f"Saturday ({nxt_sat.month}/{nxt_sat.day})", value="*none*", inline=False)
 			if wed:
-				nxt_wed = next_day(day=2)
-				lines = wednesday_lines(data['Wednesday'].get(str(nxt_wed)))
+				nxt_wed = next_day(day=pendulum.WEDNESDAY)
+				lines = wednesday_lines(data['Wednesday'].get(nxt_wed.format('YYYY-MM-DD HH:mm:ss')))
 
 				if lines:
 					embed.add_field(name=f"Wednesday ({nxt_wed.month}/{nxt_wed.day})", value='\n'.join(lines), inline=True)
@@ -134,7 +134,7 @@ class AnimeClub(commands.Cog):
 		else:
 			for meeting in data['Wednesday']:
 				date = parser.parse(meeting)
-				if only_future and date < next_day(day=2):
+				if only_future and date < next_day(day=pendulum.WEDNESDAY):
 					continue
 				lines = wednesday_lines(data['Wednesday'][meeting])
 				if lines:
@@ -152,7 +152,7 @@ class AnimeClub(commands.Cog):
 		else:
 			for meeting in data['Saturday']:
 				date = parser.parse(meeting)
-				if only_future and date < next_day(day=5):
+				if only_future and date < next_day(day=pendulum.SATURDAY):
 					continue
 				lines = saturday_lines(data['Saturday'][meeting])
 				if lines:
@@ -216,27 +216,23 @@ def saturday_lines(data):
 
 	return lines
 
-def next_day(start=datetime.datetime.now(Resources.timezone), day: int = 0, latest_same_day_hour: int = 21):
-	"""Get date of next day of week following given date
+def next_day(start=pendulum.now('US/Central'), day: int = 0, latest_same_day_hour: int = 20):
+    """Get date of next day of week following given date
 
-	Args:
-		start: date to search from. Defaults to datetime.datetime.now().
-		day: day of the week: mon=0, ..., sun=6. Defaults to 0.
-		latest_same_day_hour: latest hour to consider next day to be that day 
-			i.e. if set to 6, anytime after 6 it will get the following week 
-			while 6 or before will get that day. Defaults to 21.
+    Args:
+        start: date to search from. Defaults to datetime.datetime.now().
+        day: day of the week: sun=0, ..., sat=6. Defaults to 0.
+        latest_same_day_hour: latest hour to consider next day to be that day 
+            i.e. if set to 6, anytime after 6 it will get the following week 
+            while 6 or before will get that day. Defaults to 21.
 
-	Returns:
-		datetime.datetime: date with year. month, and day set
-	"""
-	# start = Resources.timezone.localize(start)
-	days_ahead = day - start.weekday()
-	if days_ahead < 0:
-		days_ahead += 7
-	elif days_ahead == 0:
-		if start.hour >= latest_same_day_hour:
-			days_ahead = 7
-	return datetime.datetime(start.year, start.month, start.day) + datetime.timedelta(days_ahead)
+    Returns:
+        pendulum.datetime: date with year. month, and day set
+    """
+    start = start.subtract(hours=latest_same_day_hour)
+    start = start.start_of('day')
+    start = start.next(day)
+    return start
 
 def extract_schedule(file, start_hour):
 	class Time:
