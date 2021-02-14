@@ -71,7 +71,7 @@ def rationalizer(self, user: User, latest_profile: WeebProfile = None) -> None:
             pc.ignore = True
     
     # handle case of adding re to read/watch for repeating media
-    if progress_changes and status_change and status_change.new == Status.REPEATING:
+    if progress_changes and self['status'] == Status.REPEATING:
         for pc in progress_changes:
             pc.msg = f"re{pc.msg}"
 
