@@ -401,11 +401,11 @@ class Anime(commands.Cog):
 
 			for e in userData['lists']['anime'].values():
 				if e['status'] == Status.CURRENT:
-					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes' if e['episodes'] else '-']})"
+					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes'] if e['episodes'] else '-'})"
 					watchingList.append(s)
 
 				if e['status'] == Status.REPEATING:
-					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes' if e['episodes'] else '-']})"
+					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes'] if e['episodes'] else '-'})"
 					rewatchingList.append(s)
 
 			if not (watchingList or rewatchingList):
