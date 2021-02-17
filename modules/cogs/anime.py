@@ -38,7 +38,7 @@ class Anime(commands.Cog):
 		except:
 			pass
 		
-	@commands.command(pass_context=True)
+	@commands.command()
 	async def safebooru(self, ctx, tags):
 		"""Look up images on safebooru"""
 		channel = ctx.message.channel
@@ -61,12 +61,12 @@ class Anime(commands.Cog):
 
 		await channel.send(embed=embed)
 
-	@commands.group(pass_context=True)
+	@commands.group()
 	async def doujin(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid doujin command passed...')
 
-	@doujin.command(pass_context=True)
+	@doujin.command()
 	async def search(self, ctx):
 		tags = str(ctx.message.content)[(len(ctx.prefix) + len('doujin search ')):]
 		links = Doujin.tagSearch(tags)
@@ -140,31 +140,14 @@ class Anime(commands.Cog):
 		else:
 			await ctx.send('Error getting data')
 
-	@commands.group(pass_context=True)
+	@commands.group()
 	async def al(self, ctx):
 		# anilist command group
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid anilist command passed...')
 
 
-	@al.command(pass_context=True)
-	async def help(self, ctx):
-		await ctx.trigger_typing()
-		embed = discord.Embed(
-			title = 'Available commands',
-			description = '',
-			color = discord.Color.blue(),
-		)
-		embed.add_field(name='al animelist enable', value='Requires admin. Enable anilist anime updates messages on this channel. The same can be done for \'mangalist\'. Replace \'enable\' with \'disable\' to stop message updates.', inline=False)
-		embed.add_field(name='al search \<show\>', value='search for anime in anilist', inline=False)
-		embed.add_field(name='al manga \<manga\>', value='search for manga in anilist', inline=False)
-		embed.add_field(name='al user set \<username\>', value='connect anilist account to discord account', inline=False)
-		embed.add_field(name='al user remove', value='disconnect anilist account from discord account', inline=False)
-		embed.add_field(name='+more', value='I\'m too lazy to do describe all of them. There\'s safebooru, al char, al user profile', inline=False)
-
-		await ctx.send(embed=embed)
-
-	@al.command(pass_context=True)
+	@al.command()
 	async def search(self, ctx):
 		"""search for anime in anilist"""
 		await ctx.trigger_typing()
@@ -254,7 +237,7 @@ class Anime(commands.Cog):
 			else:
 				await ctx.send(embed=extra)
 
-	@al.command(pass_context=True)
+	@al.command()
 	async def manga(self, ctx):
 		"""Search for manga in anilist"""
 		await ctx.trigger_typing()
@@ -335,7 +318,7 @@ class Anime(commands.Cog):
 			else:
 				await ctx.send(embed=extra)
 
-	@al.command(pass_context=True)
+	@al.command()
 	async def char(self, ctx):
 		"""Search for a character on anilist"""
 		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
@@ -366,7 +349,7 @@ class Anime(commands.Cog):
 
 		await ctx.send(embed=embed)
 
-	@al.group(pass_context=True)
+	@al.group()
 	async def user(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid Anilist user command passed...')
@@ -537,12 +520,12 @@ class Anime(commands.Cog):
 			else:
 				await ctx.send('Sorry. I could not find that user')
 
-	@commands.group(pass_context=True)
+	@commands.group()
 	async def vn(self, ctx):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid vndb command passed...')
 
-	@vn.command(pass_context=True)
+	@vn.command()
 	async def get(self, ctx):
 		"""Lookup a visual novel on vndb"""
 		# name of vn
@@ -665,7 +648,7 @@ class Anime(commands.Cog):
 			logger.exception('Exception looking up VN')
 			await ctx.send('VN not found (title usually has to be exact)')
 
-	@vn.command(pass_context=True)
+	@vn.command()
 	async def quote(self, ctx):
 		"""Display a random visual novel quote"""
 		q = Vndb()

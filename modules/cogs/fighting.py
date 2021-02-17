@@ -14,7 +14,7 @@ class Fighting(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid xiii command passed...')
 
-    @xiii.command(pass_context=True)
+    @xiii.command()
     async def fd(self, ctx, char, move):
         channel = ctx.message.channel
         error = 0
@@ -79,7 +79,7 @@ class Fighting(commands.Cog):
         if error!=0:
             await channel.send("An error has occured! Make sure you're spelling everything correctly!")
 
-    @xiii.command(pass_context=True)
+    @xiii.command()
     async def char(self, ctx, char):
         channel = ctx.message.channel
         info = FgInfo.searchChar("xiii", char)
@@ -103,7 +103,7 @@ class Fighting(commands.Cog):
 
         await channel.send(embed=embed)
 
-    @xiii.command(pass_context=True)
+    @xiii.command()
     async def game(self, ctx):
         channel = ctx.message.channel
 

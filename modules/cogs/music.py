@@ -17,14 +17,14 @@ class Music(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send('Invalid radio command passed...')
 
-    @radio.command(pass_context=True)
+    @radio.command()
     async def start(self, ctx):
         await ctx.send('Starting radio')
         # r/a/dio link
         url = 'https://stream.r-a-d.io/main.mp3'
         await join(self.bot, ctx, url)
 
-    @radio.command(pass_context=True)
+    @radio.command()
     async def info(self, ctx):
         r = Radio.information()
         try:
@@ -66,7 +66,7 @@ class Music(commands.Cog):
             logger.exception("Error during radio command.")
             await ctx.send('Error retrieving data')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def yt(self, ctx, url):
         if 'youtube.com/' not in url:
             url = str(ctx.message.content)[(len(ctx.prefix) + len('yt ')):]
@@ -104,7 +104,7 @@ class Music(commands.Cog):
             logger.exception('Error during youtube command')
             await ctx.send(str(e))
 
-    @commands.command(pass_context=True, aliases=['leave', 'radio stop', 'radio leave'])
+    @commands.command(aliases=['leave', 'radio stop', 'radio leave'])
     async def stop(self, ctx):
         try:
             channel = ctx.author.voice.channel
@@ -121,7 +121,7 @@ class Music(commands.Cog):
             logger.exception('Error in music stop command.')
             await ctx.send('Unexpected error')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def pause(self, ctx):
         try:
             channel = ctx.author.voice.channel
@@ -137,7 +137,7 @@ class Music(commands.Cog):
             logger.exception('Error pausing music.')
             await ctx.send('Unexpected error')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def resume(self, ctx):
         try:
             channel = ctx.author.voice.channel
@@ -153,7 +153,7 @@ class Music(commands.Cog):
             logger.exception('Error resuming music.')
             await ctx.send('Unexpected error')
 
-    @commands.command(pass_context=True, aliases=['next'])
+    @commands.command(aliases=['next'])
     async def skip(self, ctx):
         try:
             channel = ctx.author.voice.channel
@@ -171,7 +171,7 @@ class Music(commands.Cog):
             logger.exception('Error skipping music.')
             await ctx.send('Unexpected error')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def clear(self, ctx):
         if len(queues) == 0:
             await ctx.send('Nothing in queue')
@@ -179,7 +179,7 @@ class Music(commands.Cog):
             queues.clear()
             await ctx.send('Queue cleared')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def op(self, ctx, num):
         # 1 = opening
         t = 1
@@ -261,7 +261,7 @@ class Music(commands.Cog):
                 logger.exception('*%s*, %s not found in database', english, select)
                 await ctx.send('*' + english + '*, ' + select + ' not found in database')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def ed(self, ctx, num):
         # 2 = ending
         t = 2
