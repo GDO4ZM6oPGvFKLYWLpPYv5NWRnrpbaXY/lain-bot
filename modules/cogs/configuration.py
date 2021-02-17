@@ -15,7 +15,7 @@ class Configuration(commands.Cog):
 		if ctx.invoked_subcommand is None:
 			await ctx.send('Invalid config command passed...')
 
-	@config.command(pass_context=True)
+	@config.command()
 	@has_permissions(administrator=True)
 	async def channel(self, ctx):
 		serverID = str(ctx.guild.id)
@@ -23,7 +23,7 @@ class Configuration(commands.Cog):
 		Config.cfgUpdate(serverID, "Bot Channel", channelID)
 		await ctx.send("Bot channel successfully updated to here!")
 
-	@config.command(pass_context=True)
+	@config.command()
 	async def where(self, ctx):
 		serverID = str(ctx.guild.id)
 		try:
@@ -32,7 +32,7 @@ class Configuration(commands.Cog):
 		except:
 			await ctx.send("Error!")
 
-	@config.command(pass_context=True)
+	@config.command()
 	@has_permissions(administrator=True)
 	async def welcome(self, ctx):
 		try:
@@ -51,7 +51,7 @@ class Configuration(commands.Cog):
 		except:
 			await ctx.send("error! LOL!")
 
-	@config.command(pass_context=True)
+	@config.command()
 	@has_permissions(administrator=True)
 	async def welcomemsg(self, ctx):
 		msg = str(ctx.message.content)[(len(ctx.prefix) + len('config welcomemsg ')):]
