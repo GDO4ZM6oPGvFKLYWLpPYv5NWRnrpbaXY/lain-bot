@@ -10,6 +10,7 @@ from .. import Service
 class UserStatus:
     INACTIVE = int(0)
     ACTIVE = int(1)
+    CACHEONLY = int(2)
 
 class User:
     """User from database
