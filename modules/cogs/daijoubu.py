@@ -23,6 +23,6 @@ class Daijoubu(commands.Cog):
         if ctx.content.lower() == "what":
             async for i in ctx.channel.history(limit=10):
                 if i.content.lower() != "what":
-                    msg = "**"+i.content+"**"
+                    msg = "**"+i.content.upper()+"**"
                     await ctx.channel.send(msg)
                     break
