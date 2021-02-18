@@ -7,6 +7,7 @@ from modules.cogs.configuration import Configuration
 from modules.cogs.memes import Memes
 from modules.cogs.animeclub import AnimeClub
 from modules.cogs.jisho import Jisho
+from modules.cogs.daijoubu import Daijoubu
 
 from modules.services import Service
 
@@ -30,3 +31,4 @@ class Client:
     bot.add_cog(Music(bot))
     bot.add_cog(AnimeClub(bot))
     bot.add_cog(Jisho(bot))
+    bot.add_cog(Daijoubu(bot))
