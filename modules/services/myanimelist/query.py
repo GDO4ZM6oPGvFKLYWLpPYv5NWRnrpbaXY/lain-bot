@@ -116,8 +116,10 @@ class MyAnimeListQuery(Query):
 
     async def _gen_profile(self, user: User, animelist, mangalist) -> QueryResult:
         diff = datetime.datetime.now() - user.profile.last_profile_update
-        # data used for profile rarely changes so don't fetch more than once per 24hrs to reduce api calls
-        if not(diff.days or diff.seconds > 86400):
+        # users requests cached for 5 mins, don't fetch more than once per 
+        # 5 min to reduce fetches. cached requests don't count against rate
+        # limits, but why waste time making request for stale data
+        if not(diff.days or diff.seconds > 300):
             return QueryResult(status=ResultStatus.OK, data=user.profile)
 
         data = await self._fetch_profile(user.service_id)
