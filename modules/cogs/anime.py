@@ -11,6 +11,7 @@ from modules.anime.vndb import Vndb
 from modules.core.resources import Resources
 
 from modules.services.anilist.enums import ScoreFormat, Status
+from modules.services.models.user import UserStatus
 from modules.services import Service
 
 class Anime(commands.Cog):
@@ -383,7 +384,7 @@ class Anime(commands.Cog):
 		# technically a user could register both anilist and myanimelist services
 		# rn it'll just use what ever db query finds first (which'll be the least recently set one)
 		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
-		search['status'] = 1
+		search['status'] = {'$in': [UserStatus.ACTIVE, UserStatus.CACHEONLY]}
 
 		userData = await Resources.user_col.find_one(
 			search,
@@ -470,7 +471,7 @@ class Anime(commands.Cog):
 		# technically a user could register both anilist and myanimelist services
 		# rn it'll just use what ever db query finds first
 		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
-		search['status'] = 1
+		search['status'] = {'$in': [UserStatus.ACTIVE, UserStatus.CACHEONLY]}
 
 		userData = await Resources.user_col.find_one(
 			search,
