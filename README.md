@@ -4,8 +4,8 @@
 A Discord bot designed for integration with websites such as Safebooru, AniList, and VNDB, to allow for personal features to be used on Discord chat servers. Invite the bot using this [link](https://discord.com/oauth2/authorize?client_id=703061485781385358&scope=bot)
 
 ## Getting Started
-Run main.py, and provide a Discord Bot token through .env with the line "BOT_TOKEN=\[your token\]". For more details [read the following](https://discord.com/developers/).
-Install the prerequisites "pip install -r requirements.txt"
+1. Run main.py, and provide a Discord Bot token through .env with the line "BOT_TOKEN=\[your token\]". For more details [read the following](https://discord.com/developers/).
+2. Install the prerequisites "pip install -r requirements.txt"
 
 ## Contributing
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426).
