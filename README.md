@@ -13,6 +13,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 ## Authors
 * **Tatsu Eliason** - *Initial work, backend development* - [SigSigSigurd](https://github.com/SigSigSigurd)
 * **Jay Russell** - *Initial AniList, VNDB, openingsmoe API integration* - [Jay-Russell](https://github.com/Jay-Russell)
+* **Anthony VanLent** - *AniList/MyAnimeList updates integration, backend development* - [avanlent](https://github.com/avanlent)
 
 See also the list of [contributors](https://github.com/SigSigSigurd/kotori-san-bot/contributors) who participated in this project.
 
