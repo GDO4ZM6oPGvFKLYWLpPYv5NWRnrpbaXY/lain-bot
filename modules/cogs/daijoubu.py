@@ -22,7 +22,7 @@ class Daijoubu(commands.Cog):
     async def on_message(self, ctx):
         if ctx.content.lower() == "what":
             async for i in ctx.channel.history(limit=10):
-                if i.content.lower() != "what":
+                if i.content.lower() != "what" and i.author != ctx.author:
                     msg = "**"+i.content.upper()+"**"
                     await ctx.channel.send(msg)
                     break
