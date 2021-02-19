@@ -10,9 +10,7 @@ class Daijoubu(commands.Cog):
         self.bot = bot
 
     def is_daijoubu_server(ctx):
-        return ctx.guild.id in [543836696043847690, # daijoubu
-        561273252354457606, # tatsu test
-        554770485079179264] # fgc
+        return ctx.guild.id in [543836696043847690, 561273252354457606, 554770485079179264]
 
     @commands.Cog.listener()
     @commands.check(is_daijoubu_server)
@@ -20,7 +18,7 @@ class Daijoubu(commands.Cog):
         if ctx.content.lower() == "what" or ctx.content.lower() == ("what?"):
             async for i in ctx.channel.history(limit=10):
                 l = i.content.lower()
-                if l != "what" and i.author != ctx.author:
+                if l not in ["what", ""] and i.author != ctx.author:
                     s = re.sub("\*+", "", l)
                     msg = "**"+s.upper()+"**"
                     await ctx.channel.send(msg)
