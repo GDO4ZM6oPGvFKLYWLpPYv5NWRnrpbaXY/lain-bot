@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 mangaListFields = '''
     {
         lists {
+            isCustomList
             entries {
                 ...mediaFields
                 progressVolumes
@@ -33,6 +34,7 @@ mangaListFields = '''
 animeListFields = '''
     {
         lists {
+            isCustomList
             entries {
                 ...mediaFields
                 media {
@@ -191,8 +193,8 @@ class AnilistQuery(Query):
         built_query = 'query {\n'
         for user in ids:
             built_query += f"profile_{user}: User(id:{user}){userFields}"
-            built_query += f"animelist_{user}: MediaListCollection(userId:{user}, type:ANIME){animeListFields}"
-            built_query += f"mangalist_{user}: MediaListCollection(userId:{user}, type:MANGA){mangaListFields}"
+            built_query += f"animelist_{user}: MediaListCollection(userId:{user}, type:ANIME, forceSingleCompletedList:true){animeListFields}"
+            built_query += f"mangalist_{user}: MediaListCollection(userId:{user}, type:MANGA, forceSingleCompletedList:true){mangaListFields}"
         built_query += f"}}{fragments}"
         
         return built_query
@@ -200,8 +202,8 @@ class AnilistQuery(Query):
     def _serach_query(self, username):
         built_query = 'query {\n'
         built_query += f"profile: User(name:\"{username}\"){userFieldsId}"
-        built_query += f"animelist: MediaListCollection(userName:\"{username}\", type:ANIME){animeListFields}"
-        built_query += f"mangalist: MediaListCollection(userName:\"{username}\", type:MANGA){mangaListFields}"
+        built_query += f"animelist: MediaListCollection(userName:\"{username}\", type:ANIME, forceSingleCompletedList:true){animeListFields}"
+        built_query += f"mangalist: MediaListCollection(userName:\"{username}\", type:MANGA, forceSingleCompletedList:true){mangaListFields}"
         built_query += f"}}{fragments}"
         
         return built_query
@@ -357,6 +359,8 @@ class AnilistQuery(Query):
         lst = []
         try:
             for sublst in data['lists']:
+                if sublst['isCustomList']:
+                    continue
                 for entry in sublst['entries']:
                     media = AnimeEntry()
                     media['id'] = entry.get('mediaId')
@@ -391,6 +395,8 @@ class AnilistQuery(Query):
         lst = []
         try:
             for sublst in data['lists']:
+                if sublst['isCustomList']:
+                    continue
                 for entry in sublst['entries']:
                     media = MangaEntry()
                     media['id'] = entry.get('mediaId')
