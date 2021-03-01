@@ -212,7 +212,13 @@ def saturday_lines(data):
 			shows[title[0]] = [title[1], title[1], showtime['start']]
 
 	for show in shows:
-		lines.append(f"{shows[show][2]}pm: {show} ({shows[show][0]}-{shows[show][1]})") # order from dict
+		if shows[show][0]:
+			if shows[show][0] == shows[show][1]:
+				lines.append(f"{shows[show][2]}pm: {show} ({shows[show][0]})")
+			else:
+				lines.append(f"{shows[show][2]}pm: {show} ({shows[show][0]}-{shows[show][1]})") # order from dict
+		else:
+			lines.append(f"{shows[show][2]}pm: {show}")
 
 	return lines
 
