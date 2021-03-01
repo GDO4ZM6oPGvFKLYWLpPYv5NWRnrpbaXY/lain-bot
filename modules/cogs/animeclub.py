@@ -1,4 +1,4 @@
-import logging, discord, datetime, os, openpyxl, re, pendulum
+import logging, discord, datetime, os, openpyxl, re, pendulum, time
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
@@ -216,15 +216,15 @@ def saturday_lines(data):
 
 	return lines
 
-def next_day(start=pendulum.now('US/Central'), day: int = 0, latest_same_day_hour: int = 20):
+def next_day(start=pendulum.from_timestamp(time.time(), tz='US/Central'), day: int = 0, latest_same_day_hour: int = 20):
     """Get date of next day of week following given date
 
     Args:
-        start: date to search from. Defaults to datetime.datetime.now().
+        start: date to search from. Defaults to current time.
         day: day of the week: sun=0, ..., sat=6. Defaults to 0.
         latest_same_day_hour: latest hour to consider next day to be that day 
             i.e. if set to 6, anytime after 6 it will get the following week 
-            while 6 or before will get that day. Defaults to 21.
+            while 6 or before will get that day. Defaults to 20.
 
     Returns:
         pendulum.datetime: date with year. month, and day set
