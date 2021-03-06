@@ -192,7 +192,7 @@ class Music(commands.Cog):
 
         # first get list of openings from openings.moe
         songs = Themes.openingsMoe()
-
+        await ctx.send(songs)
         if show == '':
             pick = random.choice(songs)
             show = pick['source']
