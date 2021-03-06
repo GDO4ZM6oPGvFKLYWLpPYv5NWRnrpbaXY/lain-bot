@@ -184,7 +184,7 @@ class Music(commands.Cog):
         # 1 = opening
         t = 1
         build = parse(ctx, num)
-
+        await ctx.send('fix')
         # show to search for
         show = build['show']
         # which opening to pick
