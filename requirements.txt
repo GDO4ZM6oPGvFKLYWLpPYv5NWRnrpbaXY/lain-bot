@@ -12,7 +12,7 @@ cssselect>=1.1.0
 discord.py @ git+https://github.com/Rapptz/discord.py@763d46cd7ab14a4b0345a69fd862de8a4eb6da10
 dnspython>=1.16.0
 fake-useragent>=0.1.11
-ffmpeg-python>=0.2.0
+ffmpeg-python
 future>=0.18.2
 graphene>=2.1.8
 graphql-core>=2.3.2
