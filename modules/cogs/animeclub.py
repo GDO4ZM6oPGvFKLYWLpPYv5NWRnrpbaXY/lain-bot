@@ -222,7 +222,7 @@ def saturday_lines(data):
 
 	return lines
 
-def next_day(start=pendulum.from_timestamp(time.time(), tz='US/Central'), day: int = 0, latest_same_day_hour: int = 20):
+def next_day(start=None, day: int = 0, latest_same_day_hour: int = 20):
     """Get date of next day of week following given date
 
     Args:
@@ -235,6 +235,8 @@ def next_day(start=pendulum.from_timestamp(time.time(), tz='US/Central'), day: i
     Returns:
         pendulum.datetime: date with year. month, and day set
     """
+    if not start:
+        start = pendulum.from_timestamp(time.time(), tz='US/Central')
     start = start.subtract(hours=latest_same_day_hour)
     start = start.start_of('day')
     start = start.next(day)
