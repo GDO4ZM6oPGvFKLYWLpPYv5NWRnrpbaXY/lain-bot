@@ -491,7 +491,7 @@ class Anime(commands.Cog):
 			)
 
 			animeGenres = ', '.join(userData['profile']['genres'])
-			animeFavs = ', '.join(userData['profile']['favourites'])
+			animeFavs = ', '.join(f for f in userData['profile']['favourites'].values())
 
 			if userData['profile']["banner"]:
 				embed.set_image(url=userData['profile']["banner"])
@@ -739,6 +739,7 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 				'service': 1,
 				'profile.name': 1,
 				'profile.score_format': 1,
+				'profile.favourites': 1,
 				f"lists.{listType}.{anilistId}": 1,
 				f"lists.{listType}.{malId}": 1
 			}
@@ -765,12 +766,13 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 def userScoreEmbeder(user, showID, listType, embed):
 	entry = user['lists'][listType][str(showID)]
 	status = statusConversion(entry['status'], listType)
+	isFav = bool(user['profile']['favourites'].get(str(showID)))
 	
 	score = entry['score']
 	if not score or score == 0:
-		embed.add_field(name=user['profile']['name'], value="No Score ("+status+")", inline=True)
+		embed.add_field(name=user['profile']['name'], value=f"No Score ({status}){'⭐' if isFav else ''}", inline=True)
 	else:
-		embed.add_field(name=user['profile']['name'], value=ScoreFormat(user['profile']['score_format']).formatted_score(score)+" ("+status+")", inline=True)
+		embed.add_field(name=user['profile']['name'], value=f"{ScoreFormat(user['profile']['score_format']).formatted_score(score)} ({status}){'⭐' if isFav else ''}", inline=True)
 
 def limitLength(lst):
 	orgLen = len('\n'.join(lst))
