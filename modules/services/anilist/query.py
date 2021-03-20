@@ -59,6 +59,7 @@ userFields = '''
         favourites {
             anime {
                 nodes {
+                    id
                     title {
                         romaji
                     }
@@ -90,6 +91,7 @@ userFieldsId = '''
         favourites {
             anime {
                 nodes {
+                    id
                     title {
                         romaji
                     }
@@ -439,10 +441,10 @@ class AnilistQuery(Query):
         except:
             pass
 
-        fav = []
+        fav = {}
         try:
             for f in data['favourites']['anime']['nodes']:
-                fav.append(f['title']['romaji'])
+                fav[str(f['id'])] = f['title']['romaji']
         except:
             pass
 
