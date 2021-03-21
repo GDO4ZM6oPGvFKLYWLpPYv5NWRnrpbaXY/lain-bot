@@ -195,7 +195,7 @@ class Anime(commands.Cog):
 			embed.add_field(name='Score', value=str(anilistResults['data']['anime']['meanScore']) + '%', inline=True)
 			embed.add_field(name='Popularity', value=str(anilistResults['data']['anime']['popularity']) + ' users', inline=True)
 			if 'RELEASING' not in status:
-				embed.add_field(name='Episodes', value=f"{anilistResults['data']['anime']['episodes']} x {anilistResults['data']['anime']['duration']} min", inline=False)
+				embed.add_field(name='Episodes', value=f"{anilistResults['data']['anime']['episodes']} x {anilistResults['data']['anime']['duration']} min", inline=True)
 
 				# make sure season is valid
 				if str(anilistResults['data']['anime']['seasonYear']) != 'None' and str(anilistResults['data']['anime']['season']) != 'None':
@@ -746,6 +746,10 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 			)
 		]
 
+		avg = calculateMean(users, malId, anilistId, listType)
+		if avg:
+			embed.add_field(name="Score (local)", value=f"{avg}%", inline=False)
+
 		usrLen = len(users)
 		for i in range(0, min(usrLen, maxDisplay-1)):
 			userScoreEmbeder(users[i], anilistId if users[i]['service'] == 'anilist' else malId, listType, embed)
@@ -773,6 +777,23 @@ def userScoreEmbeder(user, showID, listType, embed):
 		embed.add_field(name=user['profile']['name'], value=f"No Score ({status}){'⭐' if isFav else ''}", inline=True)
 	else:
 		embed.add_field(name=user['profile']['name'], value=f"{ScoreFormat(user['profile']['score_format']).formatted_score(score)} ({status}){'⭐' if isFav else ''}", inline=True)
+
+
+def calculateMean(users, malId, anilistId, listType):
+	scores = []
+	for user in users:
+		entry = user['lists'][listType][str(anilistId if user['service'] == 'anilist' else malId)]
+		score = ScoreFormat(user['profile']['score_format']).normalized_score(entry['score'])
+		if score:
+			scores.append(score)
+
+	if not scores:
+		return None
+
+	mean = statistics.fmean(scores)
+	mean = round(mean, 2)
+
+	return mean
 
 def limitLength(lst):
 	orgLen = len('\n'.join(lst))
