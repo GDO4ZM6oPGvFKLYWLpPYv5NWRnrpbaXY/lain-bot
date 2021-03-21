@@ -195,7 +195,7 @@ class Anime(commands.Cog):
 			embed.add_field(name='Score', value=str(anilistResults['data']['anime']['meanScore']) + '%', inline=True)
 			embed.add_field(name='Popularity', value=str(anilistResults['data']['anime']['popularity']) + ' users', inline=True)
 			if 'RELEASING' not in status:
-				embed.add_field(name='Episodes', value=f"{anilistResults['data']['anime']['episodes']} x {anilistResults['data']['anime']['duration']} min", inline=True)
+				embed.add_field(name='Episodes', value=f"{anilistResults['data']['anime']['episodes']} x {anilistResults['data']['anime']['duration']} min", inline=False)
 
 				# make sure season is valid
 				if str(anilistResults['data']['anime']['seasonYear']) != 'None' and str(anilistResults['data']['anime']['season']) != 'None':
