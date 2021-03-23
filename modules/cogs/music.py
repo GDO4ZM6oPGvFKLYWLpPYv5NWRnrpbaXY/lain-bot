@@ -362,7 +362,8 @@ async def join(bot, ctx, url):
             await play(ctx, voice, url)
     except AttributeError as a:
         logger.exception('User is not in a voice channel')
-        await ctx.send('User is not in a channel.')
+        if 'animethemes.moe' not in url:
+            await ctx.send('User is not in a channel.')
     except Exception as e:
         logger.exception('Error joining voice channel.')
         await ctx.send('Unexpected error')
