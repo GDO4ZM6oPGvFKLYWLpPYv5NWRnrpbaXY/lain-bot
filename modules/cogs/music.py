@@ -184,7 +184,6 @@ class Music(commands.Cog):
         # 1 = opening
         t = 1
         build = parse(ctx, num)
-
         # show to search for
         show = build['show']
         # which opening to pick
@@ -192,7 +191,7 @@ class Music(commands.Cog):
 
         # first get list of openings from openings.moe
         songs = Themes.openingsMoe()
-        await ctx.send(songs)
+        
         if show == '':
             pick = random.choice(songs)
             show = pick['source']
@@ -219,8 +218,8 @@ class Music(commands.Cog):
         if english == 'None':
             english = romaji
         elif romaji == 'None':
-            romaji == english
-
+            romaji = english
+        
         parts = Themes.search(
             english.lower(), romaji.lower(), sId, show, select, songs)
         found = False

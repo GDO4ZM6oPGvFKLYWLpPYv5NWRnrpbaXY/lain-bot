@@ -491,7 +491,7 @@ class Anime(commands.Cog):
 			)
 
 			animeGenres = ', '.join(userData['profile']['genres'])
-			animeFavs = ', '.join(userData['profile']['favourites'])
+			animeFavs = ', '.join(f for f in userData['profile']['favourites'].values())
 
 			if userData['profile']["banner"]:
 				embed.set_image(url=userData['profile']["banner"])
@@ -739,11 +739,16 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 				'service': 1,
 				'profile.name': 1,
 				'profile.score_format': 1,
+				'profile.favourites': 1,
 				f"lists.{listType}.{anilistId}": 1,
 				f"lists.{listType}.{malId}": 1
 			}
 			)
 		]
+
+		avg = calculateMean(users, malId, anilistId, listType)
+		if avg:
+			embed.add_field(name="Score (local)", value=f"{avg}%", inline=False)
 
 		usrLen = len(users)
 		for i in range(0, min(usrLen, maxDisplay-1)):
@@ -765,12 +770,30 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 def userScoreEmbeder(user, showID, listType, embed):
 	entry = user['lists'][listType][str(showID)]
 	status = statusConversion(entry['status'], listType)
+	isFav = bool(user['profile']['favourites'].get(str(showID)))
 	
 	score = entry['score']
 	if not score or score == 0:
-		embed.add_field(name=user['profile']['name'], value="No Score ("+status+")", inline=True)
+		embed.add_field(name=user['profile']['name'], value=f"No Score ({status}){'⭐' if isFav else ''}", inline=True)
 	else:
-		embed.add_field(name=user['profile']['name'], value=ScoreFormat(user['profile']['score_format']).formatted_score(score)+" ("+status+")", inline=True)
+		embed.add_field(name=user['profile']['name'], value=f"{ScoreFormat(user['profile']['score_format']).formatted_score(score)} ({status}){'⭐' if isFav else ''}", inline=True)
+
+
+def calculateMean(users, malId, anilistId, listType):
+	scores = []
+	for user in users:
+		entry = user['lists'][listType][str(anilistId if user['service'] == 'anilist' else malId)]
+		score = ScoreFormat(user['profile']['score_format']).normalized_score(entry['score'])
+		if score:
+			scores.append(score)
+
+	if not scores:
+		return None
+
+	mean = statistics.fmean(scores)
+	mean = round(mean, 2)
+
+	return mean
 
 def limitLength(lst):
 	orgLen = len('\n'.join(lst))
