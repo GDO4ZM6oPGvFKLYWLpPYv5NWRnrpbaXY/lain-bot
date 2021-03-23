@@ -17,7 +17,7 @@ class WeebProfile(Profile):
         score_format:   str         = '', 
         about:          str         = '', 
         banner:         str         = '', 
-        favourites:     List[str]   = [], 
+        favourites:     Dict[str, str]   = [], 
         genres:         List[str]   = [],
         **kwargs
     ) -> None:

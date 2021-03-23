@@ -247,10 +247,10 @@ class MyAnimeListQuery(Query):
         if data == None:
             return QueryResult(status=ResultStatus.ERROR, data='Myanimelist profile generator given None')
 
-        fav = []
+        fav = {}
         try:
             for f in data['favorites']['anime']:
-                fav.append(f['name'])
+                fav[str(f['mal_id'])] = f['name']
         except:
             pass
 
