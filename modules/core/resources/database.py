@@ -6,6 +6,14 @@ class Database:
 		client = motor.motor_asyncio.AsyncIOMotorClient(url)
 		self.collection = client[name][collection]
 
+	async def delete_one(self, filter):
+		try:
+			res = await self.collection.delete_one(filter)
+		except:
+			return None
+		else:
+			return res
+
 	async def update_one(self, filter, update, upsert=False):
 		try:
 			res = await self.collection.update_one(filter, update, upsert)

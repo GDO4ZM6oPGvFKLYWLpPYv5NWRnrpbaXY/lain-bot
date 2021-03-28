@@ -270,17 +270,16 @@ class ServiceCommands(commands.Cog):
 
 
     async def _rem_user(self, ctx, service):
-        res = await Resources.user_col.update_one(
+        res = await Resources.user_col.delete_one(
             {
                 'discord_id': str(ctx.author.id),
                 'service': service
-            },
-            {'$set': {'status': UserStatus.INACTIVE}}
+            }
         )
-        if res.matched_count:
+        if res.deleted_count:
             await ctx.send(f"You have been removed form the {service} service!")
         else:
-            await ctx.send('You were never registered.')
+            await ctx.send('Failure. User not removed or not found.')
 
     async def _enable_list(self, ctx, lst):
         await Resources.guild_col.update_one(
