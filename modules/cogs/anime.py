@@ -14,7 +14,8 @@ from modules.services.anilist.enums import ScoreFormat, Status
 from modules.services.models.user import UserStatus
 from modules.services import Service
 
-class Anime(commands.Cog):
+class Anime(commands.Cog, name="Weeb"):
+	"""search anime, manga, vns, and more"""
 
 	def __init__(self, bot):
 		self.bot = bot
@@ -353,7 +354,7 @@ class Anime(commands.Cog):
 	@al.group()
 	async def user(self, ctx):
 		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid Anilist user command passed...')
+			await ctx.send('Please use a subcommand. Use `>help al user` for more info')
 
 	@user.command()
 	async def watching(self, ctx, *user):
