@@ -14,7 +14,8 @@ from modules.services.anilist.enums import ScoreFormat, Status
 from modules.services.models.user import UserStatus
 from modules.services import Service
 
-class Anime(commands.Cog):
+class Anime(commands.Cog, name="Weeb"):
+	"""search anime, manga, vns, and more"""
 
 	def __init__(self, bot):
 		self.bot = bot
