@@ -353,7 +353,7 @@ class Anime(commands.Cog):
 	@al.group()
 	async def user(self, ctx):
 		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid Anilist user command passed...')
+			await ctx.send('Please use a subcommand. Use `>help al user` for more info')
 
 	@user.command()
 	async def watching(self, ctx, *user):
