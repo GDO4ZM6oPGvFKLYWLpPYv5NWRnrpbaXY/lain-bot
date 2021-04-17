@@ -222,6 +222,10 @@ class Anime(commands.Cog, name="Weeb"):
 
 					embed.add_field(name='Aired', value=tyme, inline=False)
 
+		if (embed.fields):
+			tmp = embed.fields[-1]
+			embed.set_field_at(len(embed.fields)-1, name=tmp.name, value=tmp.value, inline=False)
+
 		extra = await embedScores(ctx.guild, anilistResults["data"]["anime"]["id"], anilistResults["data"]["anime"]["idMal"], 'anime', 9, embed)
 
 		msg = await ctx.send(embed=embed)
