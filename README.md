@@ -1,5 +1,4 @@
 # Lain Bot (WIP)
-[![Discord invite](https://discordapp.com/api/guilds/554770485079179264/embed.png)](https://discord.gg/byDqmcX)
 
 A Discord bot designed for integration with websites such as Safebooru, AniList, and VNDB, to allow for personal features to be used on Discord chat servers. Invite the bot using this [link](https://discord.com/oauth2/authorize?client_id=703061485781385358&scope=bot).
 
