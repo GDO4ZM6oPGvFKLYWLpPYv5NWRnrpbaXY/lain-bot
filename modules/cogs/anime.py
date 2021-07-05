@@ -1,4 +1,4 @@
-import discord, os, random, asyncio, logging, statistics
+import discord, os, random, asyncio, logging, statistics, html
 from discord.ext import commands
 from requests import HTTPError
 logger = logging.getLogger(__name__)
@@ -503,7 +503,7 @@ class Anime(commands.Cog, name="Weeb"):
 			if userData['profile']["avatar"]:
 				embed.set_thumbnail(url=userData['profile']["avatar"])
 			if userData['profile']['about']:
-				embed.add_field(name="About:", value=str(userData['profile']['about']), inline=False)
+				embed.add_field(name="About:", value=html.unescape(str(userData['profile']['about'])), inline=False)
 
 			count = len([u for u in userData['lists']['anime'].values() if u['status'] in [Status.COMPLETED, Status.REPEATING]])
 			embed.add_field(name="Anime completed:", value=f"{count}", inline=True)
