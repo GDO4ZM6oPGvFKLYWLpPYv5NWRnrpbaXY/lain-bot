@@ -17,8 +17,8 @@ class Daijoubu(commands.Cog):
         # # uncomment to limit functionality to specific guilds
         # if not self.is_daijoubu_server(ctx):
         #     return
-
-        if ctx.content.lower() == "what" or ctx.content.lower() == ("what?"):
+        
+        if ctx.content.lower() == "what" or ctx.content.lower() == ("what?") and ctx.guild.id != 147255790078656513:
             async for i in ctx.channel.history(limit=10):
                 l = i.content.lower()
                 if l not in ["what", ""] and i.author != ctx.author:
