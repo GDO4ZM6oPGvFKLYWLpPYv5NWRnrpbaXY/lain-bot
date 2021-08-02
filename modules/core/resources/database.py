@@ -22,6 +22,14 @@ class Database:
 		else:
 			return res
 
+	async def update_many(self, filter, update, upsert=False):
+		try:
+			res = await self.collection.update_many(filter, update, upsert)
+		except:
+			return None
+		else:
+			return res
+
 	async def find_one(self, filter, projection=None):
 		try:
 			res = await self.collection.find_one(filter, projection)
