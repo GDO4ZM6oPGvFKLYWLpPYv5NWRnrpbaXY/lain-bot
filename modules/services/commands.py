@@ -43,11 +43,11 @@ class ServiceCommands(commands.Cog):
             else:
                 embed.add_field(name='__Active in this guild__', value='*None*', inline=True)
 
-            user_services = Resources.user_col.find({'discord_id': str(ctx.author.id), 'status': UserStatus.ACTIVE}, {'service': 1})
+            user_services = Resources.user_col.find({'discord_id': str(ctx.author.id), 'status': { '$not': { '$eq': UserStatus.INACTIVE } }}, {'service': 1, 'status': 1})
             user_services = await user_services.to_list(length=None)
 
             if user_services:
-                user_services = list(map(lambda doc: doc['service'], user_services))
+                user_services = list(map(lambda doc: f"{doc['service']}{' (updates hidden)' if doc['status'] == UserStatus.CACHEONLY else ''}", user_services))
                 embed.add_field(name='__Your services__', value='\n'.join(user_services), inline=True)
             else:
                 embed.add_field(name='__Your services__', value='*None*', inline=True)
@@ -112,6 +112,12 @@ class ServiceCommands(commands.Cog):
             if not ctx.author.guild_permissions.administrator:
                 return await ctx.send(f"Only an administrator can modify filters")
             return await self._filter(ctx, onlyImages=True)
+
+        elif args[0] == 'hideupdates':
+            return await self._hide_updates(ctx, True)
+        
+        elif args[0] == 'showupdates':
+            return await self._hide_updates(ctx, False)
 
         elif args[0] in Service.all():
             if not len(args) > 1:
@@ -314,3 +320,21 @@ class ServiceCommands(commands.Cog):
         await Resources.guild_col.update_one({'guild_id': str(ctx.guild.id)}, {'$set': {'settings.updates': doc['settings']['updates']}})
 
         await ctx.send(f"This channel will no longer show {lst} updates")
+
+    async def _hide_updates(self, ctx, hide):
+        res = await Resources.user_col.update_many(
+            { 'discord_id': str(ctx.author.id) },
+            {
+                '$set': {
+                    'status': UserStatus.CACHEONLY if hide else UserStatus.ACTIVE
+                }
+            },
+            upsert=True
+        )
+        if res.matched_count:
+            if hide:
+                await ctx.send(f"Success. Your list changes WILL NOT be displayed. (You will still show up in user portion of searches)")
+            else:
+                await ctx.send(f"Success. Your list changes WILL be displayed.")
+        else:
+            await ctx.send('Failure. User not found.')
