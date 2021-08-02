@@ -44,5 +44,5 @@ update-checker>=0.18.0
 urllib3>=1.25.10
 w3lib>=1.22.0
 websocket-client>=0.57.0
-yarl>=1.6.0
+yarl>=1.5.1
 youtube-dl>=2020.3.24

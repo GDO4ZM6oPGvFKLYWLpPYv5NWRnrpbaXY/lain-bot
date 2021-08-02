@@ -30,7 +30,7 @@ class Syncer:
         await self.bot.wait_until_ready()
         try:
             while not self.bot.is_closed():
-                cursor = Resources.user_col.find({'status': UserStatus.ACTIVE, 'service': self.service})
+                cursor = Resources.user_col.find({'status': { '$not': { '$eq': UserStatus.INACTIVE } }, 'service': self.service})
                 try:
                     users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
                 except asyncio.CancelledError:
@@ -64,7 +64,8 @@ class Syncer:
                         )
 
                         # send changes
-                        await self._display(user, comprehensions)
+                        if user.status == UserStatus.ACTIVE:
+                            await self._display(user, comprehensions)
 
                         # # update db
                         if user_data.profile.status == ResultStatus.OK:
