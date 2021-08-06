@@ -19,10 +19,17 @@ class Songs(commands.Cog):
 
     @commands.command()
     async def ed(self, ctx, *args):
-    #try:
-        await  _search(self.bot, ctx, "ED", ' '.join(args))
-    #except:
-        pass
+        try:
+            await  _search(self.bot, ctx, "ED", ' '.join(args))
+        except:
+            pass
+
+    @commands.command()
+    async def songs(self, ctx, *args):
+        try:
+            await _search_all(self.bot, ctx, ' '.join(args))
+        except:
+            pass
 
 async def _search(bot, ctx, kind, search):
     if not search:
@@ -59,9 +66,7 @@ async def _search(bot, ctx, kind, search):
         title = str(anime['data']['anime']['title']['romaji'])
         showUrl = anime['data']['anime']['siteUrl']
         showPic = anime['data']['anime']['coverImage']['extraLarge']
-        year = anime['data']['anime']['startDate']['year']
         mal = str(anime['data']['anime']['idMal'])
-        sId = anime['data']['anime']['id']
     except:
         return await ctx.send("Show not found!")
 
@@ -73,9 +78,7 @@ async def _search(bot, ctx, kind, search):
         if resp.status != 200:
             return await ctx.send("Error getting data!")
 
-        print("themes.moe responded")
         data = await resp.text()
-        print("themes.moe data grabbed")
 
     try:
         data = json.loads(data)
@@ -155,6 +158,55 @@ async def _search(bot, ctx, kind, search):
         await msg.clear_reactions()
     else:
         await ctx.send(pick['link'])
+
+
+async def _search_all(bot, ctx, show):
+    print("asdfasdf")
+    print(show)
+    if not show:
+        return
+
+    await ctx.trigger_typing()
+
+    try:
+        anime = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
+        title = str(anime['data']['anime']['title']['romaji'])
+        showUrl = anime['data']['anime']['siteUrl']
+        showPic = anime['data']['anime']['coverImage']['extraLarge']
+        mal = str(anime['data']['anime']['idMal'])
+    except:
+        return await ctx.send("Show not found!")
+
+    data = None
+    async with Resources.session.get(f"https://themes.moe/api/themes/{mal}", raise_for_status=False) as resp:
+        if not resp:
+            return await ctx.send("Search resources offline right now. Try again later!")
+        
+        if resp.status != 200:
+            return await ctx.send("Error getting data!")
+
+        data = await resp.text()
+
+    try:
+        data = json.loads(data)
+        data = data[0]['themes']
+    except:
+        return await ctx.send("Error getting data!")
+    
+    desc = '*None*'
+    if data:
+        desc = ", ".join(map(lambda e: e['themeType'], data))
+    
+    embed = discord.Embed(
+        title=title,
+        color=discord.Color.orange(),
+        description=desc,
+        url=showUrl
+    )
+    if showPic and 'None' != showPic:
+        embed.set_thumbnail(url=showPic)
+
+    await ctx.send(embed=embed)
 
 
         
