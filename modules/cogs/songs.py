@@ -1,4 +1,4 @@
-import discord, logging, re, json, time, asyncio, requests
+import discord, logging, re, json, time, asyncio
 from discord.ext import commands
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ async def _search(bot, ctx, kind, search):
         return await ctx.send("Show not found!")
 
     data = None
-    async with Resources.session2.get(f"https://themes.moe/api/themes/{mal}", raise_for_status=False) as resp:
+    async with Resources.session.get(f"https://themes.moe/api/themes/{mal}", raise_for_status=False) as resp:
         if not resp:
             return await ctx.send("Search resources offline right now. Try again later!")
         
