@@ -195,7 +195,7 @@ async def _search_all(bot, ctx, show):
     
     desc = '*None*'
     if data:
-        desc = ", ".join(map(lambda e: e['themeType'], data))
+        desc = "\n".join(map(lambda e: f"[{e['themeType']}] {e['themeName']}", data))
     
     embed = discord.Embed(
         title=title,
