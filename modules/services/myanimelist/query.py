@@ -122,7 +122,10 @@ class MyAnimeListQuery(Query):
         if not(diff.days or diff.seconds > 300):
             return QueryResult(status=ResultStatus.OK, data=user.profile)
 
-        data = await self._fetch_profile(user.service_id)
+        try:
+            data = await self._fetch_profile(user.service_id)
+        except:
+            data = None
         data = self._profile(data)
         if data.status != ResultStatus.OK:
             return QueryResult(status=ResultStatus.OK, data=user.profile)
