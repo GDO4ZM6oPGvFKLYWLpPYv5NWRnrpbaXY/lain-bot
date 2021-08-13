@@ -203,12 +203,17 @@ async def _prompt_selection(bot, ctx, msg, data):
     selectors = copy.deepcopy(Resources.selectors)
 
     for option in data.songs:
+        if not selectors:
+            break
         selector = selectors.pop(0)
         if i == 20:
             i = 0
             msgs.append(await ctx.send("-"))
         assoc[selector] = option
-        await msgs[-1].add_reaction(selector)
+        try:
+            await msgs[-1].add_reaction(selector)
+        except:
+            break
         i += 1
 
     ignore = []
