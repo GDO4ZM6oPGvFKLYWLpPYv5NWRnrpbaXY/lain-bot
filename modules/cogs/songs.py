@@ -1,9 +1,10 @@
-import discord, logging, re, json, time, asyncio
+import discord, logging, re, json, time, asyncio, os, subprocess, math, copy
 from discord.ext import commands
 logger = logging.getLogger(__name__)
 
 from modules.core.resources import Resources
 from modules.anime.anilist2 import Anilist2
+from modules.music.search import Themes
 
 class Songs(commands.Cog):
 
@@ -28,8 +29,8 @@ class Songs(commands.Cog):
     async def songs(self, ctx, *args):
         try:
             await _search_all(self.bot, ctx, ' '.join(args))
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
 async def _search(bot, ctx, kind, search):
     if not search:
@@ -159,54 +160,120 @@ async def _search(bot, ctx, kind, search):
     else:
         await ctx.send(pick['link'])
 
+async def _show_song(bot, ctx, data, song):
+    embed = discord.Embed(
+        title=song.title,
+        color=discord.Color.orange(),
+        url=song.url
+    )
+    embed.set_author(name=data.title, url=data.url, icon_url=data.cover)
+    embed.set_footer(
+        text=str(song.variant),
+        icon_url='https://external-content.duckduckgo.com/ip3/themes.moe.ico'
+    )
+
+    info = []
+    if 'Spoiler' in song.flags:
+        info.append("video contains spoilers")
+    if 'NSFW' in song.flags:
+        info.append("video is NSFW")
+    if info:
+        embed.add_field(name='Info', value='\n'.join(info))
+
+    if song.artists:
+        embed.add_field(name="Artist(s)", value=song.artists_str())
+
+    await ctx.send(embed=embed)
+
+async def _prompt_selection(bot, ctx, msg, data):
+    selectors = copy.deepcopy(Resources.selectors)
+    msgs = []
+    assoc = {}
+    i = 0
+
+    await msg.delete()
+    embed = discord.Embed(
+        title=data.title,
+        color=discord.Color.orange(),
+        description="*None*" if not data.songs else '\n'.join(map(lambda s: f"{selectors.pop(0)} {s}", data.songs)),
+        url=data.url
+    )
+    embed.set_thumbnail(url=data.cover)
+    msgs.append(await ctx.send(embed=embed))
+    selectors = copy.deepcopy(Resources.selectors)
+
+    for option in data.songs:
+        selector = selectors.pop(0)
+        if i == 20:
+            i = 0
+            msgs.append(await ctx.send("-"))
+        assoc[selector] = option
+        await msgs[-1].add_reaction(selector)
+        i += 1
+
+    ignore = []
+    def check(reaction, user):
+        return reaction.message in msgs and user != msgs[-1].author and str(reaction.emoji) in assoc and str(reaction.emoji) not in ignore
+
+    start = time.time()
+    while time.time() - start < 30:
+        timeout = 30 - (time.time() - start)
+        try:
+            reaction, author = await bot.wait_for('reaction_add', timeout=timeout, check=check)
+        except asyncio.TimeoutError:
+            for msg in msgs:
+                await msg.clear_reactions()
+            break
+        else:
+            selection = str(reaction.emoji)
+            ignore.append(selection)
+            for msg in msgs:
+                await msg.clear_reaction(reaction)
+            if selection not in assoc:
+                for msg in msgs:
+                    await msg.clear_reactions()
+                return await ctx.send("lol no")
+            await _show_song(bot, ctx, data, assoc[selection])
+    for msg in msgs:
+        await msg.clear_reactions()
+    for msg in msgs[1:]:
+        await msg.delete()
+
+
 
 async def _search_all(bot, ctx, show):
-    print("asdfasdf")
-    print(show)
     if not show:
         return
 
     await ctx.trigger_typing()
 
     try:
-        anime = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
-        title = str(anime['data']['anime']['title']['romaji'])
-        showUrl = anime['data']['anime']['siteUrl']
-        showPic = anime['data']['anime']['coverImage']['extraLarge']
-        mal = str(anime['data']['anime']['idMal'])
-    except:
-        return await ctx.send("Show not found!")
+        search = Themes.search_animethemesmoe(show)
+    except Themes.NoResultsError as e:
+        return await ctx.send(f"{e.message}")
+    except Exception as e:
+        return await ctx.send(f"Status: {e.status}\nMsg: {e.message}")
 
-    data = None
-    async with Resources.session.get(f"https://themes.moe/api/themes/{mal}", raise_for_status=False) as resp:
-        if not resp:
-            return await ctx.send("Search resources offline right now. Try again later!")
-        
-        if resp.status != 200:
-            return await ctx.send("Error getting data!")
+    embed = discord.Embed(
+        title=search.title,
+        color=discord.Color.orange(),
+        description="*None*" if not search.songs else '\n'.join(map(lambda s: str(s), search.songs)),
+        url=search.url
+    )
+    embed.set_thumbnail(url=search.cover)
 
-        data = await resp.text()
+    msg = await ctx.send(embed=embed)
+
+    await msg.add_reaction('🎶')
+
+    def check(reaction, user):
+        return user != msg.author and str(reaction.emoji) == '🎶'
 
     try:
-        data = json.loads(data)
-        data = data[0]['themes']
-    except:
-        return await ctx.send("Error getting data!")
-    
-    desc = '*None*'
-    if data:
-        desc = "\n".join(map(lambda e: f"[{e['themeType']}] {e['themeName']}", data))
-    
-    embed = discord.Embed(
-        title=title,
-        color=discord.Color.orange(),
-        description=desc,
-        url=showUrl
-    )
-    if showPic and 'None' != showPic:
-        embed.set_thumbnail(url=showPic)
+        reaction, author = await bot.wait_for('reaction_add', timeout=25.0, check=check)
+    except asyncio.TimeoutError:
+        await msg.clear_reactions()
+    else:
+        await msg.clear_reactions()
+        await _prompt_selection(bot, ctx, msg, search)
 
-    await ctx.send(embed=embed)
-
-
-        
