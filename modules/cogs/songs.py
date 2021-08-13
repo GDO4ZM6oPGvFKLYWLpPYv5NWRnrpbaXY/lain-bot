@@ -191,11 +191,16 @@ async def _prompt_selection(bot, ctx, msg, data):
     assoc = {}
     i = 0
 
+    def p(s):
+        if not selectors:
+            return f"- {s}"
+        return f"{selectors.pop(0)} {s}"
+
     await msg.delete()
     embed = discord.Embed(
         title=data.title,
         color=discord.Color.orange(),
-        description="*None*" if not data.songs else '\n'.join(map(lambda s: f"{selectors.pop(0)} {s}", data.songs)),
+        description="*None*" if not data.songs else '\n'.join(map(p, data.songs)),
         url=data.url
     )
     embed.set_thumbnail(url=data.cover)
