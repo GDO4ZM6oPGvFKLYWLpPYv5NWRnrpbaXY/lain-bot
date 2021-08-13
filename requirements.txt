@@ -46,3 +46,4 @@ w3lib>=1.22.0
 websocket-client>=0.57.0
 yarl>=1.5.1
 youtube-dl>=2020.3.24
+fuzzywuzzy>=0.18.0
