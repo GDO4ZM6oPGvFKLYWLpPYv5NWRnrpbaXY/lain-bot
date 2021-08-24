@@ -120,7 +120,7 @@ class Themes():
 
     @staticmethod
     def search_animethemesmoe(show):
-        url = f"https://staging.animethemes.moe/api/search?q={show}&include[anime]=themes.entries.videos,resources,images,themes.song.artists&fields[anime]=name&fields[search]=anime&fields[resource]=link&fields[theme]=type,sequence&fields[entry]=version,nsfw,spoiler&fields[video]=basename&fields[image]=link&fields[song]=title&fields[artist]=name"
+        url = f"https://staging.animethemes.moe/api/search?q={show}&include[anime]=animethemes.animethemeentries.videos,resources,images,animethemes.song.artists&fields[anime]=name&fields[search]=anime&fields[resource]=link&fields[animetheme]=type,sequence&fields[animethemeentry]=version,nsfw,spoiler&fields[video]=basename&fields[image]=link&fields[song]=title&fields[artist]=name"
         
         try:
             res = subprocess.Popen(f"curl --silent \"{url}\"", stdout = subprocess.PIPE, shell=True)
@@ -146,12 +146,12 @@ class Themes():
         try:
             data = process.extractOne({"name":show}, data, lambda d: d["name"])[0]
             songs = []
-            for theme in data["themes"]:
+            for theme in data["animethemes"]:
                 kind = theme["type"]
                 num = theme["sequence"]
                 title = theme["song"]["title"]
                 artists = [a["name"] for a in theme["song"]["artists"]]
-                for song in theme["entries"]:
+                for song in theme["animethemeentries"]:
                     flags = []
                     if song["nsfw"]:
                         flags.append("NSFW")
