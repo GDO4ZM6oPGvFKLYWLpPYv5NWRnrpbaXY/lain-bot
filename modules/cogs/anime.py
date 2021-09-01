@@ -241,6 +241,7 @@ class Anime(commands.Cog, name="Weeb"):
 			except asyncio.TimeoutError:
 				await msg.clear_reactions()
 			else:
+				await ctx.send(f"({str(anilistResults['data']['anime']['title']['romaji'])})")
 				await ctx.send(embed=extra)
 
 	@al.command()
@@ -322,6 +323,7 @@ class Anime(commands.Cog, name="Weeb"):
 			except asyncio.TimeoutError:
 				await msg.clear_reactions()
 			else:
+				await ctx.send(f"({str(anilistResults['data']['manga']['title']['romaji'])})")
 				await ctx.send(embed=extra)
 
 	@al.command()
