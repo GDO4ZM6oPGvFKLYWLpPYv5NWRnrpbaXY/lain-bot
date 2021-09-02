@@ -732,7 +732,7 @@ async def embedScores(guild, anilistId, malId, listType, maxDisplay, embed):
 		users = [d async for d in Resources.user_col.find(
 			{
 				'discord_id': {'$in': userIdsInGuild},
-				'status': { '$not': { '$eq': UserStatus.INACTIVE } }},
+				'status': { '$not': { '$eq': UserStatus.INACTIVE } },
 				'$or': [
 					{
 						'$and': [{'service': 'anilist'}, {f"lists.{listType}.{anilistId}": {'$exists': True}}]
