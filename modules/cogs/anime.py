@@ -509,10 +509,12 @@ class Anime(commands.Cog, name="Weeb"):
 
 			count = len([u for u in userData['lists']['anime'].values() if u['status'] in [Status.COMPLETED, Status.REPEATING]])
 			embed.add_field(name="Anime completed:", value=f"{count}", inline=True)
-
-			mean = statistics.fmean([e['score'] for e in userData['lists']['anime'].values() if e['score']])
-			mean = round(mean, 2)
-			embed.add_field(name="Mean anime score:", value=ScoreFormat(userData['profile']['score_format']).formatted_score(mean), inline=True)
+			
+			scores = [e['score'] for e in userData['lists']['anime'].values() if e['score']]
+			if scores:
+				mean = statistics.fmean()
+				mean = round(mean, 2)
+				embed.add_field(name="Mean anime score:", value=ScoreFormat(userData['profile']['score_format']).formatted_score(mean), inline=True)
 
 			if animeFavs:
 				embed.add_field(name="Favourites:", value=animeFavs, inline=False)
