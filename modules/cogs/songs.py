@@ -12,14 +12,14 @@ class Songs(commands.Cog):
         self.bot = bot
     
     @commands.command()
-    async def op(self, ctx, *args):
+    async def op_old(self, ctx, *args):
         try:
             await _search(self.bot, ctx, "OP", ' '.join(args))
         except:
             pass
 
     @commands.command()
-    async def ed(self, ctx, *args):
+    async def ed_old(self, ctx, *args):
         try:
             await  _search(self.bot, ctx, "ED", ' '.join(args))
         except:
@@ -31,6 +31,20 @@ class Songs(commands.Cog):
             await _search_all(self.bot, ctx, ' '.join(args))
         except Exception as e:
             print(e)
+
+    @commands.command()
+    async def op(self, ctx, *args):
+        try:
+            await _search_specific(self.bot, ctx, "OP", ' '.join(args))
+        except:
+            pass
+
+    @commands.command()
+    async def ed(self, ctx, *args):
+        try:
+            await _search_specific(self.bot, ctx, "ED", ' '.join(args))
+        except:
+            pass
 
 async def _search(bot, ctx, kind, search):
     if not search:
@@ -249,6 +263,62 @@ async def _prompt_selection(bot, ctx, msg, data):
     for msg in msgs[1:]:
         await msg.delete()
 
+
+async def _search_specific(bot, ctx, kind, search):
+    if not search:
+        return
+
+    await ctx.trigger_typing()
+
+    show = search
+    num = ''
+    ver = ''
+
+    parts = search.split(' ')
+
+    if len(parts) > 1:
+        try: 
+            tmp = int(parts[0])
+            num = tmp
+            show = ' '.join(parts[1:])
+        except: 
+            pass
+
+        parts = show.split(' ')
+        if len(parts) > 1 and (parts[0][0] == 'V' or parts[0][0] == 'v'):
+            try:
+                tmp = int(parts[0][1:])
+                ver = tmp
+                show = ' '.join(parts[1:])
+            except:
+                pass
+
+    try:
+        search = Themes.search_animethemesmoe(show)
+    except Themes.NoResultsError as e:
+        return await ctx.send(f"{e.message}")
+    except Exception as e:
+        return await ctx.send(f"Status: {e.status}\nMsg: {e.message}")
+
+    exact = None
+    approx = None
+    for song in [s for s in search.songs if s.variant.kind == kind]:
+        print(f"{song} [{song.variant.sequence}, {song.variant.version}]")
+        if song.variant.sequence == num:
+            if song.variant.version == ver:
+                exact = song
+                break
+            
+            if not approx:
+                approx = song
+            elif song.variant.version < approx.variant.version:
+                    approx = song
+                
+    pick = exact
+    if not pick:
+        pick = approx
+
+    await _show_song(bot, ctx, search, pick)
 
 
 async def _search_all(bot, ctx, show):
