@@ -43,9 +43,8 @@ class Misc(commands.Cog, name="other"):
 		await ctx.send("I am slow at this for now. Just wait")
 		await ctx.trigger_typing()
 
-		# user = Resources.user_col.find({'discord_id': str(ctx.author.id)})
 		user = await Resources.user_col.find_one(
-			{'discord_id': '211597456062939137'},
+			{'discord_id': str(ctx.author.id)},
 			{
 				'service': 1,
 				'profile.name': 1,
@@ -58,8 +57,6 @@ class Misc(commands.Cog, name="other"):
 
 		# get all users in db that are in this guild
 		userIdsInGuild = [str(u.id) for u in guild.members if u.id != ctx.author.id]
-		# userIdsInGuild.append('142435682667724801')
-		# userIdsInGuild.append('218909458456248320')
 		users = [d async for d in Resources.user_col.find(
 			{
 				'discord_id': {'$in': userIdsInGuild},
