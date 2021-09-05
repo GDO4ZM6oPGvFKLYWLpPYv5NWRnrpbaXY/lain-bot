@@ -498,12 +498,18 @@ class Anime(commands.Cog, name="Weeb"):
 			animeGenres = ', '.join(userData['profile']['genres'])
 			animeFavs = ', '.join(f for f in userData['profile']['favourites'].values())
 
+			if len(animeFavs) > 1024:
+				animeFavs = f"{animeFavs[:1021]}..."
+
 			if userData['profile']["banner"]:
 				embed.set_image(url=userData['profile']["banner"])
 			if userData['profile']["avatar"]:
 				embed.set_thumbnail(url=userData['profile']["avatar"])
 			if userData['profile']['about']:
-				embed.add_field(name="About:", value=html.unescape(str(userData['profile']['about'])), inline=False)
+				v = html.unescape(str(userData['profile']['about']))
+				if len(v) > 1024:
+					v = f"{v[:1021]}..."
+				embed.add_field(name="About:", value=v, inline=False)
 
 			count = len([u for u in userData['lists']['anime'].values() if u['status'] in [Status.COMPLETED, Status.REPEATING]])
 			embed.add_field(name="Anime completed:", value=f"{count}", inline=True)
