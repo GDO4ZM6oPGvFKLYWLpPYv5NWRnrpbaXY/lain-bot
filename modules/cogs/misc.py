@@ -79,7 +79,7 @@ class Misc(commands.Cog, name="other"):
 		# embed text to output
 		embed = discord.Embed(
 			title = "Your compatibility scores",
-			description = "The lower the score the more compatible"
+			description = "The lower the score the more compatible",
 			color = discord.Color.blue(),
 		)
 
