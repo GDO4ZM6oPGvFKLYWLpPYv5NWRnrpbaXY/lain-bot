@@ -510,7 +510,7 @@ class Anime(commands.Cog, name="Weeb"):
 			
 			scores = [e['score'] for e in userData['lists']['anime'].values() if e['score']]
 			if scores:
-				mean = statistics.fmean()
+				mean = statistics.fmean(scores)
 				mean = round(mean, 2)
 				embed.add_field(name="Mean anime score:", value=ScoreFormat(userData['profile']['score_format']).formatted_score(mean), inline=True)
 
