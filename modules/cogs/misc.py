@@ -79,11 +79,13 @@ class Misc(commands.Cog, name="other"):
 		# embed text to output
 		embed = discord.Embed(
 			title = "Your compatibility scores",
+			description = "The lower the score the more compatible"
 			color = discord.Color.blue(),
 		)
 
 		for score in scores:
-			embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
+			if score[1][0]:
+				embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
 
 		await ctx.send(embed=embed)
 
