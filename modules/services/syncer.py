@@ -30,6 +30,8 @@ class Syncer:
         await self.bot.wait_until_ready()
         try:
             while not self.bot.is_closed():
+                Resources.removal_buffers[self.service] = set()
+                Resources.status_buffers[self.service] = {}
                 cursor = Resources.user_col.find({'status': { '$not': { '$eq': UserStatus.INACTIVE } }, 'service': self.service})
                 try:
                     users = await cursor.to_list(length=self.query.MAX_USERS_PER_QUERY)
@@ -68,18 +70,23 @@ class Syncer:
                             await self._display(user, comprehensions)
 
                         # # update db
-                        if user_data.profile.status == ResultStatus.OK:
-                            user.profile = user_data.profile.data
-                        for lst in user_data.lists:
-                            if user_data.lists[lst].status == ResultStatus.OK:
-                                k = {}
-                                for entry in user_data.lists[lst].data:
-                                    k[str(entry['id'])] = entry.dict
-                                user.lists[lst] = k
-                        await Resources.user_col.update_one(
-                            {'discord_id': user.discord_id, 'service': user.service},
-                            {'$set': user.dict}
-                        )
+                        # make sure user didn't remove themself between when db grabbed user and now
+                        if user.discord_id not in Resources.removal_buffers[self.service]:
+                            if user_data.profile.status == ResultStatus.OK:
+                                user.profile = user_data.profile.data
+                            # user hid themself between when db grabbed user and now. make sure user matches that change
+                            if user.discord_id in Resources.status_buffers[self.service]:
+                                user.status = Resources.status_buffers[self.service][user.discord_id]
+                            for lst in user_data.lists:
+                                if user_data.lists[lst].status == ResultStatus.OK:
+                                    k = {}
+                                    for entry in user_data.lists[lst].data:
+                                        k[str(entry['id'])] = entry.dict
+                                    user.lists[lst] = k
+                            await Resources.user_col.update_one(
+                                {'discord_id': user.discord_id, 'service': user.service},
+                                {'$set': user.dict}
+                            )
                 
                     users_end = time.time()
                     # ready new batch from db
@@ -128,6 +135,14 @@ class Syncer:
         if user.service == Service.MYANIMELIST:
             if 'None' in user.lists['anime']:
                 return
+
+        # user removed themself between when db grabbed user and now. ignore this phantom
+        if user.discord_id in Resources.removal_buffers[self.service]:
+            return
+
+        # user hid themself between when db grabbed user and now. ignore this phantom
+        if user.discord_id in Resources.status_buffers[self.service] and Resources.status_buffers[self.service][user.discord_id] != UserStatus.ACTIVE:
+            return
             
         # only use lists with changes
         tmp = {}
