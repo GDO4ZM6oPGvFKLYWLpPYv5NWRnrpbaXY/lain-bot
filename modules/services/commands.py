@@ -276,13 +276,15 @@ class ServiceCommands(commands.Cog):
 
 
     async def _rem_user(self, ctx, service):
+        user_id = str(ctx.author.id)
         res = await Resources.user_col.delete_one(
             {
-                'discord_id': str(ctx.author.id),
+                'discord_id': user_id,
                 'service': service
             }
         )
         if res.deleted_count:
+            Resources.removal_buffers[service].add(user_id)
             await ctx.send(f"You have been removed form the {service} service!")
         else:
             await ctx.send('Failure. User not removed or not found.')
@@ -322,16 +324,19 @@ class ServiceCommands(commands.Cog):
         await ctx.send(f"This channel will no longer show {lst} updates")
 
     async def _hide_updates(self, ctx, hide):
+        user_id = str(ctx.author.id)
+        new_status = UserStatus.CACHEONLY if hide else UserStatus.ACTIVE
         res = await Resources.user_col.update_many(
-            { 'discord_id': str(ctx.author.id) },
+            { 'discord_id': user_id },
             {
                 '$set': {
-                    'status': UserStatus.CACHEONLY if hide else UserStatus.ACTIVE
+                    'status': new_status
                 }
-            },
-            upsert=True
+            }
         )
         if res.matched_count:
+            for service in Resources.status_buffers:
+                Resources.status_buffers[service][str(ctx.author.id)] = new_status
             if hide:
                 await ctx.send(f"Success. Your list changes WILL NOT be displayed. (You will still show up in user portion of searches)")
             else:
