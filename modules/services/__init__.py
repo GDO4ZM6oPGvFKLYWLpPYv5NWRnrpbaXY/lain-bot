@@ -50,9 +50,12 @@ class Service:
     def register(bot):
         from .syncer import Syncer
         from .commands import ServiceCommands
+        from modules.core.resources import Resources
 
         bot.add_cog(ServiceCommands(bot))
         
         for service in Service.active():
+            Resources.removal_buffers[service] = set()
+            Resources.status_buffers[service] = {}
             syncer = Syncer(bot, service, service.Query(), service.time_between_queries)
             bot.loop.create_task(syncer.loop())
