@@ -78,7 +78,7 @@ class Misc(commands.Cog, name="other"):
 		scores.sort(key=lambda e: e[1][0])
 		# embed text to output
 		embed = discord.Embed(
-			title = "Your compatibility scores",
+			title = f"{ctx.author}'s compatibility scores",
 			description = "The lower the score the more compatible",
 			color = discord.Color.blue(),
 		)
