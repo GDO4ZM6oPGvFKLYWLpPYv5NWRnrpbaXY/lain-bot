@@ -1,4 +1,4 @@
-import discord, os, random, asyncio, logging, statistics, json, math
+import discord, os, random, asyncio, logging, statistics, json, math, sys, traceback
 from discord.ext import commands
 logger = logging.getLogger(__name__)
 
@@ -93,8 +93,7 @@ class Misc(commands.Cog, name="other"):
 			)
 
 			for score in scores:
-				if score[1][0]:
-					embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
+				embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
 
 			await ctx.send(embed=embed)
 		else:
@@ -113,21 +112,31 @@ def _get_comp_score(u1, u2, kind):
 		combined = []
 		for i in u1['lists'][kind]:
 			e = u1['lists'][kind][i]
-			ii = i
-			if u1['service'] == Service.ANILIST and u1['service'] == Service.MYANIMELIST:
-				ii = al2mal[i][0]
-			if u1['service'] == Service.MYANIMELIST and u1['service'] == Service.ANILIST:
-				ii = mal2al[i][0]
-			if ii != None and ii in u2['lists'][kind]:
-				sf1 = ScoreFormat(u1['profile']['score_format'])
-				sf2 = ScoreFormat(u2['profile']['score_format'])
-				s1 = sf1.normalized_score(e['score'])
-				s2 = sf2.normalized_score(u2['lists'][kind][i]['score'])
-				if s1 == 0 or s2 == 0:
-					continue
-				combined.append((s1, s2, i))
-				av1 = av1 + s1
-				av2 = av2 + s2
+			ii = [i]
+			if u1['service'] == Service.ANILIST and u2['service'] == Service.MYANIMELIST:
+				if i in al2mal[kind]:
+					ii = al2mal[kind][i]
+				else:
+					ii = []
+			if u1['service'] == Service.MYANIMELIST and u2['service'] == Service.ANILIST:
+				if i in mal2al[kind]:
+					ii = mal2al[kind][i]
+				else:
+					ii = []
+			for s in ii:
+				s = str(s)
+				if s != None and s != "None" and s in u2['lists'][kind]:
+					sf1 = ScoreFormat(u1['profile']['score_format'])
+					sf2 = ScoreFormat(u2['profile']['score_format'])
+					s1 = sf1.normalized_score(e['score'])
+					s2 = sf2.normalized_score(u2['lists'][kind][s]['score'])
+					# print(f"{u1['profile']['name']} x {u2['profile']['name']} -- {i} : {s} :: {type(s1)}[{s1}] {type(s2)}[{s2}]")
+					if not s1 or not s2:
+						continue
+					combined.append((s1, s2))
+					av1 = av1 + s1
+					av2 = av2 + s2
+
 		av1 = av1/len(combined)
 		av2 = av2/len(combined)
 
@@ -143,5 +152,7 @@ def _get_comp_score(u1, u2, kind):
 		for c in combined:
 			diff = diff + abs( ((c[0] - av1)/sdv1) - ((c[1] - av2)/sdv2) )
 		return (diff/len(combined), len(combined))
-	except:
+	except Exception as e:
+		print(sys.exc_info())
+		traceback.print_exc()
 		return (0,0)
