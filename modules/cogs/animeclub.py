@@ -3,7 +3,6 @@ logger = logging.getLogger(__name__)
 
 from discord.ext import commands
 from discord.ext.commands import has_any_role
-from dateutil import parser
 from openpyxl import load_workbook
 from tempfile import NamedTemporaryFile
 
@@ -133,7 +132,7 @@ class AnimeClub(commands.Cog):
 			embed.add_field(name='Unavailable', value='could not find Wednesday data')
 		else:
 			for meeting in data['Wednesday']:
-				date = parser.parse(meeting)
+				date = pendulum.parse(meeting, tz=Resources.timezone_str)
 				if only_future and date < next_day(day=pendulum.WEDNESDAY):
 					continue
 				lines = wednesday_lines(data['Wednesday'][meeting])
@@ -151,7 +150,7 @@ class AnimeClub(commands.Cog):
 			embed.add_field(name='Unavailable', value='could not find Saturday data')
 		else:
 			for meeting in data['Saturday']:
-				date = parser.parse(meeting)
+				date = pendulum.parse(meeting, tz=Resources.timezone_str)
 				if only_future and date < next_day(day=pendulum.SATURDAY):
 					continue
 				lines = saturday_lines(data['Saturday'][meeting])
@@ -204,6 +203,13 @@ def saturday_lines(data):
 		except:
 			pass
 
+		try:
+			if showtime['title'].lower().startswith('$break$'):
+				lines.append(f"🚫 {showtime['title'][len('$break$'):].strip()}")
+				break
+		except:
+			pass
+
 		title = parse_title(showtime['title'])
 
 		if title[0] in shows:
@@ -236,7 +242,7 @@ def next_day(start=None, day: int = 0, latest_same_day_hour: int = 20):
         pendulum.datetime: date with year. month, and day set
     """
     if not start:
-        start = pendulum.from_timestamp(time.time(), tz='US/Central')
+        start = pendulum.from_timestamp(time.time(), tz=Resources.timezone_str)
     start = start.subtract(hours=latest_same_day_hour)
     start = start.start_of('day')
     start = start.next(day)
