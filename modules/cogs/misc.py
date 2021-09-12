@@ -37,6 +37,10 @@ class Misc(commands.Cog, name="other"):
 	@commands.command()
 	async def compatibility(self, ctx, *args):
 		"""See your compatiblity with other registered users"""
+		kind = "anime"
+		if args and args[0] == "manga":
+			kind = "manga"
+
 		channel = ctx.message.channel
 		guild = ctx.guild
 
@@ -49,7 +53,7 @@ class Misc(commands.Cog, name="other"):
 				'service': 1,
 				'profile.name': 1,
 				'profile.score_format': 1,
-				'lists.anime': 1,
+				f"lists.{kind}": 1,
 			}
 		)
 		if not user:
@@ -66,7 +70,7 @@ class Misc(commands.Cog, name="other"):
 				'service': 1,
 				'profile.name': 1,
 				'profile.score_format': 1,
-				'lists.anime': 1,
+				f"lists.{kind}": 1,
 			}
 			)
 		]
@@ -74,22 +78,29 @@ class Misc(commands.Cog, name="other"):
 
 		scores = []
 		for u in users:
-			scores.append((u['profile']['name'], _get_comp_score(user, u)))
+			scores.append((u['profile']['name'], _get_comp_score(user, u, kind)))
 		scores.sort(key=lambda e: e[1][0])
-		# embed text to output
-		embed = discord.Embed(
-			title = f"{ctx.author}'s compatibility scores",
-			description = "The lower the score the more compatible",
-			color = discord.Color.blue(),
-		)
 
-		for score in scores:
-			if score[1][0]:
-				embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
+		# remove empty
+		scores = [score for score in scores if score[1][0]]
 
-		await ctx.send(embed=embed)
+		if scores:
+			# embed text to output
+			embed = discord.Embed(
+				title = f"{ctx.author.display_name}'s {kind} compatibility scores",
+				description = "The lower the score the more compatible",
+				color = discord.Color.blue(),
+			)
 
-def _get_comp_score(u1, u2):
+			for score in scores:
+				if score[1][0]:
+					embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
+
+			await ctx.send(embed=embed)
+		else:
+			await ctx.send("No compatibilities. Most likely didn't share any scores with anyone")
+
+def _get_comp_score(u1, u2, kind):
 	try:
 		with open(os.getcwd()+'/assets/mal2al.json', 'r') as f:
 			mal2al = json.load(f)
@@ -100,18 +111,18 @@ def _get_comp_score(u1, u2):
 		av1 = 0
 		av2 = 0
 		combined = []
-		for i in u1['lists']['anime']:
-			e = u1['lists']['anime'][i]
+		for i in u1['lists'][kind]:
+			e = u1['lists'][kind][i]
 			ii = i
 			if u1['service'] == Service.ANILIST and u1['service'] == Service.MYANIMELIST:
 				ii = al2mal[i][0]
 			if u1['service'] == Service.MYANIMELIST and u1['service'] == Service.ANILIST:
 				ii = mal2al[i][0]
-			if ii != None and ii in u2['lists']['anime']:
+			if ii != None and ii in u2['lists'][kind]:
 				sf1 = ScoreFormat(u1['profile']['score_format'])
 				sf2 = ScoreFormat(u2['profile']['score_format'])
 				s1 = sf1.normalized_score(e['score'])
-				s2 = sf2.normalized_score(u2['lists']['anime'][i]['score'])
+				s2 = sf2.normalized_score(u2['lists'][kind][i]['score'])
 				if s1 == 0 or s2 == 0:
 					continue
 				combined.append((s1, s2, i))
