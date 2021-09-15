@@ -358,7 +358,7 @@ class Anime(commands.Cog, name="Weeb"):
 	@al.group()
 	async def user(self, ctx, *args):
 		if ctx.invoked_subcommand is None:
-			await _user_status(ctx, args)
+			await _user_status(ctx, args, self.bot)
 
 	@user.command()
 	async def profile(self, ctx, *user):
@@ -741,6 +741,29 @@ def limitLength(lst):
 	lst.append('+' + str(numRemoved) + ' others!')
 	return lst
 
+def _limit_paginated(lst):
+	pages = []
+	hint = 'click + to view the others!'
+	hint_len = len(hint)
+	max_len = 1024 - hint_len - 1
+
+	l = len('\n'.join(lst))
+	if l <= 1024:
+		return [lst]
+
+	page = []
+	for i in range(len(lst)):
+		curr_len = len('\n'.join(page))
+		if curr_len + len(lst[i]) + 1 <= max_len:
+			page.append(lst[i])
+		else:
+			page.append(hint)
+			pages.append(page)
+			page = [lst[i]]
+	pages.append(page)
+
+	return pages
+
 
 async def _user_get_status_lists(ctx, user, kind, statuses):
 	search = {}
@@ -815,12 +838,12 @@ async def _user_get_status_lists(ctx, user, kind, statuses):
 						return e['volume_progress']
 			data['lists'][status].sort(key=k, reverse=True)
 		else:
-			data['lists'][status].sort(key=lambda e: e['title'], reverse=True)
+			data['lists'][status].sort(key=lambda e: e['title'])
 
 	return data
 
 
-async def _user_status(ctx, args):
+async def _user_status(ctx, args, bot):
 	if len(args) < 1:
 		return await ctx.send("Bad usage: Try `>al user <status> <user>`. Ex `>al user dropped` to get your dropped list")
 
@@ -831,10 +854,15 @@ async def _user_status(ctx, args):
 	if len(args) > 1:
 		user = args[1]
 
+	kind = 'anime'
+
 	if status == 'watching':
 		status = Status.CURRENT
 	if status == 'rewatching':
 		status = Status.REPEATING
+	if status == 'reading':
+		kind = 'manga'
+		status = Status.CURRENT
 
 	if status not in [Status.CURRENT, Status.REPEATING, Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING]:
 		return await ctx.send("Bad usage: Unknown status.")
@@ -846,7 +874,7 @@ async def _user_status(ctx, args):
 	if status == Status.REPEATING:
 		statuses.append(Status.CURRENT)
 
-	data = await _user_get_status_lists(ctx, user, "anime", statuses)
+	data = await _user_get_status_lists(ctx, user, kind, statuses)
 
 	if not data:
 		return
@@ -860,7 +888,7 @@ async def _user_status(ctx, args):
 		stringed_data[status] = []
 		if status in [Status.CURRENT, Status.REPEATING, Status.DROPPED, Status.PAUSED]:
 			for e in data[status]:
-				s = f"• {e['title']} ({e['episode_progress']}/{e['episodes'] if e['episodes'] else '-'})"
+				s = f"• {e['title']} ({e['episode_progress' if kind == 'anime' else 'chapter_progress']}/{e['episodes' if kind == 'anime' else 'chapters'] if e['episodes' if kind == 'anime' else 'chapters'] else '-'})"
 				stringed_data[status].append(s)
 		elif status == Status.PLANNING:
 			for e in data[status]:
@@ -871,11 +899,14 @@ async def _user_status(ctx, args):
 				s = f"• {e['title']} ({ScoreFormat(user_info['profile']['score_format']).formatted_score(e['score'])})"
 				stringed_data[status].append(s)
 
-		stringed_data[status] = limitLength(stringed_data[status])
+		stringed_data[status] = _limit_paginated(stringed_data[status])
 
+	await _display_status_list(ctx, kind, user_info, stringed_data, 0, bot)
 
+async def _display_status_list(ctx, kind, user_info, stringed_data, idx, bot):
 	embed = discord.Embed(
-		title = user_info['profile']['name'],
+		title = f"{user_info['profile']['name']}",
+		description = '' if not idx else f"page {idx+1}",
 		color = discord.Color.teal(),
 		url = Service(user_info['service']).link(user_info['service_id'])
 	)
@@ -883,7 +914,30 @@ async def _user_status(ctx, args):
 
 	embed.set_image(url='https://files.catbox.moe/ixivqn.png') # mobile width fix
 
-	for status in statuses:
-		embed.add_field(name=status.title(), value='\n'.join(stringed_data[status]) if stringed_data[status] else '*None*', inline=False)
+	has_next = False
+	for status in stringed_data:
+		try:
+			d = stringed_data[status][idx]
+		except:
+			d = None
+		embed.add_field(name=f"{kind.title()} {status.title()}", value='\n'.join(d) if d else '*None*', inline=False)
+		try:
+			has_next = bool(stringed_data[status][idx+1])
+		except:
+			pass
 
-	await ctx.send(embed=embed)
+	msg = await ctx.send(embed=embed)
+
+	if has_next:
+		await msg.add_reaction('➕')
+
+		def check(reaction, user):
+			return user != msg.author and str(reaction.emoji) == '➕'
+
+		try:
+			reaction, author = await bot.wait_for('reaction_add', timeout=10.0, check=check)
+		except asyncio.TimeoutError:
+			await msg.clear_reactions()
+		else:
+			await msg.clear_reactions()
+			await _display_status_list(ctx, kind, user_info, stringed_data, idx+1, bot)
