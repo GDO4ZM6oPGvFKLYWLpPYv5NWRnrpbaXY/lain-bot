@@ -315,7 +315,8 @@ async def _search_specific(bot, ctx, kind, search):
             if song.variant.version == ver:
                 exact = song
                 break
-            
+            if approx.variant.sequence != num:
+                approx = song
             if song.variant.version < approx.variant.version:
                 approx = song
                 
