@@ -9,10 +9,10 @@ from fuzzywuzzy import process
 class SongVariant:
     __slots__ = ['_kind', '_sequence', '_version']
 
-    def __init__(self, kind: str, sequence: Optional[int] = None, version: Optional[int] = None) -> None:
+    def __init__(self, kind: str, sequence: Optional[int] = 1, version: Optional[int] = 1) -> None:
         self._kind = kind
-        self._sequence = sequence if sequence and sequence != "None" else ''
-        self._version = version if version and version != "None" else ''
+        self._sequence = sequence if sequence and sequence != "None" else 1
+        self._version = version if version and version != "None" else 1
 
     @property
     def kind(self) -> str:

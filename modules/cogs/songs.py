@@ -271,8 +271,8 @@ async def _search_specific(bot, ctx, kind, search):
     await ctx.trigger_typing()
 
     show = search
-    num = ''
-    ver = ''
+    num = 1
+    ver = 1
 
     parts = search.split(' ')
 
@@ -293,6 +293,8 @@ async def _search_specific(bot, ctx, kind, search):
             except:
                 pass
 
+    print(f"Searching for show='{show}' kind='{kind}' num='{num}' ver='{ver}' from '{search}'")
+
     try:
         search = Themes.search_animethemesmoe(show)
     except Themes.NoResultsError as e:
@@ -300,19 +302,22 @@ async def _search_specific(bot, ctx, kind, search):
     except Exception as e:
         return await ctx.send(f"Status: {e.status}\nMsg: {e.message}")
 
+    songs = [s for s in search.songs if s.variant.kind == kind]
+
+    if not songs:
+        return await ctx.send("No results")
+
     exact = None
-    approx = None
-    for song in [s for s in search.songs if s.variant.kind == kind]:
+    approx = songs[0]
+    for song in songs:
         print(f"{song} [{song.variant.sequence}, {song.variant.version}]")
         if song.variant.sequence == num:
             if song.variant.version == ver:
                 exact = song
                 break
             
-            if not approx:
+            if song.variant.version < approx.variant.version:
                 approx = song
-            elif song.variant.version < approx.variant.version:
-                    approx = song
                 
     pick = exact
     if not pick:
@@ -344,16 +349,16 @@ async def _search_all(bot, ctx, show):
 
     msg = await ctx.send(embed=embed)
 
-    await msg.add_reaction('🎶')
+    # await msg.add_reaction('🎶')
 
-    def check(reaction, user):
-        return user != msg.author and str(reaction.emoji) == '🎶'
+    # def check(reaction, user):
+    #     return user != msg.author and str(reaction.emoji) == '🎶'
 
-    try:
-        reaction, author = await bot.wait_for('reaction_add', timeout=25.0, check=check)
-    except asyncio.TimeoutError:
-        await msg.clear_reactions()
-    else:
-        await msg.clear_reactions()
-        await _prompt_selection(bot, ctx, msg, search)
+    # try:
+    #     reaction, author = await bot.wait_for('reaction_add', timeout=25.0, check=check)
+    # except asyncio.TimeoutError:
+    #     await msg.clear_reactions()
+    # else:
+    #     await msg.clear_reactions()
+    #     await _prompt_selection(bot, ctx, msg, search)
 
