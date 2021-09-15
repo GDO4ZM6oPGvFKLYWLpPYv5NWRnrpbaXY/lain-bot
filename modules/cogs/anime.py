@@ -357,10 +357,13 @@ class Anime(commands.Cog, name="Weeb"):
 
 	@al.group()
 	async def user(self, ctx, *args):
-		if ctx.invoked_subcommand is None:
+		if not args:
+			await ctx.send("Wroong. Too lazy to update help rn")
+		elif args[0] == 'profile':
+			await self.profile(ctx, *args[1:])
+		else:
 			await _user_status(ctx, args, self.bot)
 
-	@user.command()
 	async def profile(self, ctx, *user):
 		await ctx.trigger_typing()
 		search = {}
