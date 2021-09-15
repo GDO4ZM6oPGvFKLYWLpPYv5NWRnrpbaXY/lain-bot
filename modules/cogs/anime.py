@@ -356,96 +356,9 @@ class Anime(commands.Cog, name="Weeb"):
 		await ctx.send(embed=embed)
 
 	@al.group()
-	async def user(self, ctx):
+	async def user(self, ctx, *args):
 		if ctx.invoked_subcommand is None:
-			await ctx.send('Please use a subcommand. Use `>help al user` for more info')
-
-	@user.command()
-	async def watching(self, ctx, *user):
-		await ctx.trigger_typing()
-		search = {}
-		if len(user):
-			# username given
-			user = user[0].rstrip()
-			if user.startswith('<@!'):
-				userLen = len(user)-1
-				atUser = user[3:userLen]
-				search = {'discord_id': atUser }
-			elif user[len(user)-5]=="#":
-				userId = ctx.guild.get_member_named(user).id
-				if userId:
-					# found in guild
-					search = {'discord_id': str(userId) }
-				else:
-					# not found
-					await ctx.send('Sorry. I could not find that user in this server.')
-					return
-			else:
-				search = {'profile.name': user }
-		else:
-			#no username given -> retrieve message creator's info
-			search = {'discord_id': str(ctx.message.author.id)}
-
-		# technically a user could register both anilist and myanimelist services
-		# rn it'll just use what ever db query finds first (which'll be the least recently set one)
-		search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
-		search['status'] = {'$in': [UserStatus.ACTIVE, UserStatus.CACHEONLY]}
-
-		userData = await Resources.user_col.find_one(
-			search,
-			{
-				'service': 1,
-				'service_id': 1,
-				'profile': 1,
-				'lists.anime': 1
-			}
-		)
-
-		if userData:
-			watchingList = []
-			rewatchingList = []
-
-			for e in userData['lists']['anime'].values():
-				if e['status'] == Status.CURRENT:
-					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes'] if e['episodes'] else '-'})"
-					watchingList.append(s)
-
-				if e['status'] == Status.REPEATING:
-					s = f"• {e['title']} ({e['episode_progress']}/{e['episodes'] if e['episodes'] else '-'})"
-					rewatchingList.append(s)
-
-			if not (watchingList or rewatchingList):
-				await ctx.send('They do not have anything on their watch/rewatch list at the moment.')
-				return
-
-			watchingList = limitLength(watchingList)
-			rewatchingList = limitLength(rewatchingList)
-
-			# found
-			embed = discord.Embed(
-				title = userData['profile']['name'],
-				color = discord.Color.teal(),
-				url = Service(userData['service']).link(userData['service_id'])
-			)
-			embed.set_thumbnail(url=userData['profile']['avatar'])
-
-			embed.set_image(url='https://files.catbox.moe/ixivqn.png') # mobile width fix
-
-			if watchingList:
-				embed.add_field(name='Watching', value='\n'.join(watchingList), inline=False)
-
-			if rewatchingList:
-				embed.add_field(name='Rewatching', value='\n'.join(rewatchingList), inline=False)
-
-			await ctx.send(embed=embed)
-		else:
-			# not found
-			if 'profile.name' in search:
-				await ctx.send('Sorry. I do not support searches on users not registered with me')
-				await ctx.send('...yet')
-			else:
-				await ctx.send('Sorry. I do not have that user\'s info')
-
+			await _user_status(ctx, args)
 
 	@user.command()
 	async def profile(self, ctx, *user):
@@ -827,3 +740,134 @@ def limitLength(lst):
 
 	lst.append('+' + str(numRemoved) + ' others!')
 	return lst
+
+
+async def _user_get_status_lists(ctx, user, kind, statuses):
+	search = {}
+	if user:
+		# username given
+		user = user[0].rstrip()
+		if user.startswith('<@!'):
+			userLen = len(user)-1
+			atUser = user[3:userLen]
+			search = {'discord_id': atUser }
+		elif user[len(user)-5]=="#":
+			userId = ctx.guild.get_member_named(user).id
+			if userId:
+				# found in guild
+				search = {'discord_id': str(userId) }
+			else:
+				# not found
+				await ctx.send('Sorry. I could not find that user in this server.')
+				return None
+		else:
+			search = {'profile.name': user }
+	else:
+		#no username given -> retrieve message creator's info
+		search = {'discord_id': str(ctx.message.author.id)}
+
+	search['status'] = { '$not': { '$eq': UserStatus.INACTIVE } }
+
+	userData = await Resources.user_col.find_one(
+		search,
+		{
+			'service': 1,
+			'service_id': 1,
+			'profile': 1,
+			f"lists.{kind}": 1
+		}
+	)
+
+	data = {'user': None, 'lists': {}}
+	for status in statuses:
+		data['lists'][status] = []
+
+	if userData:
+		data['user'] = {
+			'service': userData['service'],
+			'service_id': userData['service_id'],
+			'profile': userData['profile']
+		}
+		for e in userData['lists'][kind].values():
+			if e['status'] in statuses:
+				data['lists'][e['status']].append(e)
+	else:
+		# not found
+		if 'profile.name' in search:
+			await ctx.send('Sorry. I do not support searches on users not registered with me')
+			await ctx.send('...yet')
+			return None
+		else:
+			await ctx.send('Sorry. I do not have that user\'s info')
+			return None
+
+	return data
+
+
+async def _user_status(ctx, args):
+	if len(args) < 1:
+		return await ctx.send("Bad usage: Try `>al user <status> <user>`. Ex `>al user dropped` to get your dropped list")
+
+	await ctx.trigger_typing()
+
+	user = None
+	status = args[0]
+	if len(args) > 1:
+		user = args[1]
+
+	if status == 'watching':
+		status = Status.CURRENT
+	if status == 'rewatching':
+		status = Status.REPEATING
+
+	if status not in [Status.CURRENT, Status.REPEATING, Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING]:
+		return await ctx.send("Bad usage: Unknown status.")
+
+	statuses = [status]
+
+	if status == Status.CURRENT:
+		statuses.append(Status.REPEATING)
+	if status == Status.REPEATING:
+		statuses.append(Status.CURRENT)
+
+	data = await _user_get_status_lists(ctx, user, "anime", statuses)
+
+	if not data:
+		return
+
+	user_info = data['user']
+	data = data['lists']
+
+	stringed_data = {}
+
+	for status in statuses:
+		stringed_data[status] = []
+		if status in [Status.CURRENT, Status.REPEATING, Status.DROPPED, Status.PAUSED]:
+			for e in data[status]:
+				s = f"• {e['title']} ({e['episode_progress']}/{e['episodes'] if e['episodes'] else '-'})"
+				stringed_data[status].append(s)
+		elif status == Status.PLANNING:
+			for e in data[status]:
+				s = f"• {e['title']}"
+				stringed_data[status].append(s)
+		elif status == Status.COMPLETED:
+			for e in data[status]:
+				s = f"• {e['title']} ({ScoreFormat(user_info['profile']['score_format']).formatted_score(e['score'])})"
+				stringed_data[status].append(s)
+
+		stringed_data[status] = limitLength(stringed_data[status])
+
+
+	embed = discord.Embed(
+		title = user_info['profile']['name'],
+		color = discord.Color.teal(),
+		url = Service(user_info['service']).link(user_info['service_id'])
+	)
+	embed.set_thumbnail(url=user_info['profile']['avatar'])
+
+	embed.set_image(url='https://files.catbox.moe/ixivqn.png') # mobile width fix
+
+	for status in statuses:
+		embed.add_field(name=status.title(), value='\n'.join(stringed_data[status]) if stringed_data[status] else '*None*', inline=False)
+
+	await ctx.send(embed=embed)
