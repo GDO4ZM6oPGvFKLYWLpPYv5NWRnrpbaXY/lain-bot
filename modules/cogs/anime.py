@@ -801,6 +801,22 @@ async def _user_get_status_lists(ctx, user, kind, statuses):
 			await ctx.send('Sorry. I do not have that user\'s info')
 			return None
 
+	for status in statuses:
+		if status == Status.COMPLETED:
+			data['lists'][status].sort(key=lambda e: e['score'], reverse=True)
+		elif status == Status.DROPPED:
+			def k(e):
+				if kind == 'anime':
+					return e['episode_progress']
+				else:
+					if e['chapter_progress']:
+						return e['chapter_progress']
+					else:
+						return e['volume_progress']
+			data['lists'][status].sort(key=k, reverse=True)
+		else:
+			data['lists'][status].sort(key=lambda e: e['title'], reverse=True)
+
 	return data
 
 
