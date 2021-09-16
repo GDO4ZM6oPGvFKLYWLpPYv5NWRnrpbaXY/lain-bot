@@ -181,6 +181,13 @@ def wednesday_lines(data):
 		return lines
 
 	for showtime in data:
+		try:
+			if showtime['title'].lower().startswith('$break$'):
+				lines.append(f"🚫 {showtime['title'][len('$break$'):].strip()}")
+				break
+		except:
+			pass
+			
 		if showtime['title']:
 			lines.append(f"{showtime['start']}-{showtime['end']}: {showtime['title']}")
 	return lines
