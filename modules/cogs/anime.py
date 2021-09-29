@@ -3,10 +3,10 @@ from discord.ext import commands
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
-from modules.anime.safebooru import Safebooru
-from modules.anime.doujin import Doujin
-from modules.anime.anilist2 import Anilist2
-from modules.anime.vndb import Vndb
+from modules.queries.anime.safebooru import Safebooru
+from modules.queries.anime.doujin import Doujin
+from modules.queries.anime.anilist2 import Anilist2
+from modules.queries.anime.vndb import Vndb
 
 from modules.core.resources import Resources
 

@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 logger = logging.getLogger(__name__)
 
-from modules.config.config import Config
+from modules.core.resources import Resources
 
 class Configuration(commands.Cog):
 
@@ -20,15 +20,15 @@ class Configuration(commands.Cog):
 	async def channel(self, ctx):
 		serverID = str(ctx.guild.id)
 		channelID = str(ctx.channel.id)
-		Config.cfgUpdate(serverID, "Bot Channel", channelID)
+		Resources.config.cfgUpdate(serverID, "Bot Channel", channelID)
 		await ctx.send("Bot channel successfully updated to here!")
 
 	@config.command()
 	async def where(self, ctx):
 		serverID = str(ctx.guild.id)
 		try:
-			result = Config.cfgRead(serverID, "Bot Channel")
-			await ctx.send(Config.cfgRead(serverID, "Bot Channel"))
+			result = Resources.config.cfgRead(serverID, "Bot Channel")
+			await ctx.send(Resources.config.cfgRead(serverID, "Bot Channel"))
 		except:
 			await ctx.send("Error!")
 
@@ -36,17 +36,17 @@ class Configuration(commands.Cog):
 	@has_permissions(administrator=True)
 	async def welcome(self, ctx):
 		try:
-			if Config.cfgRead(str(ctx.guild.id), "welcomeChannel")==ctx.channel.id:
-				Config.cfgUpdate(str(ctx.guild.id), "welcomeChannel", 0)
-				Config.cfgUpdate(str(ctx.guild.id), "welcomeOn", False)
+			if Resources.config.cfgRead(str(ctx.guild.id), "welcomeChannel")==ctx.channel.id:
+				Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeChannel", 0)
+				Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeOn", False)
 				await ctx.send("Disabled welcome messages in this channel!")
-			elif Config.cfgRead(str(ctx.guild.id), "welcomeChannel")!=0:
-				Config.cfgUpdate(str(ctx.guild.id), "welcomeChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "welcomeOn", True)
+			elif Resources.config.cfgRead(str(ctx.guild.id), "welcomeChannel")!=0:
+				Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeChannel", ctx.channel.id)
+				Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeOn", True)
 				await ctx.send("Moved and enabled welcome messages to this channel!")
 			else: #this is seperate just in case, i forgot why while coding
-				Config.cfgUpdate(str(ctx.guild.id), "welcomeChannel", ctx.channel.id)
-				Config.cfgUpdate(str(ctx.guild.id), "welcomeOn", True)
+				Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeChannel", ctx.channel.id)
+				Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeOn", True)
 				await ctx.send("Enabled welcome messages in this channel!")
 		except:
 			await ctx.send("error! LOL!")
@@ -56,7 +56,7 @@ class Configuration(commands.Cog):
 	async def welcomemsg(self, ctx):
 		msg = str(ctx.message.content)[(len(ctx.prefix) + len('config welcomemsg ')):]
 		try:
-			Config.cfgUpdate(str(ctx.guild.id), "welcomeMsg", msg)
+			Resources.config.cfgUpdate(str(ctx.guild.id), "welcomeMsg", msg)
 			await ctx.send("Updated welcome message!")
 		except:
 			logger.exception("Error sending error message.")

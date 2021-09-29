@@ -3,8 +3,8 @@ from discord.ext import commands
 logger = logging.getLogger(__name__)
 
 from modules.core.resources import Resources
-from modules.anime.anilist2 import Anilist2
-from modules.music.search import Themes
+from modules.queries.anime.anilist2 import Anilist2
+from modules.queries.music.search import Themes
 
 class Songs(commands.Cog):
 

@@ -3,9 +3,9 @@ from discord.ext import commands
 from discord.utils import get
 logger = logging.getLogger(__name__)
 
-from modules.music.radio import Radio
-from modules.music.themes import Themes
-from modules.anime.anilist import Anilist
+from modules.queries.music.radio import Radio
+from modules.queries.music.themes import Themes
+from modules.queries.anime.anilist import Anilist
 
 class Music(commands.Cog):
 

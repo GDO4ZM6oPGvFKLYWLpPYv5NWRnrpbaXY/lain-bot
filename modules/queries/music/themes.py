@@ -4,7 +4,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 logger = logging.getLogger(__name__)
 
-from modules.anime.anilist import Anilist
+from modules.queries.anime.anilist import Anilist
 
 load_dotenv()
 
