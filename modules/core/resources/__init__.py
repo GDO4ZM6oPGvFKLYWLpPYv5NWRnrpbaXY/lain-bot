@@ -3,6 +3,7 @@ import pytz, os
 from .session import Session
 from .database import Database
 from .img_gen import ImageGenerator as img_gen
+from .config import Config
 
 db_url = 'mongodb://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH')
 if not bool(os.getenv('NON_SRV_DB', default=False)):
@@ -19,5 +20,6 @@ class Resources:
     img_gen = img_gen
     removal_buffers = {}
     status_buffers = {}
+    config = Config
 
     selectors =  ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▫️', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫', '♈', '♉', '♊', '♍', '♌', '♋', '♎', '♏', '♐', '♓', '♒', '♑', '⛎']
