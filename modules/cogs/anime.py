@@ -70,8 +70,8 @@ class Anime(commands.Cog, name="Weeb"):
 			await ctx.send('Invalid doujin command passed...')
 
 	@doujin.command()
-	async def search(self, ctx):
-		tags = str(ctx.message.content)[(len(ctx.prefix) + len('doujin search ')):]
+	async def search(self, ctx, *args):
+		tags = ' '.join(args)
 		links = Doujin.tagSearch(tags)
 		
 		await ctx.trigger_typing()
@@ -375,10 +375,10 @@ class Anime(commands.Cog, name="Weeb"):
 			await ctx.send('Invalid vndb command passed...')
 
 	@vn.command()
-	async def get(self, ctx):
+	async def get(self, ctx, *args):
 		"""Lookup a visual novel on vndb"""
 		# name of vn
-		arg = str(ctx.message.content)[(len(ctx.prefix) + len('vn get ')):]
+		arg = ' '.join(args)
 		try:
 			# grab info from database
 			vn = Vndb()
@@ -511,6 +511,7 @@ class Anime(commands.Cog, name="Weeb"):
 		embed.set_author(name=quote['title'], url='https://vndb.org/v' + str(quote['id']), icon_url=quote['cover'])
 
 		await ctx.send(embed=embed)
+
 
 def shorten(desc):
 	# italic
