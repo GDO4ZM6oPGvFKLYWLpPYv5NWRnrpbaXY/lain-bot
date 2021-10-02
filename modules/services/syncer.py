@@ -234,7 +234,7 @@ class Syncer:
             embed.set_image(url=imgs[0].wide)
             return await channel.send(embed=embed)
         elif len(imgs) > 1:
-            imgs = frozenset([i.narrow for i in imgs][:6])
+            imgs = tuple([i.narrow for i in imgs][:6])
             fn = f"{hash(imgs)}.jpg"
             fp = img_stash.get(fn)
             if not fp:
