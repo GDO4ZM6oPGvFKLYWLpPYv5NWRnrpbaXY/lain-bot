@@ -144,18 +144,22 @@ class Anime(commands.Cog, name="Weeb"):
 			await ctx.send('Error getting data')
 
 
-	@commands.group()
+	@commands.command()
 	async def al(self, ctx):
-		# anilist command group
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid anilist command passed...')
+		"""***Deprecated*** See anime, manga, etc"""
 
-	@al.command()
-	async def search(self, ctx):
-		"""search for anime in anilist"""
+		await ctx.send("`>al` deprecated. Use `>anime`, `>manga`, `>char`, and `>user` now.")
+
+	@commands.command(aliases=['a'], usage="<search>")
+	async def anime(self, ctx, *args):
+		"""search for anime"""
+
 		await ctx.trigger_typing()
-		show = str(ctx.message.content)[(len(ctx.prefix) + len('al search ')):]
-		# retrieve json file
+
+		show = ' '.join(args)
+		if not show:
+			return await ctx.send("Please give me a show to search for")
+
 		anilistResults = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
 
 		# parse out website styling
@@ -244,12 +248,16 @@ class Anime(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['anime']['title']['romaji'])})", embed=extra)
 
-	@al.command()
-	async def manga(self, ctx):
-		"""Search for manga in anilist"""
+	@commands.command(aliases=['m'], usage="<search>")
+	async def manga(self, ctx, *args):
+		"""Search for manga"""
+
 		await ctx.trigger_typing()
-		comic = str(ctx.message.content)[(len(ctx.prefix) + len('al manga ')):]
-		# retrieve json file
+
+		comic = ' '.join(args)
+		if not comic:
+			return await ctx.send("Please give me a manga to search for")
+
 		anilistResults = await Anilist2.aniSearch(Resources.session, comic, isManga=True)
 
 		# parse out website styling
@@ -325,10 +333,14 @@ class Anime(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['manga']['title']['romaji'])})", embed=extra)
 
-	@al.command()
-	async def char(self, ctx):
-		"""Search for a character on anilist"""
-		c = str(ctx.message.content)[(len(ctx.prefix) + len('al char ')):]
+	@commands.command(aliases=['c'], usage="<search>")
+	async def char(self, ctx, *args):
+		"""Search for a character"""
+
+		c = ' '.join(args)
+		if not c:
+			return await ctx.send("Please give me a character to search for")
+
 		anilistResults = await Anilist2.aniSearch(Resources.session, c, isCharacter=True)
 
 		embed = discord.Embed(
