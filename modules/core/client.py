@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from modules.cogs.anime import Anime
+from modules.cogs.weeb import Weeb
 from modules.cogs.music import Music
 from modules.cogs.configuration import Configuration
 from modules.cogs.memes import Memes
@@ -37,7 +37,7 @@ class Client:
     Service.register(bot)
 
     bot.add_cog(Memes(bot))
-    bot.add_cog(Anime(bot))
+    bot.add_cog(Weeb(bot))
     bot.add_cog(Configuration(bot))
     bot.add_cog(Music(bot))
     bot.add_cog(Songs(bot))
