@@ -101,10 +101,10 @@ class Misc(commands.Cog, name="other"):
 
 def _get_comp_score(u1, u2, kind):
 	try:
-		with open(os.getcwd()+'/assets/mal2al.json', 'r') as f:
+		with open(os.getcwd()+'/assets/data/mal2al.json', 'r') as f:
 			mal2al = json.load(f)
 
-		with open(os.getcwd()+'/assets/al2mal.json', 'r') as f:
+		with open(os.getcwd()+'/assets/data/al2mal.json', 'r') as f:
 			al2mal = json.load(f)
 
 		av1 = 0
