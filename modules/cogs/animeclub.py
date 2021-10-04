@@ -26,7 +26,7 @@ class AnimeClub(commands.Cog):
 	@commands.group(aliases=['sced', 'sc'])
 	@commands.check(is_anime_club_server)
 	async def schedule(self, ctx):
-		await ctx.trigger_typing()
+		# await ctx.trigger_typing()
 		if ctx.invoked_subcommand is None:
 			if ctx.message.content in ['>sc', '>sced']:
 				await self.show_shcedule(ctx, wed=True, sat=True)

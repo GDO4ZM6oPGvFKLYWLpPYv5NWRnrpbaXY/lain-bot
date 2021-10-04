@@ -35,7 +35,7 @@ class User(commands.Cog, name="User"):
 
 
 async def _profile(ctx, *user):
-	await ctx.trigger_typing()
+	# await ctx.trigger_typing()
 	search = {}
 	if len(user):
 		# username given
@@ -224,7 +224,7 @@ async def _user_status(ctx, args, bot):
 	if len(args) < 1:
 		return await ctx.send("Bad usage: Try `>al user <status> <user>`. Ex `>al user dropped` to get your dropped list")
 
-	await ctx.trigger_typing()
+	# await ctx.trigger_typing()
 
 	user = None
 	status = args[0]

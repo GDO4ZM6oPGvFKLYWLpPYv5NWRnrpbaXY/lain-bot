@@ -50,7 +50,7 @@ async def _search(bot, ctx, kind, search):
     if not search:
         return
 
-    await ctx.trigger_typing()
+    # await ctx.trigger_typing()
 
     show = search
     num = ''
@@ -268,7 +268,7 @@ async def _search_specific(bot, ctx, kind, search):
     if not search:
         return
 
-    await ctx.trigger_typing()
+    # await ctx.trigger_typing()
 
     show = search
     num = 1
@@ -331,7 +331,7 @@ async def _search_all(bot, ctx, show):
     if not show:
         return
 
-    await ctx.trigger_typing()
+    # await ctx.trigger_typing()
 
     try:
         search = Themes.search_animethemesmoe(show)

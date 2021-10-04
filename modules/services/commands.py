@@ -12,7 +12,7 @@ class ServiceCommands(commands.Cog):
     @commands.command()
     async def services(self, ctx, *args):
         '''For list update stuff. Use '>services' for details'''
-        await ctx.trigger_typing()
+        # await ctx.trigger_typing()
         if not args:
             embed = discord.Embed(
                 title='Service information',
@@ -137,7 +137,7 @@ class ServiceCommands(commands.Cog):
         return await ctx.send('I don\'t recognize that service or command')
 
     async def _filter(self, ctx, onlyImages=False):
-        await ctx.trigger_typing()
+        # await ctx.trigger_typing()
         selectors = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'] # needs expanding if possible options exceed 9
         selections = {}
 
@@ -178,7 +178,7 @@ class ServiceCommands(commands.Cog):
             await ctx.send('timed out. settings NOT changed')
         else:
             if str(reaction.emoji) == '✅':
-                await ctx.trigger_typing()
+                # await ctx.trigger_typing()
                 selected = 0
                 msg = await ctx.channel.fetch_message(msg.id)
                 for rxn in msg.reactions:

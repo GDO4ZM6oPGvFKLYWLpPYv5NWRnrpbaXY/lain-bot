@@ -19,7 +19,7 @@ class Jisho(commands.Cog):
 
     @commands.command(aliases=['j'])
     async def jisho(self, ctx, *, search):
-        await ctx.trigger_typing()
+        # await ctx.trigger_typing()
 
         if not search:
             return await ctx.send('I need something to search')

@@ -74,7 +74,7 @@ class Anime(commands.Cog, name="Weeb"):
 		tags = ' '.join(args)
 		links = Doujin.tagSearch(tags)
 		
-		await ctx.trigger_typing()
+		# await ctx.trigger_typing()
 		embed = discord.Embed(
 			title = 'Results',
 			color = discord.Color.red()
@@ -154,7 +154,7 @@ class Anime(commands.Cog, name="Weeb"):
 	async def anime(self, ctx, *args):
 		"""search for anime"""
 
-		await ctx.trigger_typing()
+		# await ctx.trigger_typing()
 
 		show = ' '.join(args)
 		if not show:
@@ -252,7 +252,7 @@ class Anime(commands.Cog, name="Weeb"):
 	async def manga(self, ctx, *args):
 		"""Search for manga"""
 
-		await ctx.trigger_typing()
+		# await ctx.trigger_typing()
 
 		comic = ' '.join(args)
 		if not comic:

@@ -45,7 +45,7 @@ class Misc(commands.Cog, name="other"):
 		guild = ctx.guild
 
 		await ctx.send("I am slow at this for now. Just wait")
-		await ctx.trigger_typing()
+		# await ctx.trigger_typing()
 
 		user = await Resources.user_col.find_one(
 			{'discord_id': str(ctx.author.id)},
@@ -74,7 +74,7 @@ class Misc(commands.Cog, name="other"):
 			}
 			)
 		]
-		await ctx.trigger_typing()
+		# await ctx.trigger_typing()
 
 		scores = []
 		for u in users:
