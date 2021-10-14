@@ -1,4 +1,4 @@
-import discord, json, os, string, re
+import discord, json, os, string, re, random
 from os import path
 
 from modules.core.client import Client
@@ -50,11 +50,17 @@ class Events:
 		for reaction in reactions:
 			if reaction['type'] == 'exact':
 				if msg == reaction['trigger']:
-					return reaction['response']
+					if 'response' in reaction:
+						return reaction['response']
+					else:
+						return reaction['responses'][random.randint(0, len(reaction['responses'])-1)]
 			elif reaction['type'] == 'in':
 				clean_msg = msg.translate(str.maketrans('', '', string.punctuation))
 				if re.search(f"(^| |\n){reaction['trigger']}($| |\n)", clean_msg):
-					return reaction['response']
+					if 'response' in reaction:
+						return reaction['response']
+					else:
+						return reaction['responses'][random.randint(0, len(reaction['responses'])-1)]
 		return None
 
 	@bot.event
