@@ -27,6 +27,8 @@ class Weeb(commands.Cog, name="Weeb"):
 		try:
 			if isinstance(err, discord.ext.commands.MissingPermissions):
 				await ctx.send("You lack the needed permissions!")
+			elif isinstance(err, discord.ext.commands.errors.MissingRequiredArgument):
+				await ctx.send("Missing arguments!")
 			elif isinstance(err, Anilist2.AnilistError):
 				if err.status == 404:
 					await ctx.send('https://files.catbox.moe/b7drrm.jpg')
@@ -41,7 +43,7 @@ class Weeb(commands.Cog, name="Weeb"):
 			pass
 		
 	@commands.command()
-	async def safebooru(self, ctx, tags):
+	async def safebooru(self, ctx, *, tags):
 		"""Look up images on safebooru"""
 		channel = ctx.message.channel
 
@@ -70,8 +72,8 @@ class Weeb(commands.Cog, name="Weeb"):
 			await ctx.send('Invalid doujin command passed...')
 
 	@doujin.command()
-	async def search(self, ctx, *args):
-		tags = ' '.join(args)
+	async def search(self, ctx, *, tags):
+		# tags = ' '.join(args)
 		links = Doujin.tagSearch(tags)
 		
 		# await ctx.trigger_typing()
@@ -151,12 +153,12 @@ class Weeb(commands.Cog, name="Weeb"):
 		await ctx.send("`>al` deprecated. Use `>anime`, `>manga`, `>char`, and `>user` now.")
 
 	@commands.command(aliases=['a'], usage="<search>")
-	async def anime(self, ctx, *args):
+	async def anime(self, ctx, *, show):
 		"""search for anime"""
 
 		# await ctx.trigger_typing()
 
-		show = ' '.join(args)
+		# show = ' '.join(args)
 		if not show:
 			return await ctx.send("Please give me a show to search for")
 
@@ -249,12 +251,12 @@ class Weeb(commands.Cog, name="Weeb"):
 				await ctx.send(f"({str(anilistResults['data']['anime']['title']['romaji'])})", embed=extra)
 
 	@commands.command(aliases=['m'], usage="<search>")
-	async def manga(self, ctx, *args):
+	async def manga(self, ctx, *, comic):
 		"""Search for manga"""
 
 		# await ctx.trigger_typing()
 
-		comic = ' '.join(args)
+		# comic = ' '.join(args)
 		if not comic:
 			return await ctx.send("Please give me a manga to search for")
 
@@ -334,10 +336,10 @@ class Weeb(commands.Cog, name="Weeb"):
 				await ctx.send(f"({str(anilistResults['data']['manga']['title']['romaji'])})", embed=extra)
 
 	@commands.command(aliases=['c'], usage="<search>")
-	async def char(self, ctx, *args):
+	async def char(self, ctx, *, c):
 		"""Search for a character"""
 
-		c = ' '.join(args)
+		# c = ' '.join(args)
 		if not c:
 			return await ctx.send("Please give me a character to search for")
 
@@ -375,10 +377,10 @@ class Weeb(commands.Cog, name="Weeb"):
 			await ctx.send('Invalid vndb command passed...')
 
 	@vn.command()
-	async def get(self, ctx, *args):
+	async def get(self, ctx, *, arg):
 		"""Lookup a visual novel on vndb"""
 		# name of vn
-		arg = ' '.join(args)
+		# arg = ' '.join(args)
 		try:
 			# grab info from database
 			vn = Vndb()
