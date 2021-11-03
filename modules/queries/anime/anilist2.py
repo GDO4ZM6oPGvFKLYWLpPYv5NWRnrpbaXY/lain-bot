@@ -25,13 +25,12 @@ class Anilist2:
             $isAnime: Boolean!,
             $isCharacter: Boolean!,
             $isMain: Boolean,
-            $format_not_in: [MediaFormat]
         ) {
             manga: Media(id: $id, search: $search, type: MANGA) @include(if: $isManga) {
                 ...genericMediaFields
                 chapters
             }
-            anime: Media(id: $id, search: $search, type: ANIME, format_not_in: $format_not_in) @include(if: $isAnime) {
+            anime: Media(id: $id, search: $search, type: ANIME) @include(if: $isAnime) {
                 ...genericMediaFields
                 episodes
                 duration
@@ -137,7 +136,6 @@ class Anilist2:
         if isAnime:
             v['asHtml'] = False
             v['isMain'] = True
-            v['format_not_in'] = ['MANGA', 'NOVEL', 'ONE_SHOT']
 
         return await Anilist2.__request(session, Anilist2.mediaQuery, v)
 
