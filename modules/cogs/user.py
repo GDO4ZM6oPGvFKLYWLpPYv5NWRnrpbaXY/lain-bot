@@ -147,22 +147,13 @@ async def _user_get_status_lists(ctx, user, kind, statuses):
 	search = {}
 	if user:
 		# username given
-		user = user[0].rstrip()
 		if user.startswith('<@!'):
 			userLen = len(user)-1
 			atUser = user[3:userLen]
 			search = {'discord_id': atUser }
-		elif user[len(user)-5]=="#":
-			userId = ctx.guild.get_member_named(user).id
-			if userId:
-				# found in guild
-				search = {'discord_id': str(userId) }
-			else:
-				# not found
-				await ctx.send('Sorry. I could not find that user in this server.')
-				return None
 		else:
-			search = {'profile.name': user }
+			await ctx.send('Sorry. I could not find that user in this server.')
+			return None
 	else:
 		#no username given -> retrieve message creator's info
 		search = {'discord_id': str(ctx.message.author.id)}
@@ -226,20 +217,36 @@ async def _user_status(ctx, args, bot):
 
 	# await ctx.trigger_typing()
 
+	kind = None
+	status = None
 	user = None
-	status = args[0]
-	if len(args) > 1:
-		user = args[1]
 
-	kind = 'anime'
+	if args[0] == 'manga':
+		kind = 'manga'
+		status = args[1]
+	else:
+		kind = 'anime'
+		status = args[0]
+
+	if len(args) > 1:
+		for i, arg in enumerate(args, start=1):
+			arg = arg.rstrip()
+			if arg.startswith('<@!'):
+				user = arg
+				break
 
 	if status == 'watching':
+		kind = 'anime'
 		status = Status.CURRENT
-	if status == 'rewatching':
+	elif status == 'rewatching':
+		kind = 'anime'
 		status = Status.REPEATING
-	if status == 'reading':
+	elif status == 'reading':
 		kind = 'manga'
 		status = Status.CURRENT
+	elif status == 'rereading':
+		kind = 'manga'
+		status = Status.REPEATING
 
 	if status not in [Status.CURRENT, Status.REPEATING, Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING]:
 		return await ctx.send("Bad usage: Unknown status.")
@@ -248,8 +255,8 @@ async def _user_status(ctx, args, bot):
 
 	if status == Status.CURRENT:
 		statuses.append(Status.REPEATING)
-	if status == Status.REPEATING:
-		statuses.append(Status.CURRENT)
+	# if status == Status.REPEATING:
+	# 	statuses.append(Status.CURRENT)
 
 	data = await _user_get_status_lists(ctx, user, kind, statuses)
 
