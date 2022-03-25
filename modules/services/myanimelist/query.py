@@ -11,9 +11,11 @@ from ..models.data import EntryAttributes, FetchData, QueryResult, ResultStatus,
 from ..anilist.entry import AnimeEntry, MangaEntry
 from .profile import MALProfile
 from ..anilist.enums import ScoreFormat, Status
-import datetime, logging, types
+import datetime, logging, types, os
 
 logger = logging.getLogger(__name__)
+
+profile_api_url = os.getenv('MAL_PROFILE_API_URL')
 
 def img_a(self) -> List[Image]:
     if self['cover']:
@@ -49,7 +51,7 @@ class MyAnimeListQuery(Query):
             return UserSearch(status=ResultStatus.ERROR, data='No username provided')
 
         data = None
-        async with Resources.syncer_session.get(f"https://api.jikan.moe/v3/user/{username}", raise_for_status=False) as resp:
+        async with Resources.syncer_session.get(f"{profile_api_url}/{username}", raise_for_status=False) as resp:
             if resp.status == 404:
                 return UserSearch(status=ResultStatus.ERROR, data='I couldn\'t find a user on mal with that name')
             if resp.status == 500:
@@ -167,7 +169,7 @@ class MyAnimeListQuery(Query):
 
     async def _fetch_profile(self, id):
         """get profile from myanimelist via jikan api"""
-        async with Resources.syncer_session.get(f"https://api.jikan.moe/v3/user/{id}", raise_for_status=True) as resp:
+        async with Resources.syncer_session.get(f"{profile_api_url}/{id}", raise_for_status=True) as resp:
             if resp.status != 200:
                 raise Exception('Bad response from myanimelist Jikan call')
             return await resp.json()
@@ -260,7 +262,7 @@ class MyAnimeListQuery(Query):
         try:
             prof = MALProfile(
                 name=data['username'],
-                avatar = data['image_url'],
+                avatar = data['image_url'].split('?t=')[0] if data['image_url'] else data['image_url'],
                 score_format = ScoreFormat.POINT_10,
                 about = data['about'],
                 favourites = fav,
