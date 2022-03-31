@@ -61,19 +61,53 @@ class Misc(commands.Cog, name="other"):
 
 		# get all users in db that are in this guild
 		userIdsInGuild = [str(u.id) for u in guild.members if u.id != ctx.author.id]
-		users = [d async for d in Resources.user_col.find(
-			{
-				'discord_id': {'$in': userIdsInGuild},
-				'status': { '$not': { '$eq': UserStatus.INACTIVE } },      
-			},
-			{
-				'service': 1,
-				'profile.name': 1,
-				'profile.score_format': 1,
-				f"lists.{kind}": 1,
-			}
+		active_ids = [d async for d in Resources.user_col.aggregate(
+				[
+					{
+						'$group': {
+							'_id': None, 
+							'data': {'$addToSet': {'discord_id': '$discord_id', 'status': '$status'}}
+						}
+					},
+					{
+						'$project': {
+							'active': {
+								'$filter': {
+									'input': '$data',
+									'as': 'item',
+									'cond': {'$not': {'$eq': ['$$item.status', UserStatus.INACTIVE]}}
+								}
+							}
+						}
+					},
+					{
+						'$project': {
+							'_id': 0,
+							'active': '$active.discord_id'
+						}
+					}
+				]
 			)
 		]
+		common_ids = list(set(userIdsInGuild).intersection(set(active_ids[0]['active'])))
+
+
+		users = await asyncio.gather(
+			*[
+				Resources.user_col.find_one(
+				{
+					'discord_id': discord_id,
+				},
+				{
+					'service': 1,
+					'profile.name': 1,
+					'profile.score_format': 1,
+					f"lists.{kind}": 1,
+				}
+				)
+			 	for discord_id in common_ids
+			 ]
+		)
 		# await ctx.trigger_typing()
 
 		scores = []

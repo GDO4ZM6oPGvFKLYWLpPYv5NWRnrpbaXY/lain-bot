@@ -40,3 +40,6 @@ class Database:
 
 	def find(self, filter={}, projection=None):
 		return self.collection.find(filter, projection)
+
+	def aggregate(self, pipeline=[]):
+		return self.collection.aggregate(pipeline)
