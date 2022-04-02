@@ -44,7 +44,7 @@ class Misc(commands.Cog, name="other"):
 		channel = ctx.message.channel
 		guild = ctx.guild
 
-		# await ctx.send("I am slow at this for now. Just wait")
+		await ctx.send("I am slow at this for now. Just wait")
 		# await ctx.trigger_typing()
 
 		user = await Resources.user_col.find_one(
