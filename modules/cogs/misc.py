@@ -44,7 +44,7 @@ class Misc(commands.Cog, name="other"):
 		channel = ctx.message.channel
 		guild = ctx.guild
 
-		await ctx.send("I am slow at this for now. Just wait")
+		# await ctx.send("I am slow at this for now. Just wait")
 		# await ctx.trigger_typing()
 
 		user = await Resources.user_col.find_one(
@@ -91,10 +91,9 @@ class Misc(commands.Cog, name="other"):
 		]
 		common_ids = list(set(userIdsInGuild).intersection(set(active_ids[0]['active'])))
 
-
-		users = await asyncio.gather(
-			*[
-				Resources.user_col.find_one(
+		scores = []
+		async def _process(discord_id):
+			u = await Resources.user_col.find_one(
 				{
 					'discord_id': discord_id,
 				},
@@ -104,15 +103,16 @@ class Misc(commands.Cog, name="other"):
 					'profile.score_format': 1,
 					f"lists.{kind}": 1,
 				}
-				)
-			 	for discord_id in common_ids
-			 ]
+			)
+			scores.append((u['profile']['name'], _get_comp_score(user, u, kind)))
+
+		Resources.al2mal2al.renew()
+
+		await asyncio.gather(
+			*[_process(discord_id) for discord_id in common_ids]
 		)
 		# await ctx.trigger_typing()
 
-		scores = []
-		for u in users:
-			scores.append((u['profile']['name'], _get_comp_score(user, u, kind)))
 		scores.sort(key=lambda e: e[1][0])
 
 		# remove empty
@@ -135,12 +135,8 @@ class Misc(commands.Cog, name="other"):
 
 def _get_comp_score(u1, u2, kind):
 	try:
-		with open(os.getcwd()+'/assets/data/mal2al.json', 'r') as f:
-			mal2al = json.load(f)
-
-		with open(os.getcwd()+'/assets/data/al2mal.json', 'r') as f:
-			al2mal = json.load(f)
-
+		sf1 = ScoreFormat(u1['profile']['score_format'])
+		sf2 = ScoreFormat(u2['profile']['score_format'])
 		av1 = 0
 		av2 = 0
 		combined = []
@@ -148,20 +144,12 @@ def _get_comp_score(u1, u2, kind):
 			e = u1['lists'][kind][i]
 			ii = [i]
 			if u1['service'] == Service.ANILIST and u2['service'] == Service.MYANIMELIST:
-				if i in al2mal[kind]:
-					ii = al2mal[kind][i]
-				else:
-					ii = []
+				ii = Resources.al2mal2al.al2mal(kind, i, [])
 			if u1['service'] == Service.MYANIMELIST and u2['service'] == Service.ANILIST:
-				if i in mal2al[kind]:
-					ii = mal2al[kind][i]
-				else:
-					ii = []
+				ii = Resources.al2mal2al.mal2al(kind, i, [])
 			for s in ii:
 				s = str(s)
 				if s != None and s != "None" and s in u2['lists'][kind]:
-					sf1 = ScoreFormat(u1['profile']['score_format'])
-					sf2 = ScoreFormat(u2['profile']['score_format'])
 					s1 = sf1.normalized_score(e['score'])
 					s2 = sf2.normalized_score(u2['lists'][kind][s]['score'])
 					# print(f"{u1['profile']['name']} x {u2['profile']['name']} -- {i} : {s} :: {type(s1)}[{s1}] {type(s2)}[{s2}]")
