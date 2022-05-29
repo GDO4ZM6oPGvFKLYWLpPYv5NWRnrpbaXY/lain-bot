@@ -274,6 +274,7 @@ def extract_schedule(file, start_hour):
 	
 	wb = load_workbook(filename=file)
 	sheet = wb.active
+	start_hour = int(sheet.cell(1, 2).value.split(':')[0])
 	data = {}
 	# go through all rows starting form second (1-based indexing)
 	for row in sheet.iter_rows(2):
