@@ -176,6 +176,7 @@ def parse_title(title):
             return [title, None]
 
 def wednesday_lines(data):
+	return saturday_lines(data)
 	lines = []
 	if not data:
 		return lines
