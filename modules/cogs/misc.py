@@ -118,18 +118,24 @@ class Misc(commands.Cog, name="other"):
 		# remove empty
 		scores = [score for score in scores if score[1][0]]
 
+		def chunkize(lst, size):
+			for i in range(0, len(lst), size):
+				yield lst[i:i+size]
+
+		MAX_FIELDS = 24 # for discord, it's 25 but 24 formats into rows of 3 nicely
 		if scores:
-			# embed text to output
-			embed = discord.Embed(
-				title = f"{ctx.author.display_name}'s {kind} compatibility scores",
-				description = "The lower the score the more compatible",
-				color = discord.Color.blue(),
-			)
+			for subscores in chunkize(scores, MAX_FIELDS):
+				# embed text to output
+				embed = discord.Embed(
+					title = f"{ctx.author.display_name}'s {kind} compatibility scores",
+					description = "The lower the score the more compatible",
+					color = discord.Color.blue(),
+				)
 
-			for score in scores:
-				embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
+				for score in subscores:
+					embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
 
-			await ctx.send(embed=embed)
+				await ctx.send(embed=embed)
 		else:
 			await ctx.send("No compatibilities. Most likely didn't share any scores with anyone")
 
