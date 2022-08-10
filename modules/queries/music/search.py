@@ -120,7 +120,7 @@ class Themes():
 
     @staticmethod
     def search_animethemesmoe(show):
-        url = f"https://staging.animethemes.moe/api/search?q={show}&include[anime]=animethemes.animethemeentries.videos,resources,images,animethemes.song.artists&fields[anime]=name&fields[search]=anime&fields[resource]=link&fields[animetheme]=type,sequence&fields[animethemeentry]=version,nsfw,spoiler&fields[video]=basename&fields[image]=link&fields[song]=title&fields[artist]=name"
+        url = f"https://api.animethemes.moe/search?q={show}&include[anime]=animethemes.animethemeentries.videos,resources,images,animethemes.song.artists&fields[anime]=name&fields[search]=anime&fields[resource]=link&fields[animetheme]=type,sequence&fields[animethemeentry]=version,nsfw,spoiler&fields[video]=basename&fields[image]=link&fields[song]=title&fields[artist]=name"
         
         try:
             res = subprocess.Popen(f"curl --silent \"{url}\"", stdout = subprocess.PIPE, shell=True)
