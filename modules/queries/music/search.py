@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Union, List, Optional
 
-import json, subprocess, json
+import json, subprocess, json, urllib.parse
 from fuzzywuzzy import process
 
 class SongVariant:
@@ -157,11 +157,16 @@ class Themes():
                         flags.append("NSFW")
                     if song["spoiler"]:
                         flags.append("Spoiler")
+                    url = 'https://animethemes.moe'
+                    if song['videos']:
+                        url = f"https://animethemes.moe/video/{song['videos'][0]['basename']}"
+                    else:
+                        url = f"https://animethemes.moe/search?q={urllib.parse.quote_plus(show)}"
                     songs.append(
                         Song(
                             SongVariant(kind, num, song["version"]),
                             title,
-                            f"https://animethemes.moe/video/{song['videos'][0]['basename']}",
+                            url,
                             artists,
                             flags
                         )
