@@ -1,4 +1,4 @@
-import os, sys, logging, logging.handlers, atexit
+import os, sys, logging, logging.handlers, atexit, asyncio
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -28,9 +28,16 @@ os.chdir(os.path.dirname(os.path.abspath(__file__))) #changes cwd to project roo
 
 TOKEN = os.getenv("BOT_TOKEN")
 
+async def close_sessions():
+	await asyncio.gather(*[
+		Resources.session.close(),
+		Resources.syncer_session.close(),
+	])
+
 # Clean up on close
 def exit_cleanup():
-	Resources.session.close_session() #close session after bot shuts down
+	logging.info('shutting down...')
+	asyncio.run(close_sessions())
 	logging.info('Shut down.')
 
 atexit.register(exit_cleanup)

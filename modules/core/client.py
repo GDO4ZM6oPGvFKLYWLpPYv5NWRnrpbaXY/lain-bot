@@ -13,6 +13,7 @@ from modules.cogs.misc import Misc
 from modules.cogs.user import User
 
 from modules.services import Service
+from modules.core.resources import Resources
 
 intents = discord.Intents.none()
 intents.guilds = True
@@ -37,6 +38,7 @@ class Bot(commands.Bot):
     #     super().__init__(*args, **kwargs)
 
     async def setup_hook(self):
+        await Resources.init()
 
         # Service.register(bot)
 

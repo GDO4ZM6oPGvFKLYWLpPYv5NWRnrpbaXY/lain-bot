@@ -1,6 +1,5 @@
-import pytz, os
+import pytz, os, aiohttp
 
-from .session import Session
 from .database import Database
 from .img_gen import ImageGenerator as img_gen
 from .config import Config
@@ -11,8 +10,8 @@ if not bool(os.getenv('NON_SRV_DB', default=False)):
     db_url = 'mongodb+srv://'+os.getenv('DBUSER')+':'+os.getenv('DBKEY')+'@' + os.getenv('DBPATH')
 
 class Resources:
-    session = Session(raise_for_status=True)
-    syncer_session = Session()
+    session = None
+    syncer_session = None
     user_col = Database(db_url, 'v2', 'users')
     guild_col = Database(db_url, 'v2', 'guilds')
     storage_col = Database(db_url, 'lain-bot', 'storage')
@@ -25,3 +24,8 @@ class Resources:
     al2mal2al = Al2mal2al()
 
     selectors =  ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿', '🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '🟤', '🔺', '🔻', '🔸', '🔹', '🔶', '🔷', '🔳', '🔲', '▫️', '◼️', '◻️', '🟥', '🟧', '🟨', '🟩', '🟦', '🟪', '🟫', '♈', '♉', '♊', '♍', '♌', '♋', '♎', '♏', '♐', '♓', '♒', '♑', '⛎']
+
+    @staticmethod
+    async def init():
+        Resources.session = aiohttp.ClientSession(raise_for_status=True)
+        Resources.syncer_session = aiohttp.ClientSession()
