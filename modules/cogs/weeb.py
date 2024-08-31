@@ -1,5 +1,6 @@
 import discord, os, random, asyncio, logging, statistics, html
 from discord.ext import commands
+from discord import app_commands
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
@@ -42,10 +43,9 @@ class Weeb(commands.Cog, name="Weeb"):
 		except:
 			pass
 		
-	@commands.command()
+	@commands.hybrid_command()
 	async def safebooru(self, ctx, *, tags):
-		"""Look up images on safebooru"""
-		channel = ctx.message.channel
+		"""look up images on safebooru"""
 
 		safebooruSearch = Safebooru.booruSearch(tags)
 
@@ -63,7 +63,7 @@ class Weeb(commands.Cog, name="Weeb"):
 		embed.set_image(url=safebooruImageURL)
 		embed.set_footer(text=safebooruTagsTogether)
 
-		await channel.send(embed=embed)
+		await ctx.send(embed=embed)
 
 
 	@commands.group()
@@ -73,7 +73,6 @@ class Weeb(commands.Cog, name="Weeb"):
 
 	@doujin.command()
 	async def search(self, ctx, *, tags):
-		# tags = ' '.join(args)
 		links = Doujin.tagSearch(tags)
 		
 		# await ctx.trigger_typing()
@@ -98,7 +97,7 @@ class Weeb(commands.Cog, name="Weeb"):
 				id = split[4]
 				token = split[5]
 				meta = Doujin.metaSearch(id, token)
-				embed.add_field(name=str(i) + '. ' + meta['title'])
+				embed.add_field(name=str(i) + '. ' + meta['title'], value='')
 				i += 1
 				if i == 10:
 					break
@@ -146,23 +145,16 @@ class Weeb(commands.Cog, name="Weeb"):
 			await ctx.send('Error getting data')
 
 
-	@commands.command()
-	async def al(self, ctx):
-		"""***Deprecated*** See anime, manga, etc"""
-
-		await ctx.send("`>al` deprecated. Use `>anime`, `>manga`, `>char`, and `>user` now.")
-
-	@commands.command(aliases=['a'], usage="<search>")
-	async def anime(self, ctx, *, show):
+	@commands.hybrid_command(aliases=['a'], usage="<search>")
+	async def anime(self, ctx, *, title):
 		"""search for anime"""
 
 		# await ctx.trigger_typing()
 
-		# show = ' '.join(args)
-		if not show:
+		if not title:
 			return await ctx.send("Please give me a show to search for")
 
-		anilistResults = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, title, isAnime=True)
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['anime']['description']))
@@ -250,17 +242,19 @@ class Weeb(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['anime']['title']['romaji'])})", embed=extra)
 
-	@commands.command(aliases=['m'], usage="<search>")
-	async def manga(self, ctx, *, comic):
-		"""Search for manga"""
+	@commands.hybrid_command(aliases=['m'], usage="<search>")
+	@app_commands.describe(
+        title='manga title',
+    )
+	async def manga(self, ctx, *, title):
+		"""search for manga"""
 
 		# await ctx.trigger_typing()
 
-		# comic = ' '.join(args)
-		if not comic:
+		if not title:
 			return await ctx.send("Please give me a manga to search for")
 
-		anilistResults = await Anilist2.aniSearch(Resources.session, comic, isManga=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, title, isManga=True)
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['manga']['description']))
@@ -335,15 +329,17 @@ class Weeb(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['manga']['title']['romaji'])})", embed=extra)
 
-	@commands.command(aliases=['c'], usage="<search>")
-	async def char(self, ctx, *, c):
-		"""Search for a character"""
+	@commands.hybrid_command(aliases=['c'], usage="<search>")
+	@app_commands.describe(
+    	name='character from anime or manga',
+    )
+	async def char(self, ctx, *, name):
+		"""search for a character"""
 
-		# c = ' '.join(args)
-		if not c:
+		if not name:
 			return await ctx.send("Please give me a character to search for")
 
-		anilistResults = await Anilist2.aniSearch(Resources.session, c, isCharacter=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, name, isCharacter=True)
 
 		embed = discord.Embed(
 				title = str(anilistResults['data']['character']['name']['full']),
