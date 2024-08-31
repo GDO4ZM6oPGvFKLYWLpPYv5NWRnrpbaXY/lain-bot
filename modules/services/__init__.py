@@ -47,12 +47,12 @@ class Service:
         return [Service.ANILIST, Service.MYANIMELIST]
 
     @staticmethod
-    def register(bot):
+    async def register(bot):
         from .syncer import Syncer
         from .commands import ServiceCommands
         from modules.core.resources import Resources
 
-        bot.add_cog(ServiceCommands(bot))
+        await bot.add_cog(ServiceCommands(bot))
         
         for service in Service.active():
             Resources.removal_buffers[service] = set()

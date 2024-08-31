@@ -40,7 +40,7 @@ class Bot(commands.Bot):
     async def setup_hook(self):
         await Resources.init()
 
-        # Service.register(bot)
+        await Service.register(self)
 
         asyncio.gather(*[
             self.add_cog(Memes(self)),
