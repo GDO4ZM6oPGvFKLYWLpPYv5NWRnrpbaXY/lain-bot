@@ -6,7 +6,6 @@ graphene==3.3
 motor==3.5.1
 openpyxl==3.1.5
 pendulum==3.0.0
-Pillow==10.0.0
 Pillow==10.4.0
 praw==7.7.1
 pymongo==4.8.0
