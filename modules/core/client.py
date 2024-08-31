@@ -42,7 +42,7 @@ class Bot(commands.Bot):
 
         await Service.register(self)
 
-        asyncio.gather(*[
+        await asyncio.gather(*[
             self.add_cog(Memes(self)),
             self.add_cog(Weeb(self)),
             self.add_cog(Configuration(self)),
