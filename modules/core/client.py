@@ -1,4 +1,4 @@
-import discord
+import discord, asyncio
 from discord.ext import commands
 
 from modules.cogs.weeb import Weeb
@@ -20,6 +20,7 @@ intents.guild_messages = True
 intents.guild_reactions = True
 intents.members = True
 intents.voice_states = True
+intents.message_content = True
 
 prefix = ">"
 
@@ -31,20 +32,29 @@ class CustomHelpCommand(commands.MinimalHelpCommand):
             e.description += page
         await destination.send(embed=e)
 
+class Bot(commands.Bot):
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+
+    async def setup_hook(self):
+
+        # Service.register(bot)
+
+        asyncio.gather(*[
+            self.add_cog(Memes(self)),
+            self.add_cog(Weeb(self)),
+            self.add_cog(Configuration(self)),
+            self.add_cog(Music(self)),
+            self.add_cog(Songs(self)),
+            self.add_cog(AnimeClub(self)),
+            self.add_cog(Jisho(self)),
+            self.add_cog(Daijoubu(self)),
+            self.add_cog(Misc(self)),
+            self.add_cog(User(self)),
+        ])
+
+        self.help_command = CustomHelpCommand()
+    
+
 class Client:	
-    bot = commands.Bot(command_prefix=prefix, intents=intents) #sets up the bot
-
-    Service.register(bot)
-
-    bot.add_cog(Memes(bot))
-    bot.add_cog(Weeb(bot))
-    bot.add_cog(Configuration(bot))
-    bot.add_cog(Music(bot))
-    bot.add_cog(Songs(bot))
-    bot.add_cog(AnimeClub(bot))
-    bot.add_cog(Jisho(bot))
-    bot.add_cog(Daijoubu(bot))
-    bot.add_cog(Misc(bot))
-    bot.add_cog(User(bot))
-
-    bot.help_command = CustomHelpCommand()
+    bot = Bot(command_prefix=prefix, intents=intents) #sets up the bot
