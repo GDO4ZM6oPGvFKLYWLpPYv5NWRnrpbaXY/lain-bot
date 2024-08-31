@@ -1,4 +1,4 @@
-import io, logging
+import io, logging, re
 from PIL import Image, ImageSequence
 from itertools import zip_longest
 logger = logging.getLogger(__name__)
@@ -56,9 +56,8 @@ class ImageGenerator:
         """
         Get a bytes representation of a discord members profile picture
         """
-        url = ('https://cdn.discordapp.com/avatars/{0.id}/'
-            '{0.avatar}.png?size=128').format(user)
-        async with session.get(url) as resp:
+        base_url = re.sub(r'\?size=\d+', '', user.display_avatar.url)
+        async with session.get(f"{base_url}?size=128") as resp:
             return(io.BytesIO(await resp.content.read()))
 
     @staticmethod
