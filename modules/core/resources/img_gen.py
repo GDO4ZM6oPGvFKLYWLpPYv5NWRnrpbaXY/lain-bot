@@ -64,13 +64,14 @@ class ImageGenerator:
     def gen_gif(gif, ins_pic, coords) -> io.BytesIO:
         frames = []
         with Image.open(gif) as im:
-            with Image.open(ins_pic).convert('RGB') as ins_pic:
-                for frame, coords in zip_longest(
-                        ImageSequence.Iterator(im), coords):
-                    frame = frame.copy().convert('RGB')
-                    if coords:
-                        frame.paste(ins_pic, coords)
-                    frames.append(frame)
+            with Image.open(ins_pic).convert('RGB') as ins_pic_:
+                with ins_pic_.resize((128,128)) as ins_pic:
+                    for frame, coords in zip_longest(
+                            ImageSequence.Iterator(im), coords):
+                        frame = frame.copy().convert('RGB')
+                        if coords:
+                            frame.paste(ins_pic, coords)
+                        frames.append(frame)
 
         image_bin = io.BytesIO()
         frames[0].save(image_bin, 'GIF', save_all=True,
