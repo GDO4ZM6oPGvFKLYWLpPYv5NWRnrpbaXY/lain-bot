@@ -1,6 +1,8 @@
 from .anilist import Description as anilist
 from .myanimelist import Description as myanimelist
 
+from enum import Enum
+
 class Meta(str):
     __slots__ = ['Profile', 'list_names', 'Query', 'link', 'time_between_queries']
 
@@ -25,6 +27,10 @@ def _meta_gen(desc) -> Meta:
     var.time_between_queries = desc.time_between_queries
 
     return var
+
+class Services(Enum):
+    anilist = anilist.label
+    myanimelist = myanimelist.label
 
 class Service:
     ANILIST = _meta_gen(anilist)

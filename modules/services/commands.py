@@ -1,9 +1,12 @@
 from modules.services.models.data import EntryAttributes, ResultStatus
 import discord, asyncio
 from discord.ext import commands
+from discord import app_commands
 from modules.core.resources import Resources
-from modules.services import Service
+from modules.services import Service, Services
 from modules.services.models.user import UserStatus, User
+
+from typing import Literal
 
 class ServiceCommands(commands.Cog):
     def __init__(self, bot):
@@ -74,14 +77,23 @@ class ServiceCommands(commands.Cog):
                     '`>services filter` \nbring up panel to ignore updates that have certain attributes (admin)\n\n'
                     '`>services filterImages` \nbring up panel to ignore just images in updates that have certain attributes (admin)\n'
                     '*using filter will naturally override filterImage if setting filter to ignore*\n\n'
-                    '`>services <service> set <username>` \ntrack your lists from a service\n\n'
-                    '`>services <service> remove` \nstop tracking your data of a service'
                 ), 
                 inline=False)
 
             await ctx.send(embed=embed)
         else:
             await self._services_mod(ctx, *args)
+
+    @app_commands.command(name="link")
+    @app_commands.describe(username='your username on the anime list site')
+    async def slash_link(self, interaction, service: Services, username: str):
+        """register your anime list with lain"""
+        return await self._set_user(interaction, service.value, username)
+
+    @app_commands.command(name="unlink")
+    async def slash_unlink(self, interaction, service: Services):
+        """remove your anime list from lain"""
+        return await self._rem_user(interaction, service.value)
 
     async def _services_mod(self, ctx, *args):
         if args[0] in ['enable', 'disable']:
@@ -119,21 +131,6 @@ class ServiceCommands(commands.Cog):
         elif args[0] == 'showupdates':
             return await self._hide_updates(ctx, False)
 
-        elif args[0] in Service.all():
-            if not len(args) > 1:
-                return await ctx.send('Sorry. That is not a valid command. Try `>services` to get help')
-
-            if args[1] not in ['set', 'remove']:
-                return await ctx.send('Sorry. That is not a valid command. Try `>services` to get help')
-
-            if args[1] == 'remove':
-                return await self._rem_user(ctx, args[0])
-
-            if not len(args) > 2:
-                return await ctx.send('Provide a username to set')
-
-            return await self._set_user(ctx, args[0], args[2])
-        
         return await ctx.send('I don\'t recognize that service or command')
 
     async def _filter(self, ctx, onlyImages=False):
@@ -213,16 +210,17 @@ class ServiceCommands(commands.Cog):
             else:
                 await ctx.send('canceled. no filters changed')
 
-    async def _set_user(self, ctx, service, name):
+    async def _set_user(self, interaction, service, name):
+        await interaction.response.defer()
         user = Service(service).Query()
         user = await user.find(name)
 
         if user.status != ResultStatus.OK:
             if user.status == ResultStatus.NOTFOUND:
-                try: await ctx.send(f"Could not find any user on {service} with username '{name}'")
+                try: await interaction.followup.send(content=f"Could not find any user on {service} with username '{name}'")
                 finally: return
             else:
-                try: await ctx.send(f"Error! {user.data}")
+                try: await interaction.followup.send(content=f"Error! {user.data}")
                 finally: return
         
         embed = discord.Embed(
@@ -231,10 +229,10 @@ class ServiceCommands(commands.Cog):
         )
         embed.set_thumbnail(url=user.image)
 
-        msg = await ctx.send('Is this you?', embed=embed)
+        msg = await interaction.followup.send(content='Is this you?', embed=embed, wait=True)
 
         def check(reaction, user):
-            return user == ctx.message.author and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❌')
+            return user == interaction.user and (str(reaction.emoji) == '✅' or str(reaction.emoji) == '❌')
 
         await msg.add_reaction('✅')
         await msg.add_reaction('❌')
@@ -242,11 +240,11 @@ class ServiceCommands(commands.Cog):
         try:
             reaction, author = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
         except asyncio.TimeoutError:
-            return await ctx.send('Timed out. Details NOT updated')
+            return await interaction.followup.send(content='Timed out. Details NOT updated')
         else:
             if str(reaction.emoji) == '✅':
                 new_user = User(
-                    discord_id=str(ctx.author.id),
+                    discord_id=str(interaction.user.id),
                     service=service,
                     service_id=user.id,
                     status=UserStatus.ACTIVE
@@ -270,13 +268,12 @@ class ServiceCommands(commands.Cog):
                     {'$set': new_user.dict},
                     upsert=True
                 )
-                await ctx.send('Your details have been updated!')
+                await interaction.followup.send(content='Your details have been updated!')
             else:
-                await ctx.send('Your details have NOT been updated!')
+                await interaction.followup.send(content='Your details have NOT been updated!')
 
-
-    async def _rem_user(self, ctx, service):
-        user_id = str(ctx.author.id)
+    async def _rem_user(self, interaction, service):
+        user_id = str(interaction.user.id)
         res = await Resources.user_col.delete_one(
             {
                 'discord_id': user_id,
@@ -285,9 +282,9 @@ class ServiceCommands(commands.Cog):
         )
         if res.deleted_count:
             Resources.removal_buffers[service].add(user_id)
-            await ctx.send(f"You have been removed form the {service} service!")
+            await interaction.response.send_message(f"You have been removed form the {service} service!")
         else:
-            await ctx.send('Failure. User not removed or not found.')
+            await interaction.response.send_message('Failure. User not removed or not found.')
 
     async def _enable_list(self, ctx, lst):
         await Resources.guild_col.update_one(
