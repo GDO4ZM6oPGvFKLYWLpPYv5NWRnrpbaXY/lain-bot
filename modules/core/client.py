@@ -1,5 +1,8 @@
-import discord, asyncio
+import discord, asyncio, logging, os
+logger = logging.getLogger(__name__)
+
 from discord.ext import commands
+from discord import app_commands
 
 from modules.cogs.weeb import Weeb
 from modules.cogs.music import Music
@@ -55,6 +58,20 @@ class Bot(commands.Bot):
 
         self.help_command = CustomHelpCommand()
     
+        self.tree.on_error = self.on_tree_error
+
+    async def on_tree_error(self, interaction, err):
+        try:
+            logger.exception('Error in app command tree')
+        except:
+            pass
+        if isinstance(err, discord.app_commands.errors.MissingAnyRole):
+            return await interaction.response.send_message('You do not have permission to use this command')
+        try:
+            await interaction.response.send_message('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
+        except:
+            pass
+        
 
 class Client:	
     bot = Bot(command_prefix=prefix, intents=intents) #sets up the bot
