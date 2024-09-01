@@ -40,14 +40,14 @@ class User(commands.GroupCog, name="user"):
 	@app_commands.command(name="manga")
 	@app_commands.describe(user='the discord user to check (defaults to self)',)
 	async def manga(self, interaction, status: Literal['reading', 'rereading', Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING], user: Optional[discord.Member] = None):
-		"""see the manga a user is reading, dropped, etc."""
+		"""see what manga a user is reading, dropped, etc."""
 		await _user_status(interaction, 'manga', status, user, self.bot)
 
 
 	@app_commands.command(name="anime")
 	@app_commands.describe(user='the discord user to check (defaults to self)',)
 	async def anime(self, interaction, status: Literal['watching', 'rewatching', Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING], user: Optional[discord.Member] = None):
-		"""see the anime a user is watching, dropped, etc."""
+		"""see what anime a user is watching, dropped, etc."""
 		await _user_status(interaction, 'anime', status, user, self.bot)
 	
 
