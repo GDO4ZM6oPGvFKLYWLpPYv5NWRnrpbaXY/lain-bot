@@ -237,10 +237,35 @@ class Weeb(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['anime']['title']['romaji'])})", embed=extra)
 
+	@app_commands.command(name="ln")
+	async def slash_ln(self, interaction, title: str):
+		"""search for light novel"""
+		anilistResults = await Anilist2.aniSearch(Resources.session, title, isLN=True)
+
+		embed, extra = await mangaLnSearchEmbed(interaction.guild, anilistResults, 'ln')
+
+		await interaction.response.send_message(embed=embed)
+
+		if extra:
+			msg = await interaction.original_response()
+
+			def check(reaction, user):
+				return user != msg.author and str(reaction.emoji) == '➕'
+
+			await msg.add_reaction('➕')
+
+			try:
+				reaction, author = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+			except asyncio.TimeoutError:
+				await msg.clear_reactions()
+			else:
+				await interaction.followup.send(content=f"({str(anilistResults['data']['ln']['title']['romaji'])})", embed=extra)
+
+
 	@commands.hybrid_command(aliases=['m'], usage="<search>")
 	@app_commands.describe(
-        title='manga title',
-    )
+		title='manga title',
+	)
 	async def manga(self, ctx, *, title):
 		"""search for manga"""
 
@@ -251,63 +276,7 @@ class Weeb(commands.Cog, name="Weeb"):
 
 		anilistResults = await Anilist2.aniSearch(Resources.session, title, isManga=True)
 
-		# parse out website styling
-		desc = shorten(str(anilistResults['data']['manga']['description']))
-
-		# make genre list look nice
-		gees = str(anilistResults['data']['manga']['genres'])
-		gees = gees.replace('\'', '')
-		gees = gees.replace('[', '')
-		gees = gees.replace(']', '')
-
-		# embed text to output
-		embed = discord.Embed(
-			title = str(anilistResults['data']['manga']['title']['romaji']),
-			description = desc,
-			color = discord.Color.blue(),
-			url = str(anilistResults['data']['manga']['siteUrl'])
-		)
-
-		embed.set_footer(text=gees)
-		embed.add_field(name = 'Format', value=str(anilistResults['data']['manga']['format']).title())
-
-		# images, check if valid before displaying
-		if 'None' != str(anilistResults['data']['manga']['bannerImage']):
-			embed.set_image(url=str(anilistResults['data']['manga']['bannerImage']))
-
-		if 'None' != str(anilistResults['data']['manga']['coverImage']['large']):
-			embed.set_thumbnail(url=str(anilistResults['data']['manga']['coverImage']['large']))
-
-
-		# if show is airing, cancelled, finished, or not released
-		status = anilistResults['data']['manga']['status']
-
-		if 'NOT_YET_RELEASED' not in status:
-			embed.add_field(name='Score', value=str(anilistResults['data']['manga']['meanScore']) + '%', inline=True)
-			embed.add_field(name='Popularity', value=str(anilistResults['data']['manga']['popularity']) + ' users', inline=True)
-			if 'RELEASING' not in status:
-				embed.add_field(name='Chapters', value=str(anilistResults['data']['manga']['chapters']), inline=False)
-				# find difference in year month and days of show's air time
-				try:
-					air = True
-					years = abs(anilistResults['data']['manga']['endDate']['year'] - anilistResults['data']['manga']['startDate']['year'])
-					months = abs(anilistResults['data']['manga']['endDate']['month'] - anilistResults['data']['manga']['startDate']['month'])
-					days = abs(anilistResults['data']['manga']['endDate']['day'] - anilistResults['data']['manga']['startDate']['day'])
-				except TypeError:
-					logger.error('Error calculating air time')
-					air = False
-
-				# get rid of anything with zero
-				if air:
-					tyme = str(days) + ' days'
-					if months != 0:
-						tyme += ', ' + str(months) + ' months'
-					if years != 0:
-						tyme += ', ' + str(years) + ' years'
-
-					embed.add_field(name='Released', value=tyme, inline=False)
-
-		extra = await embedScores(ctx.guild, anilistResults["data"]["manga"]["id"], anilistResults["data"]["manga"]["idMal"], 'manga', 9, embed)
+		embed, extra = await mangaLnSearchEmbed(ctx.guild, anilistResults, 'manga')
 
 		msg = await ctx.send(embed=embed)
 
@@ -656,3 +625,63 @@ def limitLength(lst):
 
 	lst.append('+' + str(numRemoved) + ' others!')
 	return lst
+
+async def mangaLnSearchEmbed(guild, anilistResults, kind):
+	# parse out website styling
+	desc = shorten(str(anilistResults['data'][kind]['description']))
+
+	# make genre list look nice
+	gees = str(anilistResults['data'][kind]['genres'])
+	gees = gees.replace('\'', '')
+	gees = gees.replace('[', '')
+	gees = gees.replace(']', '')
+
+	# embed text to output
+	embed = discord.Embed(
+		title = str(anilistResults['data'][kind]['title']['romaji']),
+		description = desc,
+		color = discord.Color.blue(),
+		url = str(anilistResults['data'][kind]['siteUrl'])
+	)
+
+	embed.set_footer(text=gees)
+	embed.add_field(name = 'Format', value=str(anilistResults['data'][kind]['format']).title())
+
+	# images, check if valid before displaying
+	if 'None' != str(anilistResults['data'][kind]['bannerImage']):
+		embed.set_image(url=str(anilistResults['data'][kind]['bannerImage']))
+
+	if 'None' != str(anilistResults['data'][kind]['coverImage']['large']):
+		embed.set_thumbnail(url=str(anilistResults['data'][kind]['coverImage']['large']))
+
+
+	# if show is airing, cancelled, finished, or not released
+	status = anilistResults['data'][kind]['status']
+
+	if 'NOT_YET_RELEASED' not in status:
+		embed.add_field(name='Score', value=str(anilistResults['data'][kind]['meanScore']) + '%', inline=True)
+		embed.add_field(name='Popularity', value=str(anilistResults['data'][kind]['popularity']) + ' users', inline=True)
+		if 'RELEASING' not in status:
+			embed.add_field(name='Chapters', value=str(anilistResults['data'][kind]['chapters']), inline=False)
+			# find difference in year month and days of show's air time
+			try:
+				air = True
+				years = abs(anilistResults['data'][kind]['endDate']['year'] - anilistResults['data'][kind]['startDate']['year'])
+				months = abs(anilistResults['data'][kind]['endDate']['month'] - anilistResults['data'][kind]['startDate']['month'])
+				days = abs(anilistResults['data'][kind]['endDate']['day'] - anilistResults['data'][kind]['startDate']['day'])
+			except TypeError:
+				logger.error('Error calculating air time')
+				air = False
+
+			# get rid of anything with zero
+			if air:
+				tyme = str(days) + ' days'
+				if months != 0:
+					tyme += ', ' + str(months) + ' months'
+				if years != 0:
+					tyme += ', ' + str(years) + ' years'
+
+				embed.add_field(name='Released', value=tyme, inline=False)
+
+	extra = await embedScores(guild, anilistResults["data"][kind]["id"], anilistResults["data"][kind]["idMal"], kind, 9, embed)
+	return embed, extra

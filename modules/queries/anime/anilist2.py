@@ -24,9 +24,14 @@ class Anilist2:
             $isManga: Boolean!,
             $isAnime: Boolean!,
             $isCharacter: Boolean!,
+            $isLN: Boolean!,
             $isMain: Boolean,
         ) {
-            manga: Media(id: $id, search: $search, type: MANGA) @include(if: $isManga) {
+            manga: Media(id: $id, search: $search, type: MANGA, format_not:NOVEL) @include(if: $isManga) {
+                ...genericMediaFields
+                chapters
+            }
+            ln: Media(id: $id, search: $search, type: MANGA, format:NOVEL) @include(if: $isLN) {
                 ...genericMediaFields
                 chapters
             }
@@ -103,7 +108,7 @@ class Anilist2:
         }
         '''
 
-    async def aniSearch(session, search, isManga=False, isAnime=False, isCharacter=False):
+    async def aniSearch(session, search, isManga=False, isAnime=False, isCharacter=False, isLN=False):
         """Search anilist for manga, anime, and/or character
 
         Args:
@@ -112,6 +117,7 @@ class Anilist2:
             isManga (bool): If the results should contain a manga entry
             isAnime (bool): If the results should contain an anime entry
             isCharacter (bool): If the results should contain a character entry
+            isLN (bool): If the reuslts should montain a ligh novel entry
 
         Returns:
             A valid anilist query response.
@@ -120,7 +126,7 @@ class Anilist2:
             AnilistBadArguments: If valid session or search not supplied
             AnilistError: If valid reponse was not obtained
         """
-        if not (session and (isManga or isAnime or isCharacter)):
+        if not (session and (isManga or isAnime or isCharacter or isLN)):
             raise Anilist2.AnilistBadArguments()
 
         v = {
@@ -128,9 +134,10 @@ class Anilist2:
             'isManga': isManga,
             'isAnime': isAnime,
             'isCharacter': isCharacter,
+            'isLN': isLN,
         }
 
-        if isManga:
+        if isManga or isLN:
             v['asHtml'] = False
 
         if isAnime:
