@@ -103,7 +103,7 @@ async def _search(bot, ctx, kind, search):
             except:
                 pass
 
-    print(f"Searching for show='{show}' kind='{kind}' num='{num}' ver='{ver}'")
+    # print(f"Searching for show='{show}' kind='{kind}' num='{num}' ver='{ver}'")
     try:
         anime = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
         title = str(anime['data']['anime']['title']['romaji'])
@@ -373,7 +373,7 @@ async def _search_and_show_song(respond, show, kind, num, ver):
     exact = None
     approx = songs[0]
     for song in songs:
-        print(f"{song} [{song.variant.sequence}, {song.variant.version}]")
+        # print(f"{song} [{song.variant.sequence}, {song.variant.version}]")
         if song.variant.sequence == num:
             if song.variant.version == ver:
                 exact = song

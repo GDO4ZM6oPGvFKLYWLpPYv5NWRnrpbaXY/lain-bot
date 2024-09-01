@@ -24,7 +24,7 @@ class Themes():
             for song in songs:
                 title = song['source']
                 ltitle = title.lower()
-                print(song)
+                # print(song)
                 opening = song['uid']
                 if opening[0].lower() == 'e':
                     opening = opening[:7]
