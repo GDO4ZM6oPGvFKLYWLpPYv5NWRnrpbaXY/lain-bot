@@ -1,5 +1,6 @@
 import discord, os, asyncio, logging, statistics, html
 from discord.ext import commands
+from discord import app_commands
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
@@ -9,7 +10,9 @@ from modules.services.anilist.enums import ScoreFormat, Status
 from modules.services.models.user import UserStatus
 from modules.services import Service
 
-class User(commands.Cog, name="User"):
+from typing import Literal, Optional
+
+class User(commands.GroupCog, name="user"):
 	"""see info about registered users"""
 
 	def __init__(self, bot):
@@ -23,42 +26,50 @@ class User(commands.Cog, name="User"):
 			await ctx.send('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
 		except:
 			pass
-		
-	@commands.command()
-	async def user(self, ctx, *args):
-		if not args:
-			await ctx.send("Wrong. Too lazy to update help rn")
-		elif args[0] == 'profile':
-			await _profile(ctx, *args[1:])
+
+	@app_commands.command(name="profile")
+	@app_commands.describe(user='the discord user to check (defaults to self)')
+	async def slash_profile(self, interaction, user: Optional[discord.Member] = None):
+		"""see user's' profile"""
+		if not user:
+			search = {'discord_id': str(interaction.user.id)}
 		else:
-			await _user_status(ctx, args, self.bot)
+			search = {'discord_id': str(user.id)}
+		await _profile(interaction.response.send_message, search)
+
+	@app_commands.command(name="manga")
+	@app_commands.describe(user='the discord user to check (defaults to self)',)
+	async def manga(self, interaction, status: Literal['reading', 'rereading', Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING], user: Optional[discord.Member] = None):
+		"""see what manga a user is reading, dropped, etc."""
+		await _user_status(interaction, 'manga', status, user, self.bot)
 
 
-async def _profile(ctx, *user):
+	@app_commands.command(name="anime")
+	@app_commands.describe(user='the discord user to check (defaults to self)',)
+	async def anime(self, interaction, status: Literal['watching', 'rewatching', Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING], user: Optional[discord.Member] = None):
+		"""see what anime a user is watching, dropped, etc."""
+		await _user_status(interaction, 'anime', status, user, self.bot)
+	
+
+async def _msg_cmd_profile(ctx, *user):
 	# await ctx.trigger_typing()
 	search = {}
-	if len(user):
-		# username given
-		user = user[0].rstrip()
-		if user.startswith('<@!'):
-			userLen = len(user)-1
-			atUser = user[3:userLen]
-			search = {'discord_id': atUser }
-		elif user[len(user)-5]=="#":
-			userId = ctx.guild.get_member_named(user).id
-			if userId:
-				# found in guild
-				search = {'discord_id': str(userId) }
-			else:
-				# not found
-				await ctx.send('Sorry. I could not find that user in this server.')
-				return
-		else:
-			search = {'profile.name': user }
+	try:
+		mention = ctx.message.mentions[0]
+	except IndexError:
+		mention = None
+
+	if mention is not None:
+		search = {'discord_id': str(mention.id) }
+	elif len(user):
+		search = {'profile.name': user }
 	else:
 		#no username given -> retrieve message creator's info
 		search = {'discord_id': str(ctx.message.author.id)}
 
+	return await _profile(ctx.send, search)
+
+async def _profile(respond, search):
 	# technically a user could register both anilist and myanimelist services
 	# rn it'll just use what ever db query finds first
 	search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
@@ -112,13 +123,13 @@ async def _profile(ctx, *user):
 		if animeGenres:
 			embed.add_field(name="Top genres (by count):", value=animeGenres, inline=False)
 
-		await ctx.send(embed=embed)
+		await respond(embed=embed)
 	else:
 		# not found
 		if 'profile.name' in search:
-			await ctx.send('Sorry. I do not support searches on users not registered with me.')
+			await respond('Sorry. I do not support searches on users not registered with me.')
 		else:
-			await ctx.send('Sorry. I could not find that user')
+			await respond('Sorry. I could not find that user')
 
 def _limit_paginated(lst):
 	pages = []
@@ -143,23 +154,11 @@ def _limit_paginated(lst):
 
 	return pages
 
-async def _user_get_status_lists(ctx, user, kind, statuses):
-	search = {}
-	if user:
-		# username given
-		if user.startswith('<@!'):
-			userLen = len(user)-1
-			atUser = user[3:userLen]
-			search = {'discord_id': atUser }
-		else:
-			await ctx.send('Sorry. I could not find that user in this server.')
-			return None
-	else:
-		#no username given -> retrieve message creator's info
-		search = {'discord_id': str(ctx.message.author.id)}
-
-	search['status'] = { '$not': { '$eq': UserStatus.INACTIVE } }
-
+async def _user_get_status_lists(interaction, user, kind, statuses):
+	search = {
+		'discord_id': str(user.id),
+		'status': { '$not': { '$eq': UserStatus.INACTIVE } }
+	}
 	userData = await Resources.user_col.find_one(
 		search,
 		{
@@ -186,11 +185,10 @@ async def _user_get_status_lists(ctx, user, kind, statuses):
 	else:
 		# not found
 		if 'profile.name' in search:
-			await ctx.send('Sorry. I do not support searches on users not registered with me')
-			await ctx.send('...yet')
+			await interaction.response.send_message('Sorry. I do not support searches on users not registered with me')
 			return None
 		else:
-			await ctx.send('Sorry. I do not have that user\'s info')
+			await interaction.response.send_message('Sorry. I do not have that user\'s info')
 			return None
 
 	for status in statuses:
@@ -211,45 +209,14 @@ async def _user_get_status_lists(ctx, user, kind, statuses):
 
 	return data
 
-async def _user_status(ctx, args, bot):
-	if len(args) < 1:
-		return await ctx.send("Bad usage: Try `>al user <status> <user>`. Ex `>al user dropped` to get your dropped list")
+async def _user_status(interaction, kind, status, user, bot):
+	if not user:
+		user = interaction.user
 
-	# await ctx.trigger_typing()
-
-	kind = None
-	status = None
-	user = None
-
-	if args[0] == 'manga':
-		kind = 'manga'
-		status = args[1]
-	else:
-		kind = 'anime'
-		status = args[0]
-
-	if len(args) > 1:
-		for i, arg in enumerate(args, start=1):
-			arg = arg.rstrip()
-			if arg.startswith('<@!'):
-				user = arg
-				break
-
-	if status == 'watching':
-		kind = 'anime'
+	if status == 'watching' or status == 'reading':
 		status = Status.CURRENT
-	elif status == 'rewatching':
-		kind = 'anime'
+	elif status == 'rewatching' or status == 'rereading':
 		status = Status.REPEATING
-	elif status == 'reading':
-		kind = 'manga'
-		status = Status.CURRENT
-	elif status == 'rereading':
-		kind = 'manga'
-		status = Status.REPEATING
-
-	if status not in [Status.CURRENT, Status.REPEATING, Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING]:
-		return await ctx.send("Bad usage: Unknown status.")
 
 	statuses = [status]
 
@@ -258,7 +225,7 @@ async def _user_status(ctx, args, bot):
 	# if status == Status.REPEATING:
 	# 	statuses.append(Status.CURRENT)
 
-	data = await _user_get_status_lists(ctx, user, kind, statuses)
+	data = await _user_get_status_lists(interaction, user, kind, statuses)
 
 	if not data:
 		return
@@ -285,9 +252,9 @@ async def _user_status(ctx, args, bot):
 
 		stringed_data[status] = _limit_paginated(stringed_data[status])
 
-	await _display_status_list(ctx, kind, user_info, stringed_data, 0, bot)
+	await _display_status_list(interaction, kind, user_info, stringed_data, 0, bot)
 
-async def _display_status_list(ctx, kind, user_info, stringed_data, idx, bot):
+async def _display_status_list(interaction, kind, user_info, stringed_data, idx, bot):
 	embed = discord.Embed(
 		title = f"{user_info['profile']['name']}",
 		description = '' if not idx else f"page {idx+1}",
@@ -309,8 +276,12 @@ async def _display_status_list(ctx, kind, user_info, stringed_data, idx, bot):
 			has_next = bool(stringed_data[status][idx+1])
 		except:
 			pass
-
-	msg = await ctx.send(embed=embed)
+	
+	if interaction.response.is_done():
+		msg = await interaction.followup.send(embed=embed, wait=True)
+	else:
+		await interaction.response.send_message(embed=embed)
+		msg = await interaction.original_response()
 
 	if has_next:
 		await msg.add_reaction('➕')
@@ -324,4 +295,4 @@ async def _display_status_list(ctx, kind, user_info, stringed_data, idx, bot):
 			await msg.clear_reactions()
 		else:
 			await msg.clear_reactions()
-			await _display_status_list(ctx, kind, user_info, stringed_data, idx+1, bot)
+			await _display_status_list(interaction, kind, user_info, stringed_data, idx+1, bot)

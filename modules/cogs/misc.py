@@ -1,5 +1,6 @@
 import discord, os, random, asyncio, logging, statistics, json, math, sys, traceback
 from discord.ext import commands
+from discord import app_commands
 logger = logging.getLogger(__name__)
 
 from modules.core.resources import Resources
@@ -7,6 +8,8 @@ from modules.core.resources import Resources
 from modules.services.anilist.enums import ScoreFormat, Status
 from modules.services.models.user import UserStatus
 from modules.services import Service
+
+from typing import Literal, Optional
 
 class Misc(commands.Cog, name="other"):
 	"""Probably one-off or WIPs"""
@@ -34,21 +37,18 @@ class Misc(commands.Cog, name="other"):
 		except:
 			pass
 		
-	@commands.command()
-	async def compatibility(self, ctx, *args):
-		"""See your compatiblity with other registered users"""
-		kind = "anime"
-		if args and args[0] == "manga":
-			kind = "manga"
+	@app_commands.command()
+	@app_commands.describe(kind='anime or manga',)
+	async def compatibility(self, interaction, kind: Optional[Literal['anime', 'manga']] = 'anime'):
+		"""see your compatiblity with other registered users"""
 
-		channel = ctx.message.channel
-		guild = ctx.guild
+		channel = interaction.channel
+		guild = interaction.guild
 
-		await ctx.send("I am slow at this for now. Just wait")
-		# await ctx.trigger_typing()
+		await interaction.response.send_message("I am slow at this for now. Just wait")
 
 		user = await Resources.user_col.find_one(
-			{'discord_id': str(ctx.author.id)},
+			{'discord_id': str(interaction.user.id)},
 			{
 				'service': 1,
 				'profile.name': 1,
@@ -57,10 +57,10 @@ class Misc(commands.Cog, name="other"):
 			}
 		)
 		if not user:
-			return await ctx.send("Can't do compare. You're not registered")
+			return await interaction.edit_original_response(content="Can't do compare. You're not registered")
 
 		# get all users in db that are in this guild
-		userIdsInGuild = [str(u.id) for u in guild.members if u.id != ctx.author.id]
+		userIdsInGuild = [str(u.id) for u in guild.members if u.id != interaction.user.id]
 		active_ids = [d async for d in Resources.user_col.aggregate(
 				[
 					{
@@ -111,7 +111,6 @@ class Misc(commands.Cog, name="other"):
 		await asyncio.gather(
 			*[_process(discord_id) for discord_id in common_ids]
 		)
-		# await ctx.trigger_typing()
 
 		scores.sort(key=lambda e: e[1][0])
 
@@ -127,7 +126,7 @@ class Misc(commands.Cog, name="other"):
 			for subscores in chunkize(scores, MAX_FIELDS):
 				# embed text to output
 				embed = discord.Embed(
-					title = f"{ctx.author.display_name}'s {kind} compatibility scores",
+					title = f"{interaction.user.display_name}'s {kind} compatibility scores",
 					description = "The lower the score the more compatible",
 					color = discord.Color.blue(),
 				)
@@ -135,9 +134,9 @@ class Misc(commands.Cog, name="other"):
 				for score in subscores:
 					embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
 
-				await ctx.send(embed=embed)
+				await interaction.edit_original_response(embed=embed)
 		else:
-			await ctx.send("No compatibilities. Most likely didn't share any scores with anyone")
+			await interaction.edit_original_response(content="No compatibilities. Most likely didn't share any scores with anyone")
 
 def _get_comp_score(u1, u2, kind):
 	try:

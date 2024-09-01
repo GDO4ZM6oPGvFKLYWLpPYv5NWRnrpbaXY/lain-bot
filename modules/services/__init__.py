@@ -1,6 +1,8 @@
 from .anilist import Description as anilist
 from .myanimelist import Description as myanimelist
 
+from enum import Enum
+
 class Meta(str):
     __slots__ = ['Profile', 'list_names', 'Query', 'link', 'time_between_queries']
 
@@ -26,6 +28,10 @@ def _meta_gen(desc) -> Meta:
 
     return var
 
+class Services(Enum):
+    anilist = anilist.label
+    myanimelist = myanimelist.label
+
 class Service:
     ANILIST = _meta_gen(anilist)
     MYANIMELIST = _meta_gen(myanimelist)
@@ -47,12 +53,12 @@ class Service:
         return [Service.ANILIST, Service.MYANIMELIST]
 
     @staticmethod
-    def register(bot):
+    async def register(bot):
         from .syncer import Syncer
         from .commands import ServiceCommands
         from modules.core.resources import Resources
 
-        bot.add_cog(ServiceCommands(bot))
+        await bot.add_cog(ServiceCommands(bot))
         
         for service in Service.active():
             Resources.removal_buffers[service] = set()

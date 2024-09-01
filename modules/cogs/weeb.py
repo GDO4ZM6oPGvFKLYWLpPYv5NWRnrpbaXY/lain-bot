@@ -1,5 +1,6 @@
 import discord, os, random, asyncio, logging, statistics, html
 from discord.ext import commands
+from discord import app_commands
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
@@ -42,10 +43,9 @@ class Weeb(commands.Cog, name="Weeb"):
 		except:
 			pass
 		
-	@commands.command()
+	@commands.hybrid_command()
 	async def safebooru(self, ctx, *, tags):
-		"""Look up images on safebooru"""
-		channel = ctx.message.channel
+		"""look up images on safebooru"""
 
 		safebooruSearch = Safebooru.booruSearch(tags)
 
@@ -63,33 +63,29 @@ class Weeb(commands.Cog, name="Weeb"):
 		embed.set_image(url=safebooruImageURL)
 		embed.set_footer(text=safebooruTagsTogether)
 
-		await channel.send(embed=embed)
+		await ctx.send(embed=embed)
 
-
-	@commands.group()
-	async def doujin(self, ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid doujin command passed...')
-
-	@doujin.command()
-	async def search(self, ctx, *, tags):
-		# tags = ' '.join(args)
+	@app_commands.command()
+	async def doujin(self, interaction, tags: str):
+		"""look up doujin"""
+		await interaction.response.defer()
 		links = Doujin.tagSearch(tags)
 		
-		# await ctx.trigger_typing()
 		embed = discord.Embed(
 			title = 'Results',
 			color = discord.Color.red()
 		)
 		embed.set_thumbnail(url='https://e-hentai.org/favicon.png')
 
+		rxn = ['1️⃣','2️⃣','3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+
 		if links != None:
 			def check(reaction, user):
-				return user == ctx.message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣' or str(reaction.emoji) == '5️⃣' or str(reaction.emoji) == '6️⃣' or str(reaction.emoji) == '7️⃣' or str(reaction.emoji) == '8️⃣' or str(reaction.emoji) == '9️⃣')
+				return user.id == interaction.user.id and str(reaction.emoji) in rxn
 			
 			size = len(links)
 			if size == 0:
-				await ctx.send('No results, try different tags')
+				await interaction.followup.send(content='No results, try different tags')
 				return
 			
 			i = 1
@@ -98,71 +94,62 @@ class Weeb(commands.Cog, name="Weeb"):
 				id = split[4]
 				token = split[5]
 				meta = Doujin.metaSearch(id, token)
-				embed.add_field(name=str(i) + '. ' + meta['title'])
+				embed.add_field(name=str(i) + '. ' + meta['title'], value='')
 				i += 1
 				if i == 10:
 					break
-			msg = await ctx.send(embed=embed)
+			await interaction.followup.send(embed=embed)
+			msg = await interaction.original_response()
+
 			# add reaction(s)
 			if size >= 1:
-				await msg.add_reaction('1️⃣')
+				await msg.add_reaction(rxn[0])
 			if size >= 2:
-				await msg.add_reaction('2️⃣')
+				await msg.add_reaction(rxn[1])
 			if size >= 3:
-				await msg.add_reaction('3️⃣')
+				await msg.add_reaction(rxn[2])
 			if size >= 4:
-				await msg.add_reaction('4️⃣')
+				await msg.add_reaction(rxn[3])
 			if size >= 5:
-				await msg.add_reaction('5️⃣')
+				await msg.add_reaction(rxn[4])
 			if size >= 6:
-				await msg.add_reaction('6️⃣')
+				await msg.add_reaction(rxn[5])
 			if size >= 7:
-				await msg.add_reaction('7️⃣')
+				await msg.add_reaction(rxn[6])
 			if size >= 8:
-				await msg.add_reaction('8️⃣')
+				await msg.add_reaction(rxn[7])
 			if size >= 9:
-				await msg.add_reaction('9️⃣')
+				await msg.add_reaction(rxn[8])
 
 			try:
 				reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
 			except asyncio.TimeoutError:
-				await ctx.send('Took too long, try again')
-			
+				await msg.clear_reactions()
 			else:
-				try:
-					chose = links[str(reaction.emoji)[:1] - 1]
-				except:
-					await ctx.send('Invalid reaction, try again')
-					return
-				
+				await msg.clear_reactions()
+				chose = links[rxn.index(str(reaction.emoji))]
+
 				embed = discord.Embed(
 					title = 'Not done yet lol',
 					color = discord.Color.red(),
 					url=chose
 				)
-				await ctx.send(embed=embed)
+				await interaction.followup.send(embed=embed)
 
 		else:
-			await ctx.send('Error getting data')
+			await interaction.followup.send(content='Error getting data')
 
 
-	@commands.command()
-	async def al(self, ctx):
-		"""***Deprecated*** See anime, manga, etc"""
-
-		await ctx.send("`>al` deprecated. Use `>anime`, `>manga`, `>char`, and `>user` now.")
-
-	@commands.command(aliases=['a'], usage="<search>")
-	async def anime(self, ctx, *, show):
+	@commands.hybrid_command(aliases=['a'], usage="<search>")
+	async def anime(self, ctx, *, title):
 		"""search for anime"""
 
 		# await ctx.trigger_typing()
 
-		# show = ' '.join(args)
-		if not show:
+		if not title:
 			return await ctx.send("Please give me a show to search for")
 
-		anilistResults = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, title, isAnime=True)
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['anime']['description']))
@@ -250,17 +237,19 @@ class Weeb(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['anime']['title']['romaji'])})", embed=extra)
 
-	@commands.command(aliases=['m'], usage="<search>")
-	async def manga(self, ctx, *, comic):
-		"""Search for manga"""
+	@commands.hybrid_command(aliases=['m'], usage="<search>")
+	@app_commands.describe(
+        title='manga title',
+    )
+	async def manga(self, ctx, *, title):
+		"""search for manga"""
 
 		# await ctx.trigger_typing()
 
-		# comic = ' '.join(args)
-		if not comic:
+		if not title:
 			return await ctx.send("Please give me a manga to search for")
 
-		anilistResults = await Anilist2.aniSearch(Resources.session, comic, isManga=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, title, isManga=True)
 
 		# parse out website styling
 		desc = shorten(str(anilistResults['data']['manga']['description']))
@@ -335,15 +324,17 @@ class Weeb(commands.Cog, name="Weeb"):
 			else:
 				await ctx.send(f"({str(anilistResults['data']['manga']['title']['romaji'])})", embed=extra)
 
-	@commands.command(aliases=['c'], usage="<search>")
-	async def char(self, ctx, *, c):
-		"""Search for a character"""
+	@commands.hybrid_command(aliases=['c'], usage="<search>")
+	@app_commands.describe(
+    	name='character from anime or manga',
+    )
+	async def char(self, ctx, *, name):
+		"""search for a character"""
 
-		# c = ' '.join(args)
-		if not c:
+		if not name:
 			return await ctx.send("Please give me a character to search for")
 
-		anilistResults = await Anilist2.aniSearch(Resources.session, c, isCharacter=True)
+		anilistResults = await Anilist2.aniSearch(Resources.session, name, isCharacter=True)
 
 		embed = discord.Embed(
 				title = str(anilistResults['data']['character']['name']['full']),
@@ -371,20 +362,17 @@ class Weeb(commands.Cog, name="Weeb"):
 		await ctx.send(embed=embed)
 
 
-	@commands.group()
-	async def vn(self, ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid vndb command passed...')
+	vn_group = app_commands.Group(name='vn', description="get info related to VNs")
 
-	@vn.command()
-	async def get(self, ctx, *, arg):
-		"""Lookup a visual novel on vndb"""
-		# name of vn
-		# arg = ' '.join(args)
+	@vn_group.command()
+	@app_commands.describe(name='title of vn',)
+	async def get(self, interaction, name: str):
+		"""lookup a visual novel on vndb"""
+
 		try:
 			# grab info from database
 			vn = Vndb()
-			r = vn.vn(arg.strip())
+			r = vn.vn(name)
 			r = r['items'][0]
 
 			# assign variables
@@ -494,16 +482,21 @@ class Weeb(commands.Cog, name="Weeb"):
 			if len(screens) >= 1:
 				embed.set_image(url=random.choice(screens)['image'])
 
-			await ctx.send(embed=embed)
+			await interaction.response.send_message(embed=embed)
 		except Exception as e:
 			logger.exception('Exception looking up VN')
-			await ctx.send('VN not found (title usually has to be exact)')
+			await interaction.response.send_message('VN not found (title usually has to be exact)')
 
-	@vn.command()
-	async def quote(self, ctx):
-		"""Display a random visual novel quote"""
+	@vn_group.command()
+	async def quote(self, interaction):
+		"""display a random visual novel quote"""
 		q = Vndb()
-		quote = q.quote()
+		quote = await q.quote()
+
+		try:
+			quote = await q.quote()
+		except:
+			return await interaction.response.send_message('Unable to retrieve quote')
 
 		embed = discord.Embed(
 					title = quote['quote'],
@@ -512,7 +505,7 @@ class Weeb(commands.Cog, name="Weeb"):
 
 		embed.set_author(name=quote['title'], url='https://vndb.org/v' + str(quote['id']), icon_url=quote['cover'])
 
-		await ctx.send(embed=embed)
+		await interaction.response.send_message(embed=embed)
 
 
 def shorten(desc):

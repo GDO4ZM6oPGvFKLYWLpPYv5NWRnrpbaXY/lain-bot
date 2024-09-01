@@ -2,11 +2,25 @@ import logging, discord, datetime, os, openpyxl, re, pendulum, time
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
+from discord import app_commands
 from discord.ext.commands import has_any_role
 from openpyxl import load_workbook
 from tempfile import NamedTemporaryFile
 
 from modules.core.resources import Resources
+
+from typing import Literal, Optional
+
+class Day:
+	ALL = 'all'
+	SAT = 'saturday'
+	WED = 'wednesday'
+
+class Prosepect:
+	NEXT = 'next'
+	FUTURE = 'future'
+	ALL = 'all'
+
 
 class AnimeClub(commands.Cog):
 
@@ -23,81 +37,95 @@ class AnimeClub(commands.Cog):
 		except:
 			pass
 
+	@app_commands.command(name="sc")
+	@app_commands.describe(
+		day='which day to check (defaults to all)',
+		when='can show all, future, or just the next upcoming meeting (defaults to next)'
+	)
+	@app_commands.guilds(254864526069989377, 259896980308754432)
+	async def s_sc(self, interaction, day: Optional[Literal[Day.SAT, Day.WED]] = Day.ALL, when: Optional[Literal[Prosepect.ALL, Prosepect.NEXT, Prosepect.FUTURE]] = Prosepect.NEXT):
+		"""view club schedule"""
+		if when == Prosepect.NEXT:
+			await self.show_shcedule(interaction.response.send_message, sat=day == Day.ALL or day == Day.SAT, wed=day == Day.ALL or day == Day.WED)
+		else:
+			await interaction.response.defer()
+			if day == Day.ALL or day == Day.SAT:
+				await self.show_all_sat(interaction.followup.send, only_future=when == Prosepect.FUTURE)
+			if day == Day.ALL or day == Day.WED:
+				await self.show_all_wed(interaction.followup.send, only_future=when == Prosepect.FUTURE)
+
 	@commands.group(aliases=['sced', 'sc'])
 	@commands.check(is_anime_club_server)
 	async def schedule(self, ctx):
 		# await ctx.trigger_typing()
 		if ctx.invoked_subcommand is None:
 			if ctx.message.content in ['>sc', '>sced']:
-				await self.show_shcedule(ctx, wed=True, sat=True)
+				await self.show_shcedule(ctx.send, wed=True, sat=True)
 			else:
 				await ctx.send('Bad usage. Try `>sc` `>sc wed` or `>sc wed future`. Can replace wed with sat as well')
 
 	@schedule.group(aliases=['sat', 'SAT', 'Sat', 'Saturday'])
 	async def saturday(self, ctx):
 		if ctx.invoked_subcommand is None:
-			await self.show_shcedule(ctx, sat=True)
+			await self.show_shcedule(ctx.send, sat=True)
 
 	@schedule.group(aliases=['wed', 'WED', 'Wed', 'Wednesday'])
 	async def wednesday(self, ctx):
 		if ctx.invoked_subcommand is None:
-			await self.show_shcedule(ctx, wed=True)
+			await self.show_shcedule(ctx.send, wed=True)
 
 	@schedule.command(name='all')
 	async def all_both(self, ctx):
-		await self.show_all_wed(ctx)
-		await self.show_all_sat(ctx)
+		await self.show_all_wed(ctx.send)
+		await self.show_all_sat(ctx.send)
 
 	@saturday.command(name='all')
 	async def all_sat(self,ctx):
-		await self.show_all_sat(ctx)
+		await self.show_all_sat(ctx.send)
 
 	@wednesday.command(name='all')
 	async def all_wed(self, ctx):
-		await self.show_all_wed(ctx)
+		await self.show_all_wed(ctx.send)
 
 	@schedule.command(name='future')
 	async def future_both(self, ctx):
-		await self.show_all_wed(ctx, only_future=True)
-		await self.show_all_sat(ctx, only_future=True)
+		await self.show_all_wed(ctx.send, only_future=True)
+		await self.show_all_sat(ctx.send, only_future=True)
 
 	@saturday.command(name='future')
 	async def future_sat(self,ctx):
-		await self.show_all_sat(ctx, only_future=True)
+		await self.show_all_sat(ctx.send, only_future=True)
 
 	@wednesday.command(name='future')
 	async def future_wed(self, ctx):
-		await self.show_all_wed(ctx, only_future=True)
+		await self.show_all_wed(ctx.send, only_future=True)
 
-	@schedule.command(name="set")
-	@has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
-	async def set_(self, ctx, *args):
-		if not args or args[0] not in ['sat', 'wed']:
-			await ctx.send('Bad usage. Try `>sc set wed` or similar')
-
-		if not ctx.message.attachments:
-			await ctx.send('Provide an attachment by pressing the icon to the left of the input box and then doing the command in the message popup')
-
-		k = 'Wednesday'
-		n = 7
-		if args[0] == 'sat':
+	@app_commands.command(name="set-schedule")
+	@app_commands.guilds(254864526069989377, 259896980308754432)
+	@app_commands.checks.has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
+	async def s_set(self, interaction, day: Literal[Day.SAT, Day.WED], schedule: discord.Attachment):
+		"""set club schedule (admin)"""
+		if day == Day.SAT:
 			k = 'Saturday'
 			n = 6
+		else:
+			k = 'Wednesday'
+			n = 7
 		
 		with NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
-			await ctx.message.attachments[0].save(tmp.name)
+			await schedule.save(tmp.name)
 			try:
 				sched = extract_schedule(tmp.name, n)
 			except Exception as e:
-				await ctx.send(f"Failed to extract schedule from file.\n{e.message}")
+				await interaction.response.send_message(f"Failed to extract schedule from file.\n{e.message}")
 				return
 			res = await Resources.storage_col.update_one({'id': 'sched_v2'}, {'$set': {k: sched}})
 			if not res:
-				await ctx.send(f"Error setting {k} schedule!")
+				await interaction.response.send_message(f"Error setting {k} schedule!")
 			else:
-				await ctx.send(f"{k} schedules have been updated!")
+				await interaction.response.send_message(f"{k} schedules have been updated!")
 
-	async def show_shcedule(self, ctx, wed=False, sat=False):
+	async def show_shcedule(self, send, wed=False, sat=False):
 		if not wed and not sat:
 			return
 		else:
@@ -121,9 +149,9 @@ class AnimeClub(commands.Cog):
 				else:
 					embed.add_field(name=f"Wednesday ({nxt_wed.month}/{nxt_wed.day})", value="*none*", inline=False)
 
-			await ctx.send(embed=embed)
+			await send(embed=embed)
 
-	async def show_all_wed(self, ctx, only_future=False):
+	async def show_all_wed(self, send, only_future=False):
 		embed=discord.Embed(description="Wednesday Schedules", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 
@@ -139,9 +167,9 @@ class AnimeClub(commands.Cog):
 				if lines:
 					embed.add_field(name=f"{date.month}/{date.day}", value='\n'.join(lines), inline=False)
 
-		await ctx.send(embed=embed)
+		await send(embed=embed)
 
-	async def show_all_sat(self, ctx, only_future=False):
+	async def show_all_sat(self, send, only_future=False):
 		embed=discord.Embed(description="Saturday Schedules", color=0xd31f28)
 		embed.set_thumbnail(url="https://files.catbox.moe/9dsqp5.png")
 
@@ -157,7 +185,7 @@ class AnimeClub(commands.Cog):
 				if lines:
 					embed.add_field(name=f"{date.month}/{date.day}", value='\n'.join(lines), inline=False)
 
-		await ctx.send(embed=embed)
+		await send(embed=embed)
 
 def parse_title(title):
     # returns array of [title, episode]. if no episode, it will be None

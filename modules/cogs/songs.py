@@ -1,10 +1,13 @@
 import discord, logging, re, json, time, asyncio, os, subprocess, math, copy
 from discord.ext import commands
+from discord import app_commands
 logger = logging.getLogger(__name__)
 
 from modules.core.resources import Resources
 from modules.queries.anime.anilist2 import Anilist2
 from modules.queries.music.search import Themes
+
+from typing import Optional
 
 class Songs(commands.Cog):
 
@@ -25,10 +28,14 @@ class Songs(commands.Cog):
         except:
             pass
 
-    @commands.command()
-    async def songs(self, ctx, *args):
+    @commands.hybrid_command()
+    @app_commands.describe(
+    	title='anime title',
+    )
+    async def songs(self, ctx, *, title):
+        """get songs from an anime"""
         try:
-            await _search_all(self.bot, ctx, ' '.join(args))
+            await _search_all(self.bot, ctx, title)
         except Exception as e:
             print(e)
 
@@ -45,6 +52,27 @@ class Songs(commands.Cog):
             await _search_specific(self.bot, ctx, "ED", ' '.join(args))
         except:
             pass
+
+    @app_commands.command(name="op")
+    @app_commands.describe(
+        title='anime title',
+        number='specify which op (1st, 2nd, ...)',
+        version='specify a specific version (v1, v2, ...)'
+    )
+    async def slash_op(self, interaction, title: str, number: Optional[int]=None, version: Optional[int]=None):
+        """search for an anime opening"""
+        await _search_and_show_song(interaction.response.send_message, title, 'OP', number or 1, version or 1)
+
+    @app_commands.command(name="ed")
+    @app_commands.describe(
+        title='anime title',
+        number='specify which ed (1st, 2nd, ...)',
+        version='specify a specific version (v1, v2, ...)'
+    )
+    async def slash_ed(self, interaction, title: str, number: Optional[int]=None, version: Optional[int]=None):
+        """search for an anime ending"""
+        await _search_and_show_song(interaction.response.send_message, title, 'ED', number or 1, version or 1)
+
 
 async def _search(bot, ctx, kind, search):
     if not search:
@@ -75,7 +103,7 @@ async def _search(bot, ctx, kind, search):
             except:
                 pass
 
-    print(f"Searching for show='{show}' kind='{kind}' num='{num}' ver='{ver}'")
+    # print(f"Searching for show='{show}' kind='{kind}' num='{num}' ver='{ver}'")
     try:
         anime = await Anilist2.aniSearch(Resources.session, show, isAnime=True)
         title = str(anime['data']['anime']['title']['romaji'])
@@ -174,7 +202,7 @@ async def _search(bot, ctx, kind, search):
     else:
         await ctx.send(pick['link'])
 
-async def _show_song(bot, ctx, data, song):
+async def _show_song(respond, data, song):
     embed = discord.Embed(
         title=song.title,
         color=discord.Color.orange(),
@@ -197,7 +225,7 @@ async def _show_song(bot, ctx, data, song):
     if song.artists:
         embed.add_field(name="Artist(s)", value=song.artists_str())
 
-    await ctx.send(embed=embed)
+    await respond(embed=embed)
 
 async def _prompt_selection(bot, ctx, msg, data):
     selectors = copy.deepcopy(Resources.selectors)
@@ -257,7 +285,7 @@ async def _prompt_selection(bot, ctx, msg, data):
                 for msg in msgs:
                     await msg.clear_reactions()
                 return await ctx.send("lol no")
-            await _show_song(bot, ctx, data, assoc[selection])
+            await _show_song(ctx.send, data, assoc[selection])
     for msg in msgs:
         await msg.clear_reactions()
     for msg in msgs[1:]:
@@ -267,8 +295,6 @@ async def _prompt_selection(bot, ctx, msg, data):
 async def _search_specific(bot, ctx, kind, search):
     if not search:
         return
-
-    # await ctx.trigger_typing()
 
     show = search
     num = 1
@@ -293,39 +319,7 @@ async def _search_specific(bot, ctx, kind, search):
             except:
                 pass
 
-    print(f"Searching for show='{show}' kind='{kind}' num='{num}' ver='{ver}' from '{search}'")
-
-    try:
-        search = Themes.search_animethemesmoe(show)
-    except Themes.NoResultsError as e:
-        return await ctx.send(f"{e.message}")
-    except Exception as e:
-        return await ctx.send(f"Status: {e.status}\nMsg: {e.message}")
-
-    songs = [s for s in search.songs if s.variant.kind == kind]
-
-    if not songs:
-        return await ctx.send("No results")
-
-    exact = None
-    approx = songs[0]
-    for song in songs:
-        print(f"{song} [{song.variant.sequence}, {song.variant.version}]")
-        if song.variant.sequence == num:
-            if song.variant.version == ver:
-                exact = song
-                break
-            if approx.variant.sequence != num:
-                approx = song
-            if song.variant.version < approx.variant.version:
-                approx = song
-                
-    pick = exact
-    if not pick:
-        pick = approx
-
-    await _show_song(bot, ctx, search, pick)
-
+    await _search_and_show_song(ctx.send, show, kind, num, ver)
 
 async def _search_all(bot, ctx, show):
     if not show:
@@ -334,7 +328,7 @@ async def _search_all(bot, ctx, show):
     # await ctx.trigger_typing()
 
     try:
-        search = Themes.search_animethemesmoe(show)
+        search = await Themes.search_animethemesmoe(show)
     except Themes.NoResultsError as e:
         return await ctx.send(f"{e.message}")
     except Exception as e:
@@ -363,3 +357,34 @@ async def _search_all(bot, ctx, show):
     #     await msg.clear_reactions()
     #     await _prompt_selection(bot, ctx, msg, search)
 
+async def _search_and_show_song(respond, show, kind, num, ver):
+    try:
+        search = await Themes.search_animethemesmoe(show)
+    except Themes.NoResultsError as e:
+        return await respond(f"{e.message}")
+    except Exception as e:
+        return await respond(f"Status: {e.status}\nMsg: {e.message}")
+
+    songs = [s for s in search.songs if s.variant.kind == kind]
+
+    if not songs:
+        return await respond("No results")
+
+    exact = None
+    approx = songs[0]
+    for song in songs:
+        # print(f"{song} [{song.variant.sequence}, {song.variant.version}]")
+        if song.variant.sequence == num:
+            if song.variant.version == ver:
+                exact = song
+                break
+            if approx.variant.sequence != num:
+                approx = song
+            if song.variant.version < approx.variant.version:
+                approx = song
+                
+    pick = exact
+    if not pick:
+        pick = approx
+    
+    await _show_song(respond, search, pick)

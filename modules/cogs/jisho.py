@@ -2,6 +2,7 @@ import logging, discord, os
 logger = logging.getLogger(__name__)
 
 from discord.ext import commands
+from discord import app_commands
 
 from modules.core.resources import Resources
 
@@ -17,8 +18,12 @@ class Jisho(commands.Cog):
         except:
             pass
 
-    @commands.command(aliases=['j'])
+    @commands.hybrid_command(aliases=['j'])
+    @app_commands.describe(
+        search='English, Japanese, Romaji, words or text',
+    )
     async def jisho(self, ctx, *, search):
+        """search jisho.org"""
         # await ctx.trigger_typing()
 
         if not search:

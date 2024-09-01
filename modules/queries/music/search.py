@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 
 import json, subprocess, json, urllib.parse
 from fuzzywuzzy import process
+from modules.core.resources import Resources
 
 class SongVariant:
     __slots__ = ['_kind', '_sequence', '_version']
@@ -119,64 +120,61 @@ class Themes():
             super().__init__(self.message)
 
     @staticmethod
-    def search_animethemesmoe(show):
+    async def search_animethemesmoe(show):
         url = f"https://api.animethemes.moe/search?q={show}&include[anime]=animethemes.animethemeentries.videos,resources,images,animethemes.song.artists&fields[anime]=name&fields[search]=anime&fields[resource]=link&fields[animetheme]=type,sequence&fields[animethemeentry]=version,nsfw,spoiler&fields[video]=basename&fields[image]=link&fields[song]=title&fields[artist]=name"
         
-        try:
-            res = subprocess.Popen(f"curl --silent \"{url}\"", stdout = subprocess.PIPE, shell=True)
-        except:
-            raise Themes.ThemesError(message="Err: curl subprocess error")
-        
-        try:
-            res = json.loads(res.communicate()[0].decode())
-        except:
-            raise Themes.ThemesError(message="Err: curl response decoding error")
+        async with Resources.session.get(url) as resp:
+            if resp.status != 200:
+                raise Themes.ThemesError(message=f"Bad response from animethemes.moe [{resp.status}]")
+            try:
+                res = await resp.json()
+            except:
+                raise Themes.ThemesError(message="I failed to parse response")
+            else:
+                if not res:
+                    raise Themes.ThemesError(message="Err: empty response from animethemes.moe")
+            if "errors" in res:
+                raise Themes.ThemesError(status=res["errors"][0]["status"], message=res["errors"][0]["detail"])
 
-        if not res:
-            raise Themes.ThemesError(message="Err: empty response from animethemes.moe")
+            data = res["search"]["anime"]
 
-        if "errors" in res:
-            raise Themes.ThemesError(status=res["errors"][0]["status"], message=res["errors"][0]["detail"])
+            if not data:
+                raise Themes.NoResultsError()
 
-        data = res["search"]["anime"]
-
-        if not data:
-            raise Themes.NoResultsError()
-
-        try:
-            data = process.extractOne({"name":show}, data, lambda d: d["name"])[0]
-            songs = []
-            for theme in data["animethemes"]:
-                kind = theme["type"]
-                num = theme["sequence"]
-                title = theme["song"]["title"]
-                artists = [a["name"] for a in theme["song"]["artists"]]
-                for song in theme["animethemeentries"]:
-                    flags = []
-                    if song["nsfw"]:
-                        flags.append("NSFW")
-                    if song["spoiler"]:
-                        flags.append("Spoiler")
-                    url = 'https://animethemes.moe'
-                    if song['videos']:
-                        url = f"https://animethemes.moe/video/{song['videos'][0]['basename']}"
-                    else:
-                        url = f"https://animethemes.moe/search?q={urllib.parse.quote_plus(show)}"
-                    songs.append(
-                        Song(
-                            SongVariant(kind, num, song["version"]),
-                            title,
-                            url,
-                            artists,
-                            flags
+            try:
+                data = process.extractOne({"name":show}, data, lambda d: d["name"])[0]
+                songs = []
+                for theme in data["animethemes"]:
+                    kind = theme["type"]
+                    num = theme["sequence"]
+                    title = theme["song"]["title"]
+                    artists = [a["name"] for a in theme["song"]["artists"]]
+                    for song in theme["animethemeentries"]:
+                        flags = []
+                        if song["nsfw"]:
+                            flags.append("NSFW")
+                        if song["spoiler"]:
+                            flags.append("Spoiler")
+                        url = 'https://animethemes.moe'
+                        if song['videos']:
+                            url = f"https://animethemes.moe/video/{song['videos'][0]['basename']}"
+                        else:
+                            url = f"https://animethemes.moe/search?q={urllib.parse.quote_plus(show)}"
+                        songs.append(
+                            Song(
+                                SongVariant(kind, num, song["version"]),
+                                title,
+                                url,
+                                artists,
+                                flags
+                            )
                         )
-                    )
-        except:
-            raise Themes.ThemesError(status=-1, message="Err: animethemes.moe response structure corrupt")
+            except:
+                raise Themes.ThemesError(status=-1, message="Err: animethemes.moe response structure corrupt")
 
-        return Anime(
-            data["name"],
-            data["resources"][1]['link'],
-            data["images"][-1]['link'],
-            songs
-        )
+            return Anime(
+                data["name"],
+                data["resources"][1]['link'],
+                data["images"][-1]['link'],
+                songs
+            )

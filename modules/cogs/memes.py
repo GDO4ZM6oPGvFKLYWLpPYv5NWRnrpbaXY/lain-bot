@@ -1,6 +1,7 @@
 import discord, os, logging
 from modules.core.resources import Resources
 from discord.ext import commands
+from discord import app_commands
 from aiohttp import ClientResponseError
 logger = logging.getLogger(__name__)
 
@@ -9,6 +10,17 @@ class Memes(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+        correct_menu_msg = app_commands.ContextMenu(
+            name='correct',
+            callback=self._correct_msg,
+        )
+        correct_menu_usr = app_commands.ContextMenu(
+            name='correct',
+            callback=self._correct_usr,
+        )
+        self.bot.tree.add_command(correct_menu_msg)
+        self.bot.tree.add_command(correct_menu_usr)
 
     async def cog_command_error(self, ctx, err):
         logger.exception('Error in meme command.')
@@ -75,11 +87,27 @@ class Memes(commands.Cog):
         except IndexError:
             await ctx.send("You need to mention a user.")
             return
+        
+        await _correct(self.bot.loop, user, ctx.send)
 
+    @app_commands.command(name="correct")
+    @app_commands.describe(user='the user to correct',)
+    async def slash_correct(self, interaction, user: discord.Member):
+        """when you need to put someone in their place"""
+        await interaction.response.defer()
+        await _correct(self.bot.loop, user, interaction.followup.send)
+
+    async def _correct_msg(self, interaction: discord.Interaction, message: discord.Message):
+        await _correct(self.bot.loop, message.author, interaction.response.send_message)
+    
+    async def _correct_usr(self, interaction: discord.Interaction, user: discord.Member):
+        await _correct(self.bot.loop, user, interaction.response.send_message)
+
+async def _correct(loop, user, respond):
         try:
             user_pf = await Resources.img_gen.get_profile_picture(Resources.session, user)
         except ClientResponseError:
-            await ctx.send("Couldn't get profile picture.")
+            await respond("Couldn't get profile picture.")
             return
 
         coords = ((242,58,370,186), (253,60,381,188),
@@ -89,5 +117,5 @@ class Memes(commands.Cog):
             (32,70,160,198), (32,70,160,198))
 
         base_img = os.getcwd() + '/assets/memes/punch.gif'
-        with await Resources.img_gen.insert_picture_in_gif(self.bot.loop, base_img, user_pf, coords) as image_bin:
-            await ctx.send(file=discord.File(image_bin, filename='image.gif'))
+        with await Resources.img_gen.insert_picture_in_gif(loop, base_img, user_pf, coords) as image_bin:
+            await respond(file=discord.File(image_bin, filename='image.gif'))

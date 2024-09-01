@@ -25,7 +25,7 @@ class Mal():
 		try:
 			result = str(response['data'][0]['node']['id'])
 		except:
-			print('paging')
+			# print('paging')
 			response = requests.get(response['paging']['next'], headers=headers, params=params).json()
 			result = str(response['data'][0]['node']['id'])
 
