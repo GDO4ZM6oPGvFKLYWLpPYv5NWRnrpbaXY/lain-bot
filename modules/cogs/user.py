@@ -1,5 +1,6 @@
 import discord, os, asyncio, logging, statistics, html
 from discord.ext import commands
+from discord import app_commands
 from requests import HTTPError
 logger = logging.getLogger(__name__)
 
@@ -9,7 +10,9 @@ from modules.services.anilist.enums import ScoreFormat, Status
 from modules.services.models.user import UserStatus
 from modules.services import Service
 
-class User(commands.Cog, name="User"):
+from typing import Literal, Optional
+
+class User(commands.GroupCog, name="user"):
 	"""see info about registered users"""
 
 	def __init__(self, bot):
@@ -29,36 +32,53 @@ class User(commands.Cog, name="User"):
 		if not args:
 			await ctx.send("Wrong. Too lazy to update help rn")
 		elif args[0] == 'profile':
-			await _profile(ctx, *args[1:])
+			await _msg_cmd_profile(ctx, *args[1:])
 		else:
 			await _user_status(ctx, args, self.bot)
 
 
-async def _profile(ctx, *user):
+	@app_commands.command(name="profile")
+	@app_commands.describe(user='the discord user to check (defaults to self)')
+	async def slash_profile(self, interaction, user: Optional[discord.Member] = None):
+		"""see user's' profile"""
+		if not user:
+			search = {'discord_id': str(interaction.user.id)}
+		else:
+			search = {'discord_id': str(user.id)}
+		await _profile(interaction.response.send_message, search)
+
+	@app_commands.command(name="manga")
+	@app_commands.describe(user='the discord user to check (defaults to self)',)
+	async def manga(self, interaction, status: Literal['reading', 'rereading', Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING], user: Optional[discord.Member] = None):
+		"""see the manga a user is reading, dropped, etc."""
+		pass
+
+	@app_commands.command(name="anime")
+	@app_commands.describe(user='the discord user to check (defaults to self)',)
+	async def anime(self, interaction, status: Literal['watching', 'rewatching', Status.COMPLETED, Status.DROPPED, Status.PAUSED, Status.PLANNING], user: Optional[discord.Member] = None):
+		"""see the anime a user is watching, dropped, etc."""
+		pass
+	
+
+async def _msg_cmd_profile(ctx, *user):
 	# await ctx.trigger_typing()
 	search = {}
-	if len(user):
-		# username given
-		user = user[0].rstrip()
-		if user.startswith('<@!'):
-			userLen = len(user)-1
-			atUser = user[3:userLen]
-			search = {'discord_id': atUser }
-		elif user[len(user)-5]=="#":
-			userId = ctx.guild.get_member_named(user).id
-			if userId:
-				# found in guild
-				search = {'discord_id': str(userId) }
-			else:
-				# not found
-				await ctx.send('Sorry. I could not find that user in this server.')
-				return
-		else:
-			search = {'profile.name': user }
+	try:
+		mention = ctx.message.mentions[0]
+	except IndexError:
+		mention = None
+
+	if mention is not None:
+		search = {'discord_id': str(mention.id) }
+	elif len(user):
+		search = {'profile.name': user }
 	else:
 		#no username given -> retrieve message creator's info
 		search = {'discord_id': str(ctx.message.author.id)}
 
+	return await _profile(ctx.send, search)
+
+async def _profile(respond, search):
 	# technically a user could register both anilist and myanimelist services
 	# rn it'll just use what ever db query finds first
 	search['service'] = {'$in': [Service.ANILIST, Service.MYANIMELIST]} 
@@ -112,13 +132,13 @@ async def _profile(ctx, *user):
 		if animeGenres:
 			embed.add_field(name="Top genres (by count):", value=animeGenres, inline=False)
 
-		await ctx.send(embed=embed)
+		await respond(embed=embed)
 	else:
 		# not found
 		if 'profile.name' in search:
-			await ctx.send('Sorry. I do not support searches on users not registered with me.')
+			await respond('Sorry. I do not support searches on users not registered with me.')
 		else:
-			await ctx.send('Sorry. I could not find that user')
+			await respond('Sorry. I could not find that user')
 
 def _limit_paginated(lst):
 	pages = []
