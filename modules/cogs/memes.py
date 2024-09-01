@@ -89,7 +89,14 @@ class Memes(commands.Cog):
             return
         
         await _correct(self.bot.loop, user, ctx.send)
-    
+
+    @app_commands.command(name="correct")
+    @app_commands.describe(user='the user to correct',)
+    async def slash_correct(self, interaction, user: discord.Member):
+        """when you need to put someone in their place"""
+        await interaction.response.defer()
+        await _correct(self.bot.loop, user, interaction.followup.send)
+
     async def _correct_msg(self, interaction: discord.Interaction, message: discord.Message):
         await _correct(self.bot.loop, message.author, interaction.response.send_message)
     
