@@ -683,5 +683,5 @@ async def mangaLnSearchEmbed(guild, anilistResults, kind):
 
 				embed.add_field(name='Released', value=tyme, inline=False)
 
-	extra = await embedScores(guild, anilistResults["data"][kind]["id"], anilistResults["data"][kind]["idMal"], kind, 9, embed)
+	extra = await embedScores(guild, anilistResults["data"][kind]["id"], anilistResults["data"][kind]["idMal"], 'manga', 9, embed)
 	return embed, extra

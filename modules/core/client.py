@@ -87,7 +87,7 @@ class Bot(commands.Bot):
             await interaction.response.send_message('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
         except:
             try:
-                interaction.followup.send(content='something went really wrong')
+                await interaction.followup.send(content='something went really wrong')
             except:
                 pass
         
