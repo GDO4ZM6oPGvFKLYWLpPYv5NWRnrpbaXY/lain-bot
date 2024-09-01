@@ -57,7 +57,13 @@ class Bot(commands.Bot):
         ])
 
         self.help_command = CustomHelpCommand()
-    
+
+        # guilds = [discord.Object(id=259896980308754432), discord.Object(id=755534146192933024)]
+        # for guild in guilds:
+        #     self.tree.copy_global_to(guild=guild)
+        #     await self.tree.sync(guild=guild)
+
+        await self.tree.sync()
         self.tree.on_error = self.on_tree_error
 
     async def on_tree_error(self, interaction, err):
