@@ -367,20 +367,17 @@ class Weeb(commands.Cog, name="Weeb"):
 		await ctx.send(embed=embed)
 
 
-	@commands.group()
-	async def vn(self, ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid vndb command passed...')
+	vn_group = app_commands.Group(name='vn', description="get info related to VNs")
 
-	@vn.command()
-	async def get(self, ctx, *, arg):
+	@vn_group.command()
+	@app_commands.describe(name='title of vn',)
+	async def get(self, interaction, name: str):
 		"""Lookup a visual novel on vndb"""
-		# name of vn
-		# arg = ' '.join(args)
+
 		try:
 			# grab info from database
 			vn = Vndb()
-			r = vn.vn(arg.strip())
+			r = vn.vn(name)
 			r = r['items'][0]
 
 			# assign variables
@@ -490,16 +487,21 @@ class Weeb(commands.Cog, name="Weeb"):
 			if len(screens) >= 1:
 				embed.set_image(url=random.choice(screens)['image'])
 
-			await ctx.send(embed=embed)
+			await interaction.response.send_message(embed=embed)
 		except Exception as e:
 			logger.exception('Exception looking up VN')
-			await ctx.send('VN not found (title usually has to be exact)')
+			await interaction.response.send_message('VN not found (title usually has to be exact)')
 
-	@vn.command()
-	async def quote(self, ctx):
+	@vn_group.command()
+	async def quote(self, interaction):
 		"""Display a random visual novel quote"""
 		q = Vndb()
-		quote = q.quote()
+		quote = await q.quote()
+
+		try:
+			quote = await q.quote()
+		except:
+			return await interaction.response.send_message('Unable to retrieve quote')
 
 		embed = discord.Embed(
 					title = quote['quote'],
@@ -508,7 +510,7 @@ class Weeb(commands.Cog, name="Weeb"):
 
 		embed.set_author(name=quote['title'], url='https://vndb.org/v' + str(quote['id']), icon_url=quote['cover'])
 
-		await ctx.send(embed=embed)
+		await interaction.response.send_message(embed=embed)
 
 
 def shorten(desc):

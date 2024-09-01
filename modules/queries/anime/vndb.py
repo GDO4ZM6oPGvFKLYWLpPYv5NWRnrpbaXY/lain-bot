@@ -1,6 +1,8 @@
 import socket
 import json
 from urllib.request import urlopen
+from modules.core.resources import Resources
+import re
 
 class Vndb():
 	def __init__(self):
@@ -40,41 +42,22 @@ class Vndb():
 		res = json.loads(remove.replace('results', ''))
 		return res
 
-	def quote(self):
-		# load page
-		page = urlopen('https://vndb.org/')
+	async def quote(self):
+		async with Resources.session.get('https://vndb.org/', headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}) as resp:
+			if resp.status != 200:
+				raise Exception("Bad fetch")
+			html = await resp.read()
+			html = html.decode('utf-8')
+		
+		srch = re.search(r'"<a href="/(v\d+)">(.*)</a>&quot;', html)
+		quote = srch.group(2)
+		vid = srch.group(1)
 
-		# convert to english/code
-		html = page.read().decode('utf-8')
+		async with Resources.session.post('https://api.vndb.org/kana/vn', json={"filters": ["id", "=", vid], "fields": "title, image.url"}) as resp:
+			if resp.status != 200:
+				raise Exception("Bad fetch")
+			data = await resp.json()
+		
+		item = data['results'][0]
 
-		# beginning index of quote
-		qStart = html.find('text-decoration: none') + 23
-
-		# ending index of quote
-		qEnd = html.find('&quot;<br /><a href="https://code.blicky.net/yorhel/vndb">') - 4
-
-		# beginning index of id
-		iStart = html.find('id=\"footer\">"') + 24
-
-		# ending of index of id
-		iEnd = html.find(' style=\"text-decoration: none\"') - 1
-
-		# retrive title and cover image from quote
-		whole = 'get vn basic,details (id = {0})'.format(html[iStart:iEnd])
-
-		self.sock.send(('{0}\x04'.format(whole)).encode())
-
-		# listen for response from vndb
-		finished = False
-		whole = ''
-		while not finished:
-			whole += self.sock.recv(4096).decode()
-			if '\x04' in whole:
-				finished = True
-
-		remove = whole.replace('\x04', '')
-		res = json.loads(remove.replace('results', ''))
-
-		res = res['items'][0]
-
-		return {'quote': html[qStart:qEnd].replace('&quot;', '\"'), 'title': res['title'], 'cover': res['image'], 'id': res['id']}
+		return {'quote': quote, 'title': item['title'], 'cover': item['image']['url'], 'id': item['id']}
