@@ -42,6 +42,7 @@ class AnimeClub(commands.Cog):
 		day='which day to check (defaults to all)',
 		when='can show all, future, or just the next upcoming meeting (defaults to next)'
 	)
+	@app_commands.guilds(254864526069989377)
 	async def s_sc(self, interaction, day: Optional[Literal[Day.SAT, Day.WED]] = Day.ALL, when: Optional[Literal[Prosepect.ALL, Prosepect.NEXT, Prosepect.FUTURE]] = Prosepect.NEXT):
 		if when == Prosepect.NEXT:
 			await self.show_shcedule(interaction.response.send_message, sat=day == Day.ALL or day == Day.SAT, wed=day == Day.ALL or day == Day.WED)
