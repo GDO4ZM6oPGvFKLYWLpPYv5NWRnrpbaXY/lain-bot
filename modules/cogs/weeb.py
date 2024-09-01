@@ -65,30 +65,27 @@ class Weeb(commands.Cog, name="Weeb"):
 
 		await ctx.send(embed=embed)
 
-
-	@commands.group()
-	async def doujin(self, ctx):
-		if ctx.invoked_subcommand is None:
-			await ctx.send('Invalid doujin command passed...')
-
-	@doujin.command()
-	async def search(self, ctx, *, tags):
+	@app_commands.command()
+	async def doujin(self, interaction, tags: str):
+		"""look up doujin"""
+		await interaction.response.defer()
 		links = Doujin.tagSearch(tags)
 		
-		# await ctx.trigger_typing()
 		embed = discord.Embed(
 			title = 'Results',
 			color = discord.Color.red()
 		)
 		embed.set_thumbnail(url='https://e-hentai.org/favicon.png')
 
+		rxn = ['1️⃣','2️⃣','3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+
 		if links != None:
 			def check(reaction, user):
-				return user == ctx.message.author and (str(reaction.emoji) == '1️⃣' or str(reaction.emoji) == '2️⃣' or str(reaction.emoji) == '3️⃣' or str(reaction.emoji) == '4️⃣' or str(reaction.emoji) == '5️⃣' or str(reaction.emoji) == '6️⃣' or str(reaction.emoji) == '7️⃣' or str(reaction.emoji) == '8️⃣' or str(reaction.emoji) == '9️⃣')
+				return user.id == interaction.user.id and str(reaction.emoji) in rxn
 			
 			size = len(links)
 			if size == 0:
-				await ctx.send('No results, try different tags')
+				await interaction.followup.send(content='No results, try different tags')
 				return
 			
 			i = 1
@@ -101,48 +98,46 @@ class Weeb(commands.Cog, name="Weeb"):
 				i += 1
 				if i == 10:
 					break
-			msg = await ctx.send(embed=embed)
+			await interaction.followup.send(embed=embed)
+			msg = await interaction.original_response()
+
 			# add reaction(s)
 			if size >= 1:
-				await msg.add_reaction('1️⃣')
+				await msg.add_reaction(rxn[0])
 			if size >= 2:
-				await msg.add_reaction('2️⃣')
+				await msg.add_reaction(rxn[1])
 			if size >= 3:
-				await msg.add_reaction('3️⃣')
+				await msg.add_reaction(rxn[2])
 			if size >= 4:
-				await msg.add_reaction('4️⃣')
+				await msg.add_reaction(rxn[3])
 			if size >= 5:
-				await msg.add_reaction('5️⃣')
+				await msg.add_reaction(rxn[4])
 			if size >= 6:
-				await msg.add_reaction('6️⃣')
+				await msg.add_reaction(rxn[5])
 			if size >= 7:
-				await msg.add_reaction('7️⃣')
+				await msg.add_reaction(rxn[6])
 			if size >= 8:
-				await msg.add_reaction('8️⃣')
+				await msg.add_reaction(rxn[7])
 			if size >= 9:
-				await msg.add_reaction('9️⃣')
+				await msg.add_reaction(rxn[8])
 
 			try:
 				reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
 			except asyncio.TimeoutError:
-				await ctx.send('Took too long, try again')
-			
+				await msg.clear_reactions()
 			else:
-				try:
-					chose = links[str(reaction.emoji)[:1] - 1]
-				except:
-					await ctx.send('Invalid reaction, try again')
-					return
-				
+				await msg.clear_reactions()
+				chose = links[rxn.index(str(reaction.emoji))]
+
 				embed = discord.Embed(
 					title = 'Not done yet lol',
 					color = discord.Color.red(),
 					url=chose
 				)
-				await ctx.send(embed=embed)
+				await interaction.followup.send(embed=embed)
 
 		else:
-			await ctx.send('Error getting data')
+			await interaction.followup.send(content='Error getting data')
 
 
 	@commands.hybrid_command(aliases=['a'], usage="<search>")
