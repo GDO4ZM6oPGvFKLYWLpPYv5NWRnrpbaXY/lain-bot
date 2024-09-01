@@ -3,7 +3,6 @@ from discord.ext import commands
 
 from modules.cogs.weeb import Weeb
 from modules.cogs.music import Music
-from modules.cogs.configuration import Configuration
 from modules.cogs.memes import Memes
 from modules.cogs.animeclub import AnimeClub
 from modules.cogs.jisho import Jisho
@@ -45,7 +44,6 @@ class Bot(commands.Bot):
         await asyncio.gather(*[
             self.add_cog(Memes(self)),
             self.add_cog(Weeb(self)),
-            self.add_cog(Configuration(self)),
             self.add_cog(Music(self)),
             self.add_cog(Songs(self)),
             self.add_cog(AnimeClub(self)),
