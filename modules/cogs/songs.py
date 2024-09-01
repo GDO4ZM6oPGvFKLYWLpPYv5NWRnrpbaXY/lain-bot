@@ -33,7 +33,7 @@ class Songs(commands.Cog):
     	title='anime title',
     )
     async def songs(self, ctx, *, title):
-        """get songs from and anime"""
+        """get songs from an anime"""
         try:
             await _search_all(self.bot, ctx, title)
         except Exception as e:

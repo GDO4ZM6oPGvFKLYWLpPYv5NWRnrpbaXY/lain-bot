@@ -40,7 +40,7 @@ class Misc(commands.Cog, name="other"):
 	@app_commands.command()
 	@app_commands.describe(kind='anime or manga',)
 	async def compatibility(self, interaction, kind: Optional[Literal['anime', 'manga']] = 'anime'):
-		"""See your compatiblity with other registered users"""
+		"""see your compatiblity with other registered users"""
 
 		channel = interaction.channel
 		guild = interaction.guild

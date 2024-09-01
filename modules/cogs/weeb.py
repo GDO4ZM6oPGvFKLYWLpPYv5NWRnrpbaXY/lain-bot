@@ -367,7 +367,7 @@ class Weeb(commands.Cog, name="Weeb"):
 	@vn_group.command()
 	@app_commands.describe(name='title of vn',)
 	async def get(self, interaction, name: str):
-		"""Lookup a visual novel on vndb"""
+		"""lookup a visual novel on vndb"""
 
 		try:
 			# grab info from database
@@ -489,7 +489,7 @@ class Weeb(commands.Cog, name="Weeb"):
 
 	@vn_group.command()
 	async def quote(self, interaction):
-		"""Display a random visual novel quote"""
+		"""display a random visual novel quote"""
 		q = Vndb()
 		quote = await q.quote()
 

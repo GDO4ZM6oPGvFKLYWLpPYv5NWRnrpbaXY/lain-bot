@@ -44,6 +44,7 @@ class AnimeClub(commands.Cog):
 	)
 	@app_commands.guilds(254864526069989377, 259896980308754432)
 	async def s_sc(self, interaction, day: Optional[Literal[Day.SAT, Day.WED]] = Day.ALL, when: Optional[Literal[Prosepect.ALL, Prosepect.NEXT, Prosepect.FUTURE]] = Prosepect.NEXT):
+		"""view club schedule"""
 		if when == Prosepect.NEXT:
 			await self.show_shcedule(interaction.response.send_message, sat=day == Day.ALL or day == Day.SAT, wed=day == Day.ALL or day == Day.WED)
 		else:
@@ -103,6 +104,7 @@ class AnimeClub(commands.Cog):
 	@app_commands.guilds(254864526069989377, 259896980308754432)
 	@app_commands.checks.has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
 	async def s_set(self, interaction, day: Literal[Day.SAT, Day.WED], schedule: discord.Attachment):
+		"""set club schedule (admin)"""
 		if day == Day.SAT:
 			k = 'Saturday'
 			n = 6
