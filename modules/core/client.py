@@ -73,11 +73,11 @@ class Bot(commands.Bot):
         except:
             pass            
         try:
-            err = err.original
             if isinstance(err, discord.app_commands.errors.MissingAnyRole):
                 await interaction.response.send_message('You do not have permission to use this command')
                 return
-            elif isinstance(err, Anilist2.AnilistError):
+            elif isinstance(err.original, Anilist2.AnilistError):
+                err = err.original
                 if err.status == 404:
                     await interaction.response.send_message('*no results*', file=discord.File(os.getcwd() + '/assets/lain404.jpg'))
                     return
