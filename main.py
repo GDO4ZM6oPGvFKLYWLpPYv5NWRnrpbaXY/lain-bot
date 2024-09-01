@@ -36,7 +36,7 @@ async def close_sessions():
 
 # Clean up on close
 def exit_cleanup():
-	logging.info('shutting down...')
+	print('shutting down...')
 	asyncio.run(close_sessions())
 	logging.info('Shut down.')
 
