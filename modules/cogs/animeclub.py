@@ -42,7 +42,7 @@ class AnimeClub(commands.Cog):
 		day='which day to check (defaults to all)',
 		when='can show all, future, or just the next upcoming meeting (defaults to next)'
 	)
-	@app_commands.guilds(254864526069989377)
+	@app_commands.guilds(254864526069989377, 259896980308754432)
 	async def s_sc(self, interaction, day: Optional[Literal[Day.SAT, Day.WED]] = Day.ALL, when: Optional[Literal[Prosepect.ALL, Prosepect.NEXT, Prosepect.FUTURE]] = Prosepect.NEXT):
 		if when == Prosepect.NEXT:
 			await self.show_shcedule(interaction.response.send_message, sat=day == Day.ALL or day == Day.SAT, wed=day == Day.ALL or day == Day.WED)
@@ -99,33 +99,29 @@ class AnimeClub(commands.Cog):
 	async def future_wed(self, ctx):
 		await self.show_all_wed(ctx.send, only_future=True)
 
-	@schedule.command(name="set")
-	@has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
-	async def set_(self, ctx, *args):
-		if not args or args[0] not in ['sat', 'wed']:
-			await ctx.send('Bad usage. Try `>sc set wed` or similar')
-
-		if not ctx.message.attachments:
-			await ctx.send('Provide an attachment by pressing the icon to the left of the input box and then doing the command in the message popup')
-
-		k = 'Wednesday'
-		n = 7
-		if args[0] == 'sat':
+	@app_commands.command(name="set-schedule")
+	@app_commands.guilds(254864526069989377, 259896980308754432)
+	@app_commands.checks.has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
+	async def s_set(self, interaction, day: Literal[Day.SAT, Day.WED], schedule: discord.Attachment):
+		if day == Day.SAT:
 			k = 'Saturday'
 			n = 6
+		else:
+			k = 'Wednesday'
+			n = 7
 		
 		with NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp:
-			await ctx.message.attachments[0].save(tmp.name)
+			await schedule.save(tmp.name)
 			try:
 				sched = extract_schedule(tmp.name, n)
 			except Exception as e:
-				await ctx.send(f"Failed to extract schedule from file.\n{e.message}")
+				await interaction.response.send_message(f"Failed to extract schedule from file.\n{e.message}")
 				return
 			res = await Resources.storage_col.update_one({'id': 'sched_v2'}, {'$set': {k: sched}})
 			if not res:
-				await ctx.send(f"Error setting {k} schedule!")
+				await interaction.response.send_message(f"Error setting {k} schedule!")
 			else:
-				await ctx.send(f"{k} schedules have been updated!")
+				await interaction.response.send_message(f"{k} schedules have been updated!")
 
 	async def show_shcedule(self, send, wed=False, sat=False):
 		if not wed and not sat:
