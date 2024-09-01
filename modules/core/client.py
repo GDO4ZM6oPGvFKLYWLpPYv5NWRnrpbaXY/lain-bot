@@ -16,6 +16,7 @@ from modules.cogs.user import User
 
 from modules.services import Service
 from modules.core.resources import Resources
+from modules.queries.anime.anilist2 import Anilist2
 
 intents = discord.Intents.none()
 intents.guilds = True
@@ -70,14 +71,25 @@ class Bot(commands.Bot):
         try:
             logger.exception('Error in app command tree')
         except:
-            pass
-        if isinstance(err, discord.app_commands.errors.MissingAnyRole):
-            return await interaction.response.send_message('You do not have permission to use this command')
+            pass            
         try:
+            err = err.original
+            if isinstance(err, discord.app_commands.errors.MissingAnyRole):
+                await interaction.response.send_message('You do not have permission to use this command')
+                return
+            elif isinstance(err, Anilist2.AnilistError):
+                if err.status == 404:
+                    await interaction.response.send_message('*no results*', file=discord.File(os.getcwd() + '/assets/lain404.jpg'))
+                    return
+                else:
+                    await interaction.response.send_message(f"Query request failed\nmsg: {err.message}\nstatus: {err.status}")
+                    return
             await interaction.response.send_message('error!', file=discord.File(os.getcwd() + '/assets/lain_err_sm.png'))
         except:
-            pass
+            try:
+                interaction.followup.send(content='something went really wrong')
+            except:
+                pass
         
-
 class Client:	
     bot = Bot(command_prefix=prefix, intents=intents) #sets up the bot
