@@ -40,7 +40,7 @@ class Misc(commands.Cog, name="other"):
 	@app_commands.command()
 	@app_commands.describe(kind='anime or manga',)
 	async def compatibility(self, interaction, kind: Optional[Literal['anime', 'manga']] = 'anime'):
-		"""see your compatiblity with other registered users"""
+		"""see your compatiblity with other registered users (pearson correlation coefficient)"""
 
 		channel = interaction.channel
 		guild = interaction.guild
@@ -112,7 +112,7 @@ class Misc(commands.Cog, name="other"):
 			*[_process(discord_id) for discord_id in common_ids]
 		)
 
-		scores.sort(key=lambda e: e[1][0])
+		scores.sort(reverse=True, key=lambda e: e[1][0])
 
 		# remove empty
 		scores = [score for score in scores if score[1][0]]
@@ -122,29 +122,40 @@ class Misc(commands.Cog, name="other"):
 				yield lst[i:i+size]
 
 		MAX_FIELDS = 24 # for discord, it's 25 but 24 formats into rows of 3 nicely
+		page = 1
+		pages = round(len(scores) / MAX_FIELDS)+1
 		if scores:
 			for subscores in chunkize(scores, MAX_FIELDS):
+				title = f"{interaction.user.display_name}'s {kind} compatibility scores"
+				if pages > 1:
+					title += f" ({page}/{pages})"
+				
 				# embed text to output
 				embed = discord.Embed(
-					title = f"{interaction.user.display_name}'s {kind} compatibility scores",
-					description = "The lower the score the more compatible",
+					title = title,
 					color = discord.Color.blue(),
 				)
 
 				for score in subscores:
-					embed.add_field(name=score[0], value=f"{round(score[1][0], 3)} ({score[1][1]})", inline=True)
-
-				await interaction.edit_original_response(embed=embed)
+					embed.add_field(name=score[0], value=f"{round(score[1][0], 1)}% ({score[1][1]})", inline=True)
+				if page == 1:
+					await interaction.edit_original_response(content=None, embed=embed)
+				else:
+					await interaction.followup.send(embed=embed)
+				page += 1
 		else:
 			await interaction.edit_original_response(content="No compatibilities. Most likely didn't share any scores with anyone")
 
 def _get_comp_score(u1, u2, kind):
+	# https://en.wikipedia.org/wiki/Pearson_correlation_coefficient
 	try:
 		sf1 = ScoreFormat(u1['profile']['score_format'])
 		sf2 = ScoreFormat(u2['profile']['score_format'])
-		av1 = 0
-		av2 = 0
-		combined = []
+		sum1 = 0
+		sum2 = 0
+		smult = 0
+		shared1 = []
+		shared2 = []
 		for i in u1['lists'][kind]:
 			e = u1['lists'][kind][i]
 			ii = [i]
@@ -157,28 +168,33 @@ def _get_comp_score(u1, u2, kind):
 				if s != None and s != "None" and s in u2['lists'][kind]:
 					s1 = sf1.normalized_score(e['score'])
 					s2 = sf2.normalized_score(u2['lists'][kind][s]['score'])
-					# print(f"{u1['profile']['name']} x {u2['profile']['name']} -- {i} : {s} :: {type(s1)}[{s1}] {type(s2)}[{s2}]")
 					if not s1 or not s2:
 						continue
-					combined.append((s1, s2))
-					av1 = av1 + s1
-					av2 = av2 + s2
+					# print(f"{u1['profile']['name']} x {u2['profile']['name']} -- {i} : {s} :: {type(s1)}[{s1}] {type(s2)}[{s2}]")
+					shared1.append(s1)
+					shared2.append(s2)
+					sum1 = sum1 + s1
+					sum2 = sum2 + s2
+					smult += s1 * s2
 
-		av1 = av1/len(combined)
-		av2 = av2/len(combined)
+		num_shared = len(shared1)
 
-		sdv1 = 0
-		sdv2 = 0
-		for c in combined:
-			sdv1 = sdv1 + ((c[0] - av1)**2)
-			sdv2 = sdv2 + ((c[1] - av2)**2)
-		sdv1 = math.sqrt(sdv1/(len(combined)-1))
-		sdv2 = math.sqrt(sdv2/(len(combined)-1))
+		if num_shared == 0:
+			return (0,0)
+		elif num_shared == 1:
+			return (100 - 100/9 * abs(sum1 - sum2))
+		
+		av1 = sum1/num_shared
+		av2 = sum2/num_shared
+		sdv1 = statistics.stdev(shared1)
+		sdv2 = statistics.stdev(shared2)
+		pcc = (smult - num_shared*av1*av2) / ((num_shared - 1)*sdv1*sdv2)
 
-		diff = 0
-		for c in combined:
-			diff = diff + abs( ((c[0] - av1)/sdv1) - ((c[1] - av2)/sdv2) )
-		return (diff/len(combined), len(combined))
+		# diff = 0
+		# for i in range(num_shared):
+		# 	diff = diff + abs( ((shared1[i] - av1)/sdv1) - ((shared2[i] - av2)/sdv2) )
+
+		return (pcc*100, num_shared)
 	except Exception as e:
 		print(sys.exc_info())
 		traceback.print_exc()
