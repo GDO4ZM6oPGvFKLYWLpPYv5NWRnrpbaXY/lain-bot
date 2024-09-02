@@ -472,7 +472,7 @@ class Weeb(commands.Cog, name="Weeb"):
 					color = discord.Color.purple()
 				)
 
-		embed.set_author(name=quote['title'], url='https://vndb.org/v' + str(quote['id']), icon_url=quote['cover'])
+		embed.set_author(name=quote['title'], url='https://vndb.org/' + str(quote['id']), icon_url=quote['cover'])
 
 		await interaction.response.send_message(embed=embed)
 
