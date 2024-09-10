@@ -42,7 +42,7 @@ class AnimeClub(commands.Cog):
 		day='which day to check (defaults to all)',
 		when='can show all, future, or just the next upcoming meeting (defaults to next)'
 	)
-	@app_commands.guilds(254864526069989377, 259896980308754432)
+	@app_commands.guilds(254864526069989377) # 259896980308754432
 	async def s_sc(self, interaction, day: Optional[Literal[Day.SAT, Day.WED]] = Day.ALL, when: Optional[Literal[Prosepect.ALL, Prosepect.NEXT, Prosepect.FUTURE]] = Prosepect.NEXT):
 		"""view club schedule"""
 		if when == Prosepect.NEXT:
@@ -101,8 +101,8 @@ class AnimeClub(commands.Cog):
 		await self.show_all_wed(ctx.send, only_future=True)
 
 	@app_commands.command(name="set-schedule")
-	@app_commands.guilds(254864526069989377, 259896980308754432)
-	@app_commands.checks.has_any_role(494979840470941712, 259557922726608896, 260093344858767361) # admin, executive council
+	@app_commands.guilds(254864526069989377) # 259896980308754432
+	@app_commands.checks.has_any_role(494979840470941712, 259557922726608896) # admin, executive council 260093344858767361
 	async def s_set(self, interaction, day: Literal[Day.SAT, Day.WED], schedule: discord.Attachment):
 		"""set club schedule (admin)"""
 		if day == Day.SAT:
