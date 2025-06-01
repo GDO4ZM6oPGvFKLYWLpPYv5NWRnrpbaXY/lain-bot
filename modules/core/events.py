@@ -45,10 +45,10 @@ class Events:
 			if not msg.author.bot:
 				# hard coded will have fastest response time and are global
 				if msg.content in ['good bot', 'good bot!', 'good lain']:
-					await msg.channel.send('https://files.catbox.moe/jkhrji.png')
+					await msg.channel.send('https://drive.google.com/uc?export=download&id=1RcdU_Xjr2o1GcmZBeOsFeL2RQ-MlO9Or')
 
 				if msg.content in ['bad bot', 'bad bot!', 'bad lain']:
-					await msg.channel.send('https://files.catbox.moe/bde830.gif')
+					await msg.channel.send('https://tenor.com/brJRK.gif')
 
 				# slower response but on the fly changes and per guild
 				reactions = await Resources.guild_col.find_one({'guild_id': str(msg.guild.id), 'reactions': {'$exists': True}}, {'reactions': 1})
